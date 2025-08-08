@@ -1,0 +1,9 @@
+[08-Jul-2025 04:45:55 UTC] [CPaaS] Active PMPro member redirected: User 3 → http://cpaas.local/membership-account/
+[08-Jul-2025 04:46:45 UTC] [CPaaS] Non-active member redirected: User 5 (none) → http://cpaas.local/membership-levels/
+[08-Jul-2025 04:47:17 UTC] [CPaaS] Non-active member redirected: User 6 (admin_cancelled) → http://cpaas.local/membership-levels/
+[08-Jul-2025 05:05:58 UTC] [2025-07-08 13:05:58] CPaaS Login Redirect: Settings updated by user 1 from IP ::1. Changes: {"dashboard_redirect_target":{"old":"\/membership-account\/","new":"\/dashboard\/"},"expired_member_redirect_target":{"old":"\/membership-levels\/","new":"\/membership-checkout\/"}}
+[08-Jul-2025 05:06:37 UTC] [CPaaS] Non-active member redirected: User 5 (none) → http://cpaas.local/membership-checkout/
+[08-Jul-2025 05:07:02 UTC] [CPaaS] Non-active member redirected: User 6 (admin_cancelled) → http://cpaas.local/membership-checkout/
+[08-Jul-2025 05:07:32 UTC] [CPaaS] Active PMPro member redirected: User 2 → http://cpaas.local/dashboard/
+[10-Jul-2025 02:10:58 UTC] PHP Warning:  mysqli_real_connect(): (HY000/2002): No connection could be made because the target machine actively refused it in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\class-wpdb.php on line 1988
+[10-Jul-2025 02:13:50 UTC] PHP Warning:  wp_version_check(): An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/forums/">support forums</a>. (WordPress could not establish a secure connection to WordPress.org. Please contact your server administrator.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121

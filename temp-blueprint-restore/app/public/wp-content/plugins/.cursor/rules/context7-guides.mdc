@@ -1,0 +1,752 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Context7 AI Assistant Guide - Dashboard Plugin Development
+
+## 🏢 Project Overview & Business Context
+
+**What We're Building**: Enterprise-grade CPaaS (Communications Platform as a Service) dashboard plugin for WordPress that replicates GoHighLevel's interface and functionality.
+
+**Business Problem Solved**: 
+- PMPro members need personalized communication management dashboards
+- Users require real-time interaction with Twilio, Supabase, and n8n workflows
+- Enterprise clients need secure, scalable communication automation tools
+- Shared hosting users need optimized performance without sacrificing functionality
+
+**Target Users**: 
+- PMPro members with active subscriptions
+- Communications managers and marketing teams
+- Small to enterprise businesses using WordPress
+- Users accessing personalized `/dashboard` URLs
+
+**Current Project Status**: 
+- **Phase 1 COMPLETE**: Dashboard Plugin v1.0.4 with basic navigation and security
+- **Phase 2 IN PROGRESS**: Template-based system with real-time API integrations (5-week plan)
+- **Database Schema**: 5 tables already created and functional
+- **User Authentication**: PMPro integration active and tested
+
+**Critical Business Constraints**:
+- **Shared Hosting Compatible**: Must work efficiently on budget hosting
+- **Subdomain Deployment**: Plugin must function on subdomains like `dashboard.yourdomain.com`
+- **PMPro Integration**: Seamless membership level control required
+- **Mobile-First**: Touch-friendly responsive design mandatory
+- **Enterprise Security**: Multi-layer security with encrypted credentials
+- **Performance Budget**: Page load under 3 seconds, real-time updates under 500ms
+
+---
+
+## 🔧 Current Technical Environment & Setup
+
+**Existing Infrastructure (DO NOT CHANGE)**:
+- **WordPress 6.8+** with Dashboard Plugin v1.0.4 ACTIVE and FUNCTIONAL
+- **Database Schema**: 5 tables created (`dashboard_menus`, `dashboard_menu_items`, `dashboard_containers`, `dashboard_canvas`, `dashboard_user_settings`)
+- **PMPro Plugin**: INTEGRATED for membership control and user authentication
+- **Dashboard URL**: `/dashboard` page FUNCTIONAL with basic navigation shell
+- **Security Framework**: Nonce verification, input sanitization, output escaping patterns IMPLEMENTED
+
+**Technology Stack (FIXED CONSTRAINTS)**:
+- **PHP 8.3.17**: REQUIRED for production hosting compatibility
+- **MariaDB 10.5+**: Production database (10.4.32 on Local by Flywheel)
+- **jQuery**: WordPress standard JavaScript library (NO React/Vue/Angular)
+- **Apache Web Server**: Standard WordPress hosting environment
+- **CSS Grid/Flexbox**: Modern CSS for responsive layouts
+- **WordPress AJAX**: For dynamic content loading (wp_ajax hooks)
+
+**External Services CONFIGURED**:
+- **Supabase Project**: Active account with database and authentication ready
+- **n8n Instance**: Running with webhook endpoints configured
+- **Twilio Account**: Active with API keys stored in secure vault
+- **Local by Flywheel**: Development environment ready for testing
+
+**MCP Integration ACTIVE**:
+- **Context7**: Documentation access for WordPress/PHP/APIs
+- **Browser Tools**: Frontend debugging and performance testing
+- **n8n MCP**: Workflow automation development
+
+---
+
+## 🚧 Implementation Boundaries & Restrictions
+
+**MUST NOT CHANGE (Critical System Components)**:
+- Existing database schema structure or table names
+- Current `/dashboard` URL routing and WordPress permalink structure
+- PMPro integration patterns and membership level checking
+- WordPress plugin activation/deactivation hooks already implemented
+- Security patterns from `.cursorrules` (maintain consistency)
+- File structure established in Phase 1 (extend, don't rebuild)
+
+**MUST FOLLOW (Non-Negotiable Requirements)**:
+- **File Size Limit**: Maximum 600 lines per file (maintainability)
+- **WordPress Standards**: All code must pass WP_DEBUG without errors
+- **Security Patterns**: Every input sanitized, every output escaped, nonces verified
+- **Mobile-First Design**: Touch-friendly interfaces across all screen sizes
+- **Performance Budget**: Database queries under 100ms, page load under 3 seconds
+- **Browser Support**: Chrome, Firefox, Safari, Edge (latest 2 versions)
+
+**MUST INTEGRATE WITH (Existing System Dependencies)**:
+- **Menu System**: Enhance existing dashboard navigation (don't replace)
+- **User Authentication**: Work within PMPro membership levels and permissions
+- **Template System**: Extend current dashboard shell template functionality
+- **CSS Framework**: Build upon unified theme without conflicting styles
+- **AJAX Framework**: Use WordPress wp_ajax hooks and nonce patterns
+
+**FORBIDDEN APPROACHES**:
+- Modern JavaScript frameworks (React, Vue, Angular)
+- Non-WordPress CMS patterns or generic web development approaches
+- Direct database modifications without WordPress wpdb class
+- Inline CSS or JavaScript (maintain separation of concerns)
+- Non-responsive or desktop-only design patterns
+
+---
+
+## 🏗️ Component Architecture & Dependencies
+
+**Data Flow Architecture (User Journey)**:
+```
+PMPro User Login → WordPress Auth → /dashboard Page → Template Loading → API Calls → Real-time Updates → Canvas Interactions
+```
+
+**File Dependency Chain (Week-by-Week)**:
+```
+Week 1: Security Foundation (Vault + Menu Manager) 
+    ↓
+Week 2: First Template (Email Campaigns) + Admin Controls 
+    ↓  
+Week 3: Real-time Features (Supabase) + Canvas Foundation
+    ↓
+Week 4: Advanced Canvas (Copy/Paste) + n8n Integration
+    ↓
+Week 5: Performance Framework + Final Integration
+```
+
+**Integration Points (System Connections)**:
+- **Templates**: Extend existing dashboard shell, don't create standalone pages
+- **API Classes**: Integrate with secure vault from Week 1 for credential management  
+- **Canvas System**: Work across ALL templates created in Weeks 2-4
+- **Performance Monitoring**: Applied to ALL components throughout development
+- **Security Framework**: Consistent across ALL files from Week 1 onwards
+
+**Component Communication Patterns**:
+- **PHP Backend**: WordPress hooks and filters for component communication
+- **JavaScript Frontend**: Event delegation and custom events for canvas interactions
+- **API Integration**: Centralized credential management through secure vault
+- **Database Operations**: WordPress wpdb class with prepared statements only
+
+---
+
+## 🎯 Phase 2 Specific Context
+
+**Current Implementation Phase**: Week-by-Week Template Development (5-week plan)  
+**Integration Target**: Seamless extension of existing Dashboard Plugin v1.0.4  
+**Business Value**: Transform basic dashboard into full CPaaS communication platform
+
+**Week-by-Week Focus Areas**:
+- **Week 1**: Foundation security and menu management (NO user-facing features)
+- **Week 2**: First functional template with Twilio integration (VISIBLE to users)
+- **Week 3**: Real-time data with Supabase integration (DYNAMIC content)
+- **Week 4**: Canvas copy/paste functionality (INTERACTIVE features)
+- **Week 5**: Performance optimization and final integration (PRODUCTION ready)
+
+**Success Criteria by Week**:
+- **Week 1**: Admin can manage menus, API credentials encrypted and stored
+- **Week 2**: Users see email campaigns template with live Twilio data
+- **Week 3**: Real-time updates working across templates with mobile support
+- **Week 4**: Users can copy/paste elements between templates and canvas
+- **Week 5**: All components optimized, performance targets met, production ready
+
+---
+
+## 🎯 AI Coding Assistant Index
+
+**Quick Access Commands**: Use these indexed terms for rapid AI tool location:
+- `wordpress_plugin_dev` - Plugin architecture and hooks
+- `php_8_3_features` - Modern PHP development
+- `database_operations` - WordPress wpdb and MariaDB
+- `security_patterns` - WordPress security implementation
+- `supabase_integration` - Real-time database operations
+- `n8n_workflows` - Workflow automation patterns
+- `api_security` - Authentication and webhook security
+- `canvas_system` - Drag-drop and copy-paste functionality
+- `mobile_responsive` - Cross-browser compatibility
+- `performance_optimization` - Caching and speed optimization
+
+---
+
+## 🔧 **Context7 Commands by Development Phase**
+
+### **Phase 2A: Core Framework (Week 1)**
+**Files**: `class-menu-manager.php`, `menu-structure.php`, `class-secure-vault.php`
+
+#### `wordpress_plugin_dev` - Plugin Architecture
+```bash
+"Get WordPress plugin development documentation focusing on plugin structure, hooks, filters, and activation/deactivation"
+```
+
+#### `php_8_3_features` - Modern PHP
+```bash
+"Get PHP 8.3 documentation focusing on readonly classes, enums, and WordPress compatibility considerations"
+```
+
+#### `security_patterns` - Sodium Encryption
+```bash
+"Show PHP Sodium documentation focusing on encryption, key management, and WordPress integration"
+```
+
+### **Phase 2B: First Template + Admin (Week 2)**
+**Files**: `email-campaigns.php`, `class-api-twilio.php`, `menu-editor.php`
+
+#### `api_security` - Twilio Integration
+```bash
+"Get Twilio API documentation focusing on PHP SDK, webhook security, and credential management"
+```
+
+#### `database_operations` - Menu Management
+```bash
+"Show WordPress wpdb class documentation focusing on custom table creation, prepared statements, and meta operations"
+```
+
+#### `mobile_responsive` - Unified CSS
+```bash
+"Get CSS documentation focusing on responsive design, CSS Grid, mobile-first development, and performance optimization"
+```
+
+### **Phase 2C: Supabase + Canvas Foundation (Week 3)**
+**Files**: `class-api-supabase.php`, `analytics-dashboard.php`, `canvas-foundation.js`
+
+#### `supabase_integration` - Real-time Database
+```bash
+"Show Supabase JavaScript client documentation focusing on database operations, real-time subscriptions, authentication, and row-level security"
+```
+
+#### `canvas_system` - Foundation JavaScript
+```bash
+"Get JavaScript documentation focusing on drag and drop API, touch events, event delegation, and modern DOM manipulation"
+```
+
+#### `performance_optimization` - Browser Compatibility
+```bash
+"Show JavaScript performance documentation focusing on polyfills, cross-browser compatibility, and mobile optimization"
+```
+
+### **Phase 2D: n8n + Canvas Functionality (Week 4)**
+**Files**: `class-api-n8n.php`, `copy-paste-engine.js`, `canvas-interactions.js`
+
+#### `n8n_workflows` - Workflow Automation
+```bash
+"Get n8n documentation focusing on webhook nodes, HTTP triggers, authentication methods, and WordPress integration patterns"
+```
+
+#### `canvas_system` - Copy/Paste Engine
+```bash
+"Show JavaScript documentation focusing on clipboard API, data serialization, undo/redo patterns, and state management"
+```
+
+### **Phase 2E: Performance + Integration (Week 5)**
+**Files**: `class-canvas-manager.php`, `performance-framework.js`, `canvas-persistence.js`
+
+#### `performance_optimization` - Framework Implementation
+```bash
+"Get WordPress performance optimization documentation focusing on caching, database queries, asset optimization, and plugin efficiency"
+```
+
+#### `canvas_system` - State Persistence
+```bash
+"Show JavaScript documentation focusing on local storage, state management, auto-save patterns, and offline functionality"
+```
+
+---
+
+## 🔄 **AI Assistant Instructions for Flexible Limits & Dependency Management**
+
+### **File Size Limit Management**
+
+#### **Default Implementation Approach**
+```bash
+# When starting any new file, always begin with target limits
+"Get WordPress plugin development documentation focusing on [FEATURE] implementation with clean, modular code structure"
+
+# Target: 600 lines max per file, 60 lines max per method
+# Monitor line count as you implement
+# Document when approaching limits
+```
+
+#### **Exception Evaluation Process**
+```bash
+# Step 1: When approaching 600-line limit, ask Context7
+"Show [TECHNOLOGY] refactoring documentation focusing on single responsibility principle and code splitting patterns"
+
+# Step 2: Evaluate if split would create more complexity
+# Step 3: If genuinely atomic functionality, document exception
+# Step 4: Get optimization patterns to reduce line count
+"Get [TECHNOLOGY] optimization documentation focusing on code reduction and performance improvement"
+```
+
+### **Dependency Relationship Management**
+
+#### **Pre-Implementation File Analysis**
+```bash
+# Before creating any new file, analyze existing relationships
+"Get WordPress plugin architecture documentation focusing on class dependencies and hook integration patterns"
+
+# Check what files this new file will depend on
+# Identify what files will depend on this new file  
+# Plan integration points before coding
+```
+
+#### **Dependency Documentation Pattern**
+```php
+/**
+ * AI_ASSISTANT_CONTEXT: [File Purpose]
+ * 
+ * DEPENDENCIES_TO_CHECK:
+ * @requires class-[name].php     -> [specific methods needed]
+ * @requires assets/js/[name].js  -> [specific functions needed]
+ * @requires templates/[name].php -> [integration points]
+ * 
+ * INTEGRATION_POINTS:
+ * @integrates_with [file1] -> [method1, method2]
+ * @provides_to [file2]     -> [method3, method4]
+ * @extends_functionality   -> [base functionality being extended]
+ * 
+ * VALIDATION_REQUIRED:
+ * - Test [specific functionality]
+ * - Verify [integration point]  
+ * - Check [performance aspect]
+ * 
+ * SPLIT_CANDIDATES: (if file grows beyond 600 lines)
+ * - [logical_section_1] (estimated lines: XXX)
+ * - [logical_section_2] (estimated lines: XXX)
+ * - [logical_section_3] (estimated lines: XXX)
+ */
+```
+
+### **Context7 Queries for Large File Handling**
+
+#### **When File Approaches 600 Lines**
+```bash
+# Query for splitting strategies
+"Get [TECHNOLOGY] architecture documentation focusing on class decomposition and modular design patterns"
+
+# Query for specific refactoring patterns
+"Show [FRAMEWORK] refactoring documentation focusing on extracting methods and splitting responsibilities"
+
+# Query for performance impact of splits  
+"Get performance optimization documentation focusing on file splitting impact and dependency overhead"
+```
+
+#### **When Method Approaches 60 Lines**
+```bash
+# Query for method decomposition
+"Show [LANGUAGE] clean code documentation focusing on method extraction and single responsibility patterns"
+
+# Query for specific optimization
+"Get [TECHNOLOGY] best practices documentation focusing on [SPECIFIC_FUNCTIONALITY] implementation patterns"
+```
+
+### **Cross-File Integration Context7 Patterns**
+
+#### **API Integration Classes**
+```bash
+# For class-api-[service].php files
+"Get [SERVICE] API documentation focusing on PHP integration, error handling, and credential management"
+
+# Always check secure vault integration
+"Show PHP security documentation focusing on credential access patterns and encryption integration"
+
+# Verify WordPress integration
+"Get WordPress API integration documentation focusing on hook usage and plugin architecture"
+```
+
+#### **JavaScript Module Dependencies**
+```bash
+# For assets/js/[feature].js files  
+"Get JavaScript module documentation focusing on dependency management and cross-file communication"
+
+# Check browser compatibility requirements
+"Show JavaScript compatibility documentation focusing on polyfills and cross-browser support"
+
+# Verify WordPress AJAX integration
+"Get WordPress JavaScript documentation focusing on AJAX patterns and security integration"
+```
+
+#### **Template File Integration**
+```bash
+# For templates/[feature].php files
+"Get WordPress template development documentation focusing on secure output and hook integration"
+
+# Check existing template dependencies
+"Show WordPress template hierarchy documentation focusing on custom template integration"
+```
+
+### **Weekly Dependency Validation Routine**
+
+#### **Monday: Dependency Audit**
+```bash
+# Check all file relationships remain valid
+"Get WordPress plugin development documentation focusing on dependency injection and autoloading patterns"
+
+# Validate no circular dependencies exist
+# Check all @requires statements are accurate  
+# Verify all @used-by statements are current
+```
+
+#### **Wednesday: Integration Testing**
+```bash
+# Verify cross-file functionality
+"Show WordPress testing documentation focusing on integration testing and dependency validation"
+
+# Test all integration points documented in file headers
+# Verify data flow between dependent files
+# Check error handling across file boundaries
+```
+
+#### **Friday: Performance Review**
+```bash
+# Check if any files need optimization or splitting
+"Get WordPress performance documentation focusing on plugin optimization and file structure efficiency"
+
+# Review any files approaching 600-line limit
+# Evaluate split candidates documented in file headers
+# Plan next week's refactoring if needed
+```
+
+### **Exception Documentation Examples**
+
+#### **Large API Integration Class**
+```php
+/**
+ * EXCEPTION: 750 lines (exceeds 600-line limit)
+ * JUSTIFICATION: Supabase integration requires comprehensive error handling,
+ *                connection management, real-time subscriptions, and data
+ *                transformation in cohesive unit. Splitting would require
+ *                complex shared state management.
+ * 
+ * CONTEXT7_VALIDATION: "Get Supabase architecture documentation focusing 
+ *                       on best practices for PHP integration classes"
+ * 
+ * SPLIT_EVALUATION_DATE: 2025-02-15
+ * ALTERNATIVE_CONSIDERED: 4 separate classes with dependency injection
+ * COMPLEXITY_TRADE_OFF: Current single class vs 4 classes + DI container
+ * 
+ * MONITORING:
+ * - Performance: Monitor method execution times
+ * - Maintainability: Track bug reports and feature requests  
+ * - Team_feedback: Developer experience with this class
+ */
+```
+
+#### **Complex Canvas Method**
+```php
+/**
+ * EXCEPTION: 85 lines (exceeds 60-line limit)
+ * JUSTIFICATION: Canvas state serialization requires atomic transaction
+ *                with validation, transformation, and error recovery.
+ *                Method cannot be split without losing transactional integrity.
+ * 
+ * CONTEXT7_VALIDATION: "Show JavaScript serialization documentation focusing
+ *                       on complex object state management patterns"
+ * 
+ * REFACTOR_CONSIDERATION: Extract validation to separate private methods
+ * PERFORMANCE_MONITORING: Track serialization time and memory usage
+ * REVIEW_DATE: 2025-01-30
+ */
+public function serialize_canvas_state($canvas_data, $user_context) {
+    // Complex atomic implementation...
+}
+```
+
+### **Smart File Creation Strategy**
+
+#### **Before Creating New File**
+```bash
+# Step 1: Analyze existing architecture
+"Get WordPress plugin architecture documentation focusing on [FEATURE_AREA] and existing plugin patterns"
+
+# Step 2: Plan file relationships
+# - What will this file depend on?
+# - What will depend on this file?
+# - How will it integrate with existing system?
+
+# Step 3: Estimate complexity
+# - Can this be done in 600 lines?
+# - Are there natural split points?
+# - Would splitting create more complexity?
+```
+
+#### **During File Implementation**
+```bash
+# At 300 lines: First checkpoint
+"Show [TECHNOLOGY] refactoring documentation focusing on early optimization and code organization"
+
+# At 500 lines: Second checkpoint  
+"Get [TECHNOLOGY] architecture documentation focusing on class splitting and modular design"
+
+# At 600 lines: Decision point
+"Show [TECHNOLOGY] best practices documentation focusing on [SPECIFIC_FUNCTIONALITY] implementation strategies"
+```
+
+### **Relationship Tracking Commands**
+
+#### **Generate Dependency Map**
+```bash
+# Use Context7 to understand relationship patterns
+"Get software architecture documentation focusing on dependency mapping and visualization"
+
+# Generate actual dependency list for current file
+grep -r "class.*extends\|new.*\|require.*\|include.*" [current_file]
+
+# Validate against documented relationships in file header
+```
+
+#### **Integration Point Validation**  
+```bash
+# For each @integrates_with entry in file header
+"Show [TECHNOLOGY] integration documentation focusing on [SPECIFIC_INTEGRATION] patterns"
+
+# Test each integration point
+# Verify data flow and error handling
+# Update documentation if integration changes
+```
+
+---
+
+## 🎯 **Targeted Context7 Queries by File Type**
+
+### **PHP Backend Files**
+```bash
+# For class-menu-manager.php
+"Get WordPress Settings API documentation focusing on register_setting(), add_settings_section(), and custom post type meta"
+
+# For class-secure-vault.php  
+"Show PHP Sodium documentation focusing on encryption best practices, key rotation, and secure storage patterns"
+
+# For class-api-supabase.php
+"Get Supabase REST API documentation focusing on PHP integration, authentication tokens, and error handling"
+
+# For class-api-n8n.php
+"Show webhook security documentation focusing on signature verification, HMAC authentication, and payload validation"
+
+# For class-canvas-manager.php
+"Get WordPress database documentation focusing on JSON storage, serialization, and performance optimization"
+```
+
+### **Frontend JavaScript Files**
+```bash
+# For admin-menu-manager.js
+"Show jQuery documentation focusing on AJAX best practices, WordPress integration, and admin interface patterns"
+
+# For canvas-foundation.js
+"Get modern JavaScript documentation focusing on ES6+ features, event handling, and browser compatibility"
+
+# For copy-paste-engine.js
+"Show JavaScript documentation focusing on clipboard operations, data structures, and cross-browser compatibility"
+
+# For performance-framework.js
+"Get JavaScript performance documentation focusing on memory management, lazy loading, and optimization techniques"
+```
+
+### **Template Files**
+```bash
+# For email-campaigns.php
+"Show WordPress template development documentation focusing on secure output, data display, and user interaction patterns"
+
+# For analytics-dashboard.php
+"Get Chart.js documentation focusing on real-time data updates, responsive design, and WordPress integration"
+
+# For workflow-automation.php
+"Show WordPress AJAX documentation focusing on frontend-backend communication and real-time updates"
+```
+
+### **CSS Files**
+```bash
+# For unified-theme.css
+"Get CSS documentation focusing on design systems, CSS custom properties, and component architecture"
+
+# For mobile-responsive.css
+"Show CSS responsive design documentation focusing on mobile-first development, touch optimization, and accessibility"
+
+# For canvas-builder.css
+"Get CSS documentation focusing on drag-drop interactions, grid systems, and animation performance"
+```
+
+---
+
+## 🔍 **Problem-Solving Context7 Patterns**
+
+### **Security Issues**
+```bash
+# Template: "Show [TECHNOLOGY] security documentation focusing on [SECURITY_ISSUE] and [RESOLUTION_PATTERN]"
+
+"Get WordPress security documentation focusing on input sanitization and nonce verification for AJAX endpoints"
+"Show PHP security documentation focusing on encryption best practices and secure API credential storage"
+"Get webhook security documentation focusing on signature verification and replay attack prevention"
+```
+
+### **Performance Problems**
+```bash
+# Template: "Get [TECHNOLOGY] performance documentation focusing on [PERFORMANCE_ISSUE] and [OPTIMIZATION_STRATEGY]"
+
+"Show WordPress performance optimization documentation focusing on database query optimization and caching strategies"
+"Get JavaScript performance documentation focusing on memory leaks and DOM manipulation optimization"
+"Show CSS performance documentation focusing on rendering optimization and mobile performance"
+```
+
+### **Integration Challenges**
+```bash
+# Template: "Get [TECH_A] and [TECH_B] integration documentation focusing on [INTEGRATION_PATTERN]"
+
+"Show WordPress and Supabase integration documentation focusing on authentication bridge and data synchronization"
+"Get n8n and WordPress integration documentation focusing on webhook automation and workflow triggers"
+"Show Twilio and WordPress integration documentation focusing on API integration and credential management"
+```
+
+---
+
+## 🚀 **Phase 2 Development Workflow Commands**
+
+### **Week 1: Foundation Setup**
+```bash
+# Day 1-2: Core Architecture
+"Get WordPress plugin development documentation focusing on PSR-4 autoloading and plugin activation patterns"
+
+# Day 3-4: Menu Management
+"Show WordPress Settings API documentation focusing on dynamic menu creation and meta field management"
+
+# Day 5: Security Foundation
+"Get PHP Sodium documentation focusing on encryption implementation and WordPress integration"
+```
+
+### **Week 2: Template Development**
+```bash
+# Day 1-2: First Template
+"Show WordPress template development documentation focusing on secure data display and user interaction"
+
+# Day 3-4: API Integration
+"Get Twilio API documentation focusing on PHP SDK implementation and webhook handling"
+
+# Day 5: Admin Interface
+"Show WordPress admin interface documentation focusing on custom pages and AJAX integration"
+```
+
+### **Week 3: Real-time Features**
+```bash
+# Day 1-2: Supabase Integration
+"Get Supabase JavaScript client documentation focusing on real-time subscriptions and authentication"
+
+# Day 3-4: Canvas Foundation
+"Show JavaScript documentation focusing on drag-drop API and touch event handling"
+
+# Day 5: Mobile Optimization
+"Get CSS responsive design documentation focusing on mobile-first development and touch optimization"
+```
+
+### **Week 4: Advanced Functionality**
+```bash
+# Day 1-2: n8n Integration
+"Show n8n documentation focusing on webhook nodes and WordPress integration patterns"
+
+# Day 3-4: Copy/Paste System
+"Get JavaScript documentation focusing on clipboard API and data serialization patterns"
+
+# Day 5: Canvas Interactions
+"Show JavaScript documentation focusing on multi-selection and keyboard navigation patterns"
+```
+
+### **Week 5: Performance & Integration**
+```bash
+# Day 1-2: Canvas Management
+"Get WordPress database documentation focusing on JSON storage and performance optimization"
+
+# Day 3-4: Performance Framework
+"Show JavaScript performance documentation focusing on monitoring and optimization techniques"
+
+# Day 5: Final Integration
+"Get WordPress plugin testing documentation focusing on integration testing and performance validation"
+```
+
+---
+
+## 📊 **Context7 Usage Optimization**
+
+### **Token-Efficient Requests**
+- **Quick Reference**: 5,000 tokens (specific functions, immediate help)
+- **Implementation Guide**: 10,000-15,000 tokens (comprehensive how-to)
+- **Full Documentation**: 20,000+ tokens (complete API reference)
+
+### **Request Pattern Optimization**
+```bash
+# ✅ GOOD: Specific and focused
+"Get WordPress wpdb documentation focusing on custom table creation and prepared statements"
+
+# ❌ BAD: Too broad and generic
+"Get WordPress documentation"
+
+# ✅ GOOD: Problem-specific with context
+"Show Supabase authentication documentation focusing on JWT tokens and WordPress user integration"
+
+# ❌ BAD: Multiple unrelated topics
+"Get Supabase and n8n and Twilio documentation"
+```
+
+### **Chaining Context7 Requests**
+```bash
+# Step 1: Architecture Overview
+"Get WordPress plugin development documentation focusing on plugin structure and hook system"
+
+# Step 2: Specific Implementation
+"Show WordPress Settings API documentation focusing on register_setting() and custom menu creation"
+
+# Step 3: Integration Patterns
+"Get WordPress and Supabase integration documentation focusing on authentication bridge patterns"
+```
+
+---
+
+## 🎯 **Emergency Troubleshooting Commands**
+
+### **Database Issues**
+```bash
+"Get WordPress database troubleshooting documentation focusing on connection errors, query failures, and performance optimization"
+```
+
+### **API Connection Problems**
+```bash
+"Show API debugging documentation focusing on authentication failures, timeout handling, and error response patterns"
+```
+
+### **JavaScript/Canvas Errors**
+```bash
+"Get JavaScript troubleshooting documentation focusing on event handling errors, memory leaks, and cross-browser compatibility issues"
+```
+
+### **Security Vulnerabilities**
+```bash
+"Show WordPress security documentation focusing on input validation, XSS prevention, and secure API integration"
+```
+
+---
+
+## 📚 **Phase 2 File Reference Integration**
+
+**Always reference before Context7 requests**:
+1. **Phase 2 Implementation Plan** - Current week/file context
+2. **File Dependencies** - Required integrations for current file
+3. **Testing Requirements** - Validation needs for implementation
+4. **Security Standards** - Required security patterns
+
+**Context7 Query Format**:
+```bash
+"Get [TECHNOLOGY] documentation focusing on [PHASE_2_SPECIFIC_NEED] for [CURRENT_FILE_CONTEXT]"
+```
+
+**Example for Week 2, File 7 (email-campaigns.php)**:
+```bash
+"Show WordPress template development documentation focusing on secure form handling and AJAX integration for email campaign management"
+```
+
+---
+
+
+**Usage Instructions**: Use the indexed terms at the top for rapid AI tool location. Reference the Phase 2 implementation plan for current context, then use the appropriate Context7 commands for your development phase and file type. 

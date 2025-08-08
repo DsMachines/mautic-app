@@ -1,0 +1,838 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# WordPress Performance Optimization Cursorrules
+# Extracted from PMPRO, WP Defender, and Modern PHP Best Practices
+# Optimized for AI Assistant Searchability with Indexed Examples
+
+## 🎯 Index Terms for AI Assistant Search
+- `database_optimization` - Database performance patterns
+- `caching_strategies` - Caching and transient management
+- `scheduled_tasks` - Cron and background job optimization
+- `memory_management` - Memory usage optimization
+- `query_optimization` - Database query performance
+- `index_optimization` - Database index management
+- `cleanup_routines` - Automated cleanup patterns
+- `php_performance` - Modern PHP performance patterns
+- `autoload_optimization` - Composer and class loading optimization
+- `file_operations` - File system performance
+- `monitoring_diagnostics` - Performance monitoring and diagnostics
+
+---
+
+## 📊 1. Database Optimization (`database_optimization`)
+
+### 1.1 Database Schema Optimization
+**Pattern Source**: PMPRO upgradecheck.php, WP Defender upgrader.php
+
+```php
+// ✅ GOOD: Proper database indexing with version control
+function optimize_database_schema() {
+    global $wpdb;
+    
+    // Version-controlled database upgrades
+    $db_version = get_option('plugin_db_version', '1.0');
+    
+    if (version_compare($db_version, '1.2', '<')) {
+        // Add indexes in batches to prevent timeout
+        $this->add_database_indexes();
+        update_option('plugin_db_version', '1.2');
+    }
+    
+    if (version_compare($db_version, '1.3', '<')) {
+        // Optimize table structure
+        $this->optimize_table_structure();
+        update_option('plugin_db_version', '1.3');
+    }
+}
+
+// ✅ GOOD: Database index optimization (from WP Defender)
+private function add_database_indexes() {
+    global $wpdb;
+    
+    $indexes = [
+        'user_id_index' => "CREATE INDEX idx_user_id ON {$wpdb->prefix}plugin_table (user_id)",
+        'status_index' => "CREATE INDEX idx_status ON {$wpdb->prefix}plugin_table (status)",
+        'created_at_index' => "CREATE INDEX idx_created_at ON {$wpdb->prefix}plugin_table (created_at)",
+        'compound_index' => "CREATE INDEX idx_user_status ON {$wpdb->prefix}plugin_table (user_id, status)"
+    ];
+    
+    foreach ($indexes as $index_name => $sql) {
+        // Check if index exists before creating
+        $index_exists = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM information_schema.statistics 
+             WHERE table_name = %s AND index_name = %s",
+            $wpdb->prefix . 'plugin_table',
+            $index_name
+        ));
+        
+        if (!$index_exists) {
+            $wpdb->query($sql);
+        }
+    }
+}
+```
+
+### 1.2 Query Optimization Patterns
+**Pattern Source**: PMPRO functions.php, WP Defender query optimization
+
+```php
+// ✅ GOOD: Optimized query with proper indexing
+function get_user_data_optimized($user_id, $limit = 10) {
+    global $wpdb;
+    
+    // Use prepared statements with indexed columns
+    $results = $wpdb->get_results($wpdb->prepare(
+        "SELECT p.*, u.display_name 
+         FROM {$wpdb->prefix}plugin_data p
+         INNER JOIN {$wpdb->users} u ON p.user_id = u.ID
+         WHERE p.user_id = %d AND p.status = 'active'
+         ORDER BY p.created_at DESC
+         LIMIT %d",
+        $user_id, $limit
+    ));
+    
+    return $results;
+}
+
+// ✅ GOOD: Batch processing for large datasets
+function process_large_dataset($batch_size = 1000) {
+    global $wpdb;
+    
+    $offset = 0;
+    $processed = 0;
+    
+    do {
+        $results = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM {$wpdb->prefix}plugin_table 
+             WHERE status = 'pending'
+             ORDER BY id ASC
+             LIMIT %d OFFSET %d",
+            $batch_size, $offset
+        ));
+        
+        foreach ($results as $row) {
+            $this->process_record($row);
+            $processed++;
+        }
+        
+        $offset += $batch_size;
+        
+        // Prevent memory leaks in long-running processes
+        if ($processed % 5000 === 0) {
+            wp_cache_flush();
+            gc_collect_cycles();
+        }
+        
+    } while (count($results) === $batch_size);
+    
+    return $processed;
+}
+```
+
+---
+
+## 🚀 2. Caching Strategies (`caching_strategies`)
+
+### 2.1 Transient Management
+**Pattern Source**: PMPRO cleanup.php, WP Defender caching
+
+```php
+// ✅ GOOD: Intelligent caching with fallback
+function get_expensive_data($user_id, $force_refresh = false) {
+    $cache_key = 'expensive_data_' . $user_id;
+    
+    if (!$force_refresh) {
+        $cached_data = get_transient($cache_key);
+        if ($cached_data !== false) {
+            return $cached_data;
+        }
+    }
+    
+    // Expensive operation
+    $data = $this->perform_expensive_operation($user_id);
+    
+    // Cache for 1 hour with staggered expiration
+    $expiration = HOUR_IN_SECONDS + wp_rand(0, 300); // Prevent cache stampede
+    set_transient($cache_key, $data, $expiration);
+    
+    return $data;
+}
+
+// ✅ GOOD: Automated cache cleanup (from PMPRO patterns)
+function cleanup_expired_transients() {
+    global $wpdb;
+    
+    $batch_size = 100;
+    $deleted = 0;
+    
+    // Clean up expired transients in batches
+    do {
+        $expired_transients = $wpdb->get_results($wpdb->prepare(
+            "SELECT option_name FROM {$wpdb->options}
+             WHERE option_name LIKE '_transient_timeout_%'
+             AND option_value < %d
+             LIMIT %d",
+            time(), $batch_size
+        ));
+        
+        foreach ($expired_transients as $transient) {
+            $transient_name = str_replace('_transient_timeout_', '', $transient->option_name);
+            delete_transient($transient_name);
+            $deleted++;
+        }
+        
+    } while (count($expired_transients) === $batch_size);
+    
+    return $deleted;
+}
+```
+
+### 2.2 Object Cache Optimization
+**Pattern Source**: Modern PHP performance patterns
+
+```php
+// ✅ GOOD: Multi-level caching strategy
+function get_cached_data($cache_key, $callback, $expiration = 3600) {
+    // Level 1: Object cache (Redis/Memcached)
+    $data = wp_cache_get($cache_key, 'plugin_group');
+    if ($data !== false) {
+        return $data;
+    }
+    
+    // Level 2: Transient cache (Database)
+    $data = get_transient($cache_key);
+    if ($data !== false) {
+        // Repopulate object cache
+        wp_cache_set($cache_key, $data, 'plugin_group', $expiration);
+        return $data;
+    }
+    
+    // Level 3: Generate data
+    $data = call_user_func($callback);
+    
+    // Cache in both levels
+    wp_cache_set($cache_key, $data, 'plugin_group', $expiration);
+    set_transient($cache_key, $data, $expiration);
+    
+    return $data;
+}
+
+// ✅ GOOD: Cache warming for critical data
+function warm_critical_caches() {
+    $critical_keys = [
+        'site_settings',
+        'user_permissions',
+        'system_status'
+    ];
+    
+    foreach ($critical_keys as $key) {
+        $this->get_cached_data($key, function() use ($key) {
+            return $this->generate_critical_data($key);
+        });
+    }
+}
+```
+
+---
+
+## ⏰ 3. Scheduled Tasks Optimization (`scheduled_tasks`)
+
+### 3.1 Cron Job Management
+**Pattern Source**: PMPRO crons.php
+
+```php
+// ✅ GOOD: Efficient cron registration (from PMPRO)
+function register_optimized_crons() {
+    $crons = [
+        'plugin_hourly_cleanup' => [
+            'interval' => 'hourly',
+            'callback' => 'perform_hourly_cleanup'
+        ],
+        'plugin_daily_optimization' => [
+            'interval' => 'daily',
+            'timestamp' => strtotime('03:00:00'), // Low-traffic time
+            'callback' => 'perform_daily_optimization'
+        ],
+        'plugin_weekly_maintenance' => [
+            'interval' => 'weekly',
+            'callback' => 'perform_weekly_maintenance'
+        ]
+    ];
+    
+    foreach ($crons as $hook => $config) {
+        if (!wp_next_scheduled($hook)) {
+            $timestamp = $config['timestamp'] ?? time();
+            wp_schedule_event($timestamp, $config['interval'], $hook);
+        }
+    }
+}
+
+// ✅ GOOD: Batch processing in cron jobs
+function perform_hourly_cleanup() {
+    $start_time = microtime(true);
+    $max_execution_time = 30; // seconds
+    
+    // Cleanup expired data in batches
+    $batch_size = 100;
+    $processed = 0;
+    
+    do {
+        $batch_start = microtime(true);
+        
+        $expired_items = $this->get_expired_items($batch_size);
+        foreach ($expired_items as $item) {
+            $this->cleanup_item($item);
+            $processed++;
+        }
+        
+        // Check execution time
+        $elapsed = microtime(true) - $start_time;
+        if ($elapsed > $max_execution_time) {
+            break;
+        }
+        
+    } while (count($expired_items) === $batch_size);
+    
+    // Log performance
+    $this->log_cron_performance('hourly_cleanup', $processed, $elapsed);
+}
+```
+
+### 3.2 Background Processing
+**Pattern Source**: WP Defender background tasks
+
+```php
+// ✅ GOOD: Async background processing
+function queue_background_task($task_type, $data) {
+    global $wpdb;
+    
+    $task_id = wp_generate_uuid4();
+    
+    $wpdb->insert(
+        $wpdb->prefix . 'plugin_background_tasks',
+        [
+            'task_id' => $task_id,
+            'task_type' => $task_type,
+            'data' => wp_json_encode($data),
+            'status' => 'pending',
+            'created_at' => current_time('mysql'),
+            'priority' => $this->get_task_priority($task_type)
+        ]
+    );
+    
+    // Trigger processing if not already running
+    if (!get_transient('plugin_background_processing')) {
+        wp_schedule_single_event(time() + 10, 'plugin_process_background_tasks');
+    }
+    
+    return $task_id;
+}
+
+// ✅ GOOD: Efficient background task processing
+function process_background_tasks() {
+    set_transient('plugin_background_processing', true, 300); // 5 minutes
+    
+    global $wpdb;
+    $max_tasks = 50;
+    $processed = 0;
+    
+    $tasks = $wpdb->get_results($wpdb->prepare(
+        "SELECT * FROM {$wpdb->prefix}plugin_background_tasks
+         WHERE status = 'pending'
+         ORDER BY priority DESC, created_at ASC
+         LIMIT %d",
+        $max_tasks
+    ));
+    
+    foreach ($tasks as $task) {
+        try {
+            $this->process_task($task);
+            
+            $wpdb->update(
+                $wpdb->prefix . 'plugin_background_tasks',
+                ['status' => 'completed', 'completed_at' => current_time('mysql')],
+                ['task_id' => $task->task_id]
+            );
+            
+            $processed++;
+            
+        } catch (Exception $e) {
+            $wpdb->update(
+                $wpdb->prefix . 'plugin_background_tasks',
+                ['status' => 'failed', 'error' => $e->getMessage()],
+                ['task_id' => $task->task_id]
+            );
+        }
+    }
+    
+    delete_transient('plugin_background_processing');
+    
+    // Schedule next run if more tasks exist
+    if ($processed === $max_tasks) {
+        wp_schedule_single_event(time() + 30, 'plugin_process_background_tasks');
+    }
+}
+```
+
+---
+
+## 🧠 4. Memory Management (`memory_management`)
+
+### 4.1 Memory Usage Optimization
+**Pattern Source**: PMPRO cleanup patterns, Modern PHP practices
+
+```php
+// ✅ GOOD: Memory-efficient processing
+function process_large_dataset_memory_efficient($callback) {
+    global $wpdb;
+    
+    $batch_size = 1000;
+    $offset = 0;
+    $memory_limit = ini_get('memory_limit');
+    $memory_threshold = 0.8; // 80% of memory limit
+    
+    do {
+        $results = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM {$wpdb->prefix}large_table
+             ORDER BY id ASC
+             LIMIT %d OFFSET %d",
+            $batch_size, $offset
+        ));
+        
+        foreach ($results as $row) {
+            call_user_func($callback, $row);
+        }
+        
+        // Memory management
+        $memory_usage = memory_get_usage(true);
+        $memory_limit_bytes = $this->convert_to_bytes($memory_limit);
+        
+        if ($memory_usage > ($memory_limit_bytes * $memory_threshold)) {
+            // Free memory
+            gc_collect_cycles();
+            wp_cache_flush();
+            
+            // Log memory usage
+            error_log("High memory usage: " . $memory_usage . " bytes");
+        }
+        
+        $offset += $batch_size;
+        
+    } while (count($results) === $batch_size);
+}
+
+// ✅ GOOD: Generator for memory-efficient iteration
+function get_large_dataset_generator($conditions = []) {
+    global $wpdb;
+    
+    $batch_size = 1000;
+    $offset = 0;
+    
+    do {
+        $where_clause = $this->build_where_clause($conditions);
+        $results = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM {$wpdb->prefix}large_table
+             {$where_clause}
+             ORDER BY id ASC
+             LIMIT %d OFFSET %d",
+            $batch_size, $offset
+        ));
+        
+        foreach ($results as $row) {
+            yield $row;
+        }
+        
+        $offset += $batch_size;
+        
+    } while (count($results) === $batch_size);
+}
+```
+
+### 4.2 Garbage Collection Optimization
+**Pattern Source**: Modern PHP performance patterns
+
+```php
+// ✅ GOOD: Proactive garbage collection
+function optimize_memory_usage() {
+    // Force garbage collection
+    gc_collect_cycles();
+    
+    // Clear WordPress object cache
+    wp_cache_flush();
+    
+    // Clear plugin-specific caches
+    $this->clear_plugin_caches();
+    
+    // Log memory usage
+    $memory_usage = memory_get_usage(true);
+    $peak_memory = memory_get_peak_usage(true);
+    
+    error_log("Memory optimized - Current: {$memory_usage}, Peak: {$peak_memory}");
+}
+
+// ✅ GOOD: Memory monitoring
+function monitor_memory_usage($operation_name) {
+    $start_memory = memory_get_usage(true);
+    
+    return function() use ($operation_name, $start_memory) {
+        $end_memory = memory_get_usage(true);
+        $memory_diff = $end_memory - $start_memory;
+        
+        if ($memory_diff > 10 * 1024 * 1024) { // 10MB threshold
+            error_log("High memory usage in {$operation_name}: {$memory_diff} bytes");
+        }
+    };
+}
+```
+
+---
+
+## 🔧 5. Modern PHP Performance (`php_performance`)
+
+### 5.1 FrankenPHP Optimization
+**Pattern Source**: FrankenPHP performance documentation
+
+```php
+// ✅ GOOD: Early hints for performance
+function send_early_hints() {
+    // Preload critical resources
+    header('Link: </assets/css/critical.css>; rel=preload; as=style');
+    header('Link: </assets/js/app.js>; rel=preload; as=script');
+    
+    // Send early hints
+    if (function_exists('headers_send')) {
+        headers_send(103);
+    }
+}
+
+// ✅ GOOD: Worker mode optimization
+function initialize_worker_mode() {
+    // Prevent worker termination on client disconnect
+    ignore_user_abort(true);
+    
+    // Initialize application once
+    $app = new Application();
+    $app->boot();
+    
+    // Request handler
+    $handler = function() use ($app) {
+        return $app->handle($_GET, $_POST, $_COOKIE, $_FILES, $_SERVER);
+    };
+    
+    // Process requests in worker mode
+    $max_requests = (int)($_SERVER['MAX_REQUESTS'] ?? 1000);
+    for ($requests = 0; $requests < $max_requests; $requests++) {
+        $continue = frankenphp_handle_request($handler);
+        
+        // Cleanup after each request
+        $app->terminate();
+        gc_collect_cycles();
+        
+        if (!$continue) break;
+    }
+    
+    $app->shutdown();
+}
+```
+
+### 5.2 PHP 8.3+ Optimizations
+**Pattern Source**: Modern PHP performance patterns
+
+```php
+// ✅ GOOD: Using PHP 8.3 features for performance
+readonly class PerformanceOptimizedClass {
+    public function __construct(
+        private string $id,
+        private array $data,
+        private int $timestamp = 0
+    ) {
+        $this->timestamp = $timestamp ?: time();
+    }
+    
+    // Use match expressions for better performance
+    public function getStatus(): string {
+        return match($this->data['status'] ?? 'unknown') {
+            'active' => 'Active',
+            'pending' => 'Pending',
+            'inactive' => 'Inactive',
+            default => 'Unknown'
+        };
+    }
+    
+    // Use named arguments for clarity and performance
+    public function processData(
+        bool $validate = true,
+        int $timeout = 30,
+        string $format = 'json'
+    ): array {
+        if ($validate && !$this->validateData()) {
+            throw new InvalidArgumentException('Invalid data');
+        }
+        
+        return $this->formatData($format, $timeout);
+    }
+}
+
+// ✅ GOOD: Enum for performance and type safety
+enum CacheLevel: string {
+    case MEMORY = 'memory';
+    case DISK = 'disk';
+    case NETWORK = 'network';
+    
+    public function getTtl(): int {
+        return match($this) {
+            self::MEMORY => 300,    // 5 minutes
+            self::DISK => 3600,     // 1 hour
+            self::NETWORK => 86400  // 24 hours
+        };
+    }
+}
+```
+
+---
+
+## 🔍 6. Monitoring and Diagnostics (`monitoring_diagnostics`)
+
+### 6.1 Performance Monitoring
+**Pattern Source**: WP Defender monitoring, Modern practices
+
+```php
+// ✅ GOOD: Performance monitoring
+class PerformanceMonitor {
+    private array $metrics = [];
+    
+    public function startTimer(string $operation): void {
+        $this->metrics[$operation] = [
+            'start_time' => microtime(true),
+            'start_memory' => memory_get_usage(true)
+        ];
+    }
+    
+    public function endTimer(string $operation): array {
+        if (!isset($this->metrics[$operation])) {
+            return [];
+        }
+        
+        $end_time = microtime(true);
+        $end_memory = memory_get_usage(true);
+        
+        $metrics = [
+            'duration' => $end_time - $this->metrics[$operation]['start_time'],
+            'memory_used' => $end_memory - $this->metrics[$operation]['start_memory'],
+            'memory_peak' => memory_get_peak_usage(true)
+        ];
+        
+        unset($this->metrics[$operation]);
+        
+        // Log slow operations
+        if ($metrics['duration'] > 1.0) { // 1 second threshold
+            error_log("Slow operation {$operation}: {$metrics['duration']}s");
+        }
+        
+        return $metrics;
+    }
+    
+    public function logDatabaseQuery(string $query, float $duration): void {
+        if ($duration > 0.1) { // 100ms threshold
+            error_log("Slow query ({$duration}s): {$query}");
+        }
+    }
+}
+
+// ✅ GOOD: System health monitoring
+function monitor_system_health() {
+    $health = [
+        'memory_usage' => memory_get_usage(true),
+        'memory_limit' => ini_get('memory_limit'),
+        'memory_peak' => memory_get_peak_usage(true),
+        'database_queries' => get_num_queries(),
+        'cache_hit_ratio' => $this->get_cache_hit_ratio(),
+        'disk_space' => disk_free_space('/'),
+        'load_average' => sys_getloadavg()
+    ];
+    
+    // Store metrics for analysis
+    $this->store_health_metrics($health);
+    
+    // Alert on critical issues
+    if ($health['memory_usage'] > ($this->convert_to_bytes($health['memory_limit']) * 0.9)) {
+        $this->send_memory_alert($health);
+    }
+    
+    return $health;
+}
+```
+
+### 6.2 Self-Diagnostic Tools
+**Pattern Source**: WP Defender diagnostic patterns
+
+```php
+// ✅ GOOD: Automated diagnostics
+function run_performance_diagnostics() {
+    $diagnostics = [
+        'database' => $this->check_database_performance(),
+        'cache' => $this->check_cache_performance(),
+        'memory' => $this->check_memory_usage(),
+        'disk' => $this->check_disk_performance(),
+        'network' => $this->check_network_performance()
+    ];
+    
+    $issues = [];
+    foreach ($diagnostics as $category => $results) {
+        if ($results['status'] === 'warning' || $results['status'] === 'error') {
+            $issues[] = $category . ': ' . $results['message'];
+        }
+    }
+    
+    if (!empty($issues)) {
+        $this->log_performance_issues($issues);
+        $this->send_performance_alert($issues);
+    }
+    
+    return $diagnostics;
+}
+
+// ✅ GOOD: Database performance check
+function check_database_performance() {
+    global $wpdb;
+    
+    $start_time = microtime(true);
+    $wpdb->get_var("SELECT 1");
+    $query_time = microtime(true) - $start_time;
+    
+    $slow_queries = $wpdb->get_var(
+        "SELECT COUNT(*) FROM information_schema.processlist 
+         WHERE time > 1 AND command != 'Sleep'"
+    );
+    
+    $status = 'good';
+    $message = 'Database performance is optimal';
+    
+    if ($query_time > 0.1) {
+        $status = 'warning';
+        $message = 'Database queries are slow';
+    }
+    
+    if ($slow_queries > 5) {
+        $status = 'error';
+        $message = 'Multiple slow queries detected';
+    }
+    
+    return [
+        'status' => $status,
+        'message' => $message,
+        'query_time' => $query_time,
+        'slow_queries' => $slow_queries
+    ];
+}
+```
+
+---
+
+## 📈 7. Autoload Optimization (`autoload_optimization`)
+
+### 7.1 Composer Optimization
+**Pattern Source**: Modern PHP performance practices
+
+```php
+// ✅ GOOD: Optimized autoloader
+function optimize_autoloader() {
+    // Generate optimized autoloader
+    exec('composer dump-autoload -o --no-dev');
+    
+    // Enable APCu caching if available
+    if (function_exists('apcu_enabled') && apcu_enabled()) {
+        exec('composer dump-autoload -o --apcu');
+    }
+}
+
+// ✅ GOOD: Lazy loading implementation
+class LazyServiceContainer {
+    private array $services = [];
+    private array $factories = [];
+    
+    public function register(string $name, callable $factory): void {
+        $this->factories[$name] = $factory;
+    }
+    
+    public function get(string $name): mixed {
+        if (!isset($this->services[$name])) {
+            if (!isset($this->factories[$name])) {
+                throw new InvalidArgumentException("Service {$name} not found");
+            }
+            
+            $this->services[$name] = call_user_func($this->factories[$name]);
+        }
+        
+        return $this->services[$name];
+    }
+}
+```
+
+---
+
+## 🛠️ 8. Implementation Checklist
+
+### Performance Optimization Checklist
+- [ ] **Database Optimization**
+  - [ ] Proper indexes on frequently queried columns
+  - [ ] Optimized query patterns with prepared statements
+  - [ ] Batch processing for large datasets
+  - [ ] Database cleanup routines
+
+- [ ] **Caching Strategy**
+  - [ ] Multi-level caching (object cache + transients)
+  - [ ] Cache warming for critical data
+  - [ ] Automated cache cleanup
+  - [ ] Cache invalidation strategies
+
+- [ ] **Memory Management**
+  - [ ] Garbage collection optimization
+  - [ ] Memory usage monitoring
+  - [ ] Generator usage for large datasets
+  - [ ] Memory leak prevention
+
+- [ ] **Scheduled Tasks**
+  - [ ] Efficient cron job registration
+  - [ ] Batch processing in background tasks
+  - [ ] Performance monitoring for cron jobs
+  - [ ] Error handling and retry logic
+
+- [ ] **Modern PHP Features**
+  - [ ] PHP 8.3+ optimization features
+  - [ ] FrankenPHP worker mode (if applicable)
+  - [ ] Early hints implementation
+  - [ ] Proper error handling
+
+- [ ] **Monitoring & Diagnostics**
+  - [ ] Performance monitoring system
+  - [ ] Automated health checks
+  - [ ] Alert system for critical issues
+  - [ ] Performance logging and analysis
+
+---
+
+## 🎯 Usage Instructions
+
+1. **Search by Index Terms**: Use the index terms at the top to quickly find relevant patterns
+2. **Copy Production-Ready Code**: All code examples are extracted from production plugins
+3. **Adapt to Your Context**: Modify patterns to fit your specific plugin requirements
+4. **Test Performance Impact**: Always benchmark before and after implementing optimizations
+5. **Monitor in Production**: Use the monitoring patterns to track performance improvements
+
+## 📚 Pattern Sources
+
+- **PMPRO Plugin**: Database optimization, caching, scheduled tasks
+- **WP Defender Plugin**: Security-focused performance, monitoring, diagnostics
+- **FrankenPHP**: Modern PHP performance, worker mode, early hints
+- **WordPress Best Practices**: Industry-standard optimization patterns
+
+---
+
+**Document Version**: 1.0.0 
+**Last Updated**: July 7-2025  
+
+**Compatibility**: WordPress 6.8+, PHP 8.3.17, Modern hosting environments 

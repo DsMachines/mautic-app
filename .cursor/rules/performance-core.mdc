@@ -1,0 +1,164 @@
+---
+name: performance-core
+description: Core performance patterns (caching, memory, background) - applies intelligently when AI detects performance optimization needs
+globs:
+  - Dashboard/**/*.php
+  - "**/*.php"
+alwaysApply: false
+---
+
+# 🚀 **PERFORMANCE CORE PATTERNS - INTELLIGENT FAILSAFE HOOK**
+
+## 🧠 **INTELLIGENT AUTO-TRIGGER CONDITIONS**
+
+**AI ASSISTANT MUST REFERENCE this guide when detecting ANY of these core performance patterns:**
+
+### **🔍 TRIGGER KEYWORDS & PATTERNS:**
+```php
+// CORE PERFORMANCE TRIGGERS - AI SHOULD LOAD THIS FILE
+"caching"                    // Any mention of cache implementation
+"cache_"                     // Cache pattern prefixes
+"transient"                  // WordPress transient operations
+"wp_cache_get"               // Object cache operations
+"wp_cache_set"               // Object cache operations
+"get_transient"              // Transient cache operations
+"set_transient"              // Transient cache operations
+"memory optimization"        // Memory usage discussions
+"memory_"                    // Memory pattern prefixes
+"foreach($large_array)"      // Large array processing
+"generator"                  // Generator pattern usage
+"background processing"      // Background task discussions
+"bg_"                        // Background pattern prefixes
+"wp_schedule_event"          // WordPress cron operations
+"cron"                       // Cron job discussions
+"batch processing"           // Batch operation needs
+"performance optimization"   // General performance discussions
+"slow query"                 // Database performance issues
+"memory usage"               // Memory consumption issues
+"cache hit ratio"            // Cache effectiveness discussions
+```
+
+### **🎯 CONTEXT-BASED TRIGGERS:**
+- User requests caching implementation
+- AI detects repeated database queries
+- Memory usage optimization needed
+- Background processing requirements
+- Large dataset processing discussions
+- Performance bottleneck identification
+- WordPress optimization discussions
+
+### **📊 INTEGRATION TRIGGERS:**
+- References to existing security patterns (must integrate with security helper)
+- Database optimization needs (must use get_db()->query())
+- Performance monitoring requirements (must use security logging)
+- AJAX optimization needs (must maintain security validation)
+
+---
+
+## ⏰ Background Processing (`bg_*`)
+
+### Cron Optimization (`bg_cron`)
+**Pattern Source**: PMPRO crons.php
+
+```php
+// ✅ GOOD: Efficient cron registration with time-based scheduling
+function register_optimized_crons() {
+    $crons = [
+        'plugin_hourly_cleanup' => [
+            'interval' => 'hourly',
+            'callback' => 'perform_hourly_cleanup'
+        ],
+        'plugin_daily_optimization' => [
+            'interval' => 'daily',
+            'timestamp' => strtotime('03:00:00'), // Low-traffic time
+            'callback' => 'perform_daily_optimization'
+        ]
+    ];
+    
+    foreach ($crons as $hook => $config) {
+        if (!wp_next_scheduled($hook)) {
+            $timestamp = $config['timestamp'] ?? time();
+            wp_schedule_event($timestamp, $config['interval'], $hook);
+        }
+    }
+}
+```
+
+### Background Tasks (`bg_tasks`)
+**Pattern Source**: WP Defender background tasks
+
+```php
+// ✅ GOOD: Async background task processing
+function queue_background_task($task_type, $data) {
+    global $wpdb;
+    
+    $task_id = wp_generate_uuid4();
+    
+    $wpdb->insert(
+        $wpdb->prefix . 'plugin_background_tasks',
+        [
+            'task_id' => $task_id,
+            'task_type' => $task_type,
+            'data' => wp_json_encode($data),
+            'status' => 'pending',
+            'created_at' => current_time('mysql'),
+            'priority' => $this->get_task_priority($task_type)
+        ]
+    );
+    
+    // Trigger processing if not already running
+    if (!get_transient('plugin_background_processing')) {
+        wp_schedule_single_event(time() + 10, 'plugin_process_background_tasks');
+    }
+    
+    return $task_id;
+}
+```
+
+---
+
+## 🎯 **AI Assistant Usage Guide**
+
+### **Quick Pattern Lookup**
+```bash
+# Database optimization
+"Show me db_schema patterns for WordPress"
+"I need db_batch processing examples"
+
+# Caching strategies  
+"Find cache_multilevel implementation"
+"Show cache_cleanup patterns"
+
+# Memory management
+"Get memory_efficient processing examples"
+"Show memory_generators patterns"
+
+# Background processing
+"Find bg_cron optimization patterns"
+"Show bg_tasks implementation"
+```
+
+### **Performance Checklist**
+- [ ] **Database**: Indexes, prepared statements, batch processing
+- [ ] **Caching**: Multi-level caching, cleanup routines
+- [ ] **Memory**: Efficient processing, garbage collection
+- [ ] **Background**: Optimized cron jobs, task queues
+
+---
+
+## 🔗 **INTEGRATION WITH SECURITY PATTERNS**
+
+**CRITICAL**: All patterns in this file MUST integrate with security requirements:
+- **Database Operations**: Use `Dashboard_Security_Database` helper instead of direct `$wpdb`
+- **Logging**: Use `\Dashboard_Security_Database::log()` instead of `error_log()`
+- **AJAX Methods**: Maintain existing security validation patterns
+
+**Reference**: `ai-performance-optimization-failsafe.mdc` for security integration examples.
+
+---
+
+**Document Version**: 3.0.0 - Core Patterns with Intelligent Failsafe Hook  
+**Last Updated**: January 19, 2025  
+**Compatibility**: WordPress 6.8+, PHP 8.3.17+  
+**Pattern Sources**: PMPRO, WP Defender, Modern PHP Best Practices  
+**Intelligent Loading**: Enabled with keyword and context triggers

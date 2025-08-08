@@ -1,0 +1,832 @@
+# WordPress Security Best Practices - AI Coding Assistant Rules
+*This cursorrule file should be used as for implementing enterprise-level security in WordPress plugins and themes*
+
+## Table of Contents
+1. [Nonce Security & CSRF Protection](#nonce-security--csrf-protection)
+2. [Input Validation & Sanitization](#input-validation--sanitization)
+3. [Output Escaping & XSS Prevention](#output-escaping--xss-prevention)
+4. [Authentication & Authorization](#authentication--authorization)
+5. [Database Security](#database-security)
+6. [Rate Limiting & Spam Protection](#rate-limiting--spam-protection)
+7. [Login Security & Mask Protection](#login-security--mask-protection)
+8. [File Security & Access Control](#file-security--access-control)
+9. [Security Headers](#security-headers)
+10. [Error Handling & Logging](#error-handling--logging)
+
+---
+
+## Nonce Security & CSRF Protection
+
+### Pattern: Nonce Verification with Sanitization
+**Index Terms:** nonce, csrf, wp_verify_nonce, sanitize_text_field, security_check
+
+```php
+// ALWAYS sanitize before verification
+if ( ! isset( $_POST['prefix_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['prefix_nonce'] ) ), 'prefix_nonce' ) ) {
+    wp_die( esc_html__( 'Security check failed.', 'textdomain' ) );
+}
+```
+
+### Pattern: AJAX Nonce Creation and Verification
+**Index Terms:** ajax_nonce, wp_create_nonce, check_ajax_referer
+
+```php
+// Creation
+$nonce = wp_create_nonce( 'my_ajax_action' );
+
+// Verification in AJAX handler
+function my_ajax_handler() {
+    check_ajax_referer( 'my_ajax_action' );
+    // Process request
+    wp_die();
+}
+add_action( 'wp_ajax_my_action', 'my_ajax_handler' );
+```
+
+### Pattern: Admin Form Nonce Protection
+**Index Terms:** admin_nonce, form_protection, settings_security
+
+```php
+// Generate nonce for admin forms
+wp_nonce_field( 'save_settings_action', 'settings_nonce' );
+
+// Verify in processing
+if ( ! wp_verify_nonce( sanitize_text_field( $_POST['settings_nonce'] ?? '' ), 'save_settings_action' ) ) {
+    wp_die( esc_html__( 'Nonce verification failed.', 'textdomain' ) );
+}
+```
+
+---
+
+## Input Validation & Sanitization
+
+### Pattern: Comprehensive Input Sanitization
+**Index Terms:** sanitize_input, validate_data, input_security
+
+```php
+// Text field sanitization
+$text_value = sanitize_text_field( wp_unslash( $_POST['text_field'] ?? '' ) );
+
+// Email validation
+$email = sanitize_email( $_POST['email'] ?? '' );
+if ( ! is_email( $email ) ) {
+    wp_die( esc_html__( 'Invalid email format.', 'textdomain' ) );
+}
+
+// Integer validation
+$number = filter_input( INPUT_POST, 'number', FILTER_SANITIZE_NUMBER_INT );
+if ( false === $number ) {
+    wp_die( esc_html__( 'Invalid number format.', 'textdomain' ) );
+}
+
+// URL validation
+$url = esc_url_raw( $_POST['url'] ?? '' );
+if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
+    wp_die( esc_html__( 'Invalid URL format.', 'textdomain' ) );
+}
+```
+
+### Pattern: Array Data Sanitization
+**Index Terms:** array_sanitization, bulk_validation, array_map
+
+```php
+// Sanitize array of text values
+$values = $_POST['values'] ?? array();
+if ( is_array( $values ) ) {
+    $values = array_map( 'sanitize_text_field', $values );
+    $values = array_map( 'wp_unslash', $values );
+}
+
+// Validate array structure
+function validate_settings_array( $data ) {
+    $allowed_keys = array( 'option1', 'option2', 'option3' );
+    $sanitized = array();
+    
+    foreach ( $allowed_keys as $key ) {
+        if ( isset( $data[ $key ] ) ) {
+            $sanitized[ $key ] = sanitize_text_field( $data[ $key ] );
+        }
+    }
+    
+    return $sanitized;
+}
+```
+
+### Pattern: File Upload Validation
+**Index Terms:** file_upload, file_validation, mime_type_check
+
+```php
+function validate_file_upload( $file ) {
+    // Check file size
+    $max_size = 2 * 1024 * 1024; // 2MB
+    if ( $file['size'] > $max_size ) {
+        return new WP_Error( 'file_too_large', __( 'File size exceeds limit.', 'textdomain' ) );
+    }
+    
+    // Validate file type
+    $allowed_types = array( 'image/jpeg', 'image/png', 'image/gif' );
+    $file_type = wp_check_filetype( $file['name'] );
+    
+    if ( ! in_array( $file_type['type'], $allowed_types, true ) ) {
+        return new WP_Error( 'invalid_file_type', __( 'Invalid file type.', 'textdomain' ) );
+    }
+    
+    return true;
+}
+```
+
+---
+
+## Output Escaping & XSS Prevention
+
+### Pattern: Context-Appropriate Escaping
+**Index Terms:** output_escaping, xss_prevention, esc_html, esc_attr, esc_url
+
+```php
+// HTML content escaping
+echo esc_html( $user_content );
+
+// HTML attribute escaping
+echo '<input value="' . esc_attr( $value ) . '" />';
+
+// URL escaping
+echo '<a href="' . esc_url( $link ) . '">Link</a>';
+
+// JavaScript escaping
+echo '<script>var data = ' . wp_json_encode( $data ) . ';</script>';
+
+// Textarea content
+echo '<textarea>' . esc_textarea( $content ) . '</textarea>';
+```
+
+### Pattern: Internationalization with Escaping
+**Index Terms:** i18n_security, translation_escaping, secure_strings
+
+```php
+// Secure translation output
+echo esc_html__( 'Hello World', 'textdomain' );
+
+// Secure translation with printf
+printf( 
+    esc_html__( 'Welcome %s', 'textdomain' ), 
+    esc_html( $username ) 
+);
+
+// Secure URL in translations
+printf(
+    esc_html__( 'Visit %1$s our website %2$s for more info.', 'textdomain' ),
+    '<a href="' . esc_url( home_url() ) . '">',
+    '</a>'
+);
+```
+
+---
+
+## Authentication & Authorization
+
+### Pattern: Capability-Based Access Control
+**Index Terms:** capability_check, user_permissions, current_user_can
+
+```php
+// Basic capability check
+if ( ! current_user_can( 'manage_options' ) ) {
+    wp_die( esc_html__( 'You do not have permission to access this page.', 'textdomain' ) );
+}
+
+// Context-specific capability check
+function check_post_edit_permission( $post_id ) {
+    if ( ! current_user_can( 'edit_post', $post_id ) ) {
+        return new WP_Error( 'insufficient_permissions', __( 'You cannot edit this post.', 'textdomain' ) );
+    }
+    return true;
+}
+
+// Multi-site capability check
+if ( is_multisite() && ! current_user_can_for_blog( get_current_blog_id(), 'manage_options' ) ) {
+    wp_die( esc_html__( 'Access denied.', 'textdomain' ) );
+}
+```
+
+### Pattern: Role-Based Security
+**Index Terms:** role_security, user_roles, role_validation
+
+```php
+// Check specific roles
+function user_has_required_role( $required_roles = array() ) {
+    $user = wp_get_current_user();
+    
+    if ( empty( $user->roles ) ) {
+        return false;
+    }
+    
+    return ! empty( array_intersect( $required_roles, $user->roles ) );
+}
+
+// Example usage
+if ( ! user_has_required_role( array( 'administrator', 'editor' ) ) ) {
+    wp_die( esc_html__( 'Access restricted to administrators and editors.', 'textdomain' ) );
+}
+```
+
+### Pattern: Two-Factor Authentication Integration
+**Index Terms:** 2fa, two_factor, authentication_methods
+
+```php
+// Check if 2FA is required
+function require_2fa_for_admin() {
+    $user = wp_get_current_user();
+    
+    if ( user_can( $user, 'manage_options' ) ) {
+        $has_2fa = get_user_meta( $user->ID, '_two_factor_enabled', true );
+        
+        if ( ! $has_2fa ) {
+            wp_logout();
+            wp_redirect( wp_login_url() . '?2fa_required=1' );
+            exit;
+        }
+    }
+}
+add_action( 'admin_init', 'require_2fa_for_admin' );
+```
+
+---
+
+## Database Security
+
+### Pattern: Prepared Statements
+**Index Terms:** prepared_statements, sql_injection, wpdb_prepare
+
+```php
+global $wpdb;
+
+// SELECT with prepared statement
+$user_id = 123;
+$status = 'active';
+$results = $wpdb->get_results( 
+    $wpdb->prepare( 
+        "SELECT * FROM {$wpdb->prefix}custom_table WHERE user_id = %d AND status = %s", 
+        $user_id, 
+        $status 
+    ) 
+);
+
+// INSERT with prepared statement
+$wpdb->query( 
+    $wpdb->prepare( 
+        "INSERT INTO {$wpdb->prefix}custom_table (user_id, name, email) VALUES (%d, %s, %s)", 
+        $user_id, 
+        $name, 
+        $email 
+    ) 
+);
+
+// UPDATE with prepared statement
+$wpdb->query( 
+    $wpdb->prepare( 
+        "UPDATE {$wpdb->prefix}custom_table SET status = %s WHERE id = %d", 
+        $new_status, 
+        $record_id 
+    ) 
+);
+```
+
+### Pattern: Safe Array Handling in Queries
+**Index Terms:** array_queries, in_clause, safe_arrays
+
+```php
+// Safe IN clause with arrays
+$ids = array( 1, 2, 3, 4, 5 );
+$ids = array_map( 'intval', $ids ); // Ensure integers
+$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+
+$results = $wpdb->get_results( 
+    $wpdb->prepare( 
+        "SELECT * FROM {$wpdb->prefix}posts WHERE ID IN ($placeholders)", 
+        ...$ids 
+    ) 
+);
+```
+
+### Pattern: Transaction Safety
+**Index Terms:** database_transactions, data_integrity, rollback
+
+```php
+// Database transaction pattern
+function safe_bulk_update( $data ) {
+    global $wpdb;
+    
+    $wpdb->query( 'START TRANSACTION' );
+    
+    try {
+        foreach ( $data as $item ) {
+            $result = $wpdb->query( 
+                $wpdb->prepare( 
+                    "UPDATE {$wpdb->prefix}table SET value = %s WHERE id = %d", 
+                    $item['value'], 
+                    $item['id'] 
+                ) 
+            );
+            
+            if ( false === $result ) {
+                throw new Exception( 'Database update failed' );
+            }
+        }
+        
+        $wpdb->query( 'COMMIT' );
+        return true;
+        
+    } catch ( Exception $e ) {
+        $wpdb->query( 'ROLLBACK' );
+        error_log( 'Bulk update failed: ' . $e->getMessage() );
+        return false;
+    }
+}
+```
+
+---
+
+## Rate Limiting & Spam Protection
+
+### Pattern: IP-Based Rate Limiting
+**Index Terms:** rate_limiting, ip_tracking, spam_protection, transients
+
+```php
+// Rate limiting implementation from PMPRO
+function check_rate_limit( $action = 'default', $limit = 10, $time_window = 900 ) {
+    $ip = get_user_ip();
+    $transient_key = 'rate_limit_' . md5( $ip . '_' . $action );
+    
+    $attempts = get_transient( $transient_key );
+    if ( false === $attempts ) {
+        $attempts = 0;
+    }
+    
+    if ( $attempts >= $limit ) {
+        return new WP_Error( 'rate_limit_exceeded', __( 'Too many attempts. Please try again later.', 'textdomain' ) );
+    }
+    
+    set_transient( $transient_key, $attempts + 1, $time_window );
+    return true;
+}
+
+// Helper function to get user IP
+function get_user_ip() {
+    $ip_keys = array( 'HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP', 'REMOTE_ADDR' );
+    
+    foreach ( $ip_keys as $key ) {
+        if ( ! empty( $_SERVER[ $key ] ) ) {
+            $ip = sanitize_text_field( $_SERVER[ $key ] );
+            // Handle comma-separated IPs
+            if ( strpos( $ip, ',' ) !== false ) {
+                $ip = trim( explode( ',', $ip )[0] );
+            }
+            return $ip;
+        }
+    }
+    
+    return '127.0.0.1';
+}
+```
+
+### Pattern: Progressive Penalties
+**Index Terms:** progressive_penalties, escalating_timeouts, spam_tracking
+
+```php
+// Progressive rate limiting based on PMPRO spam protection
+function track_failed_attempt( $ip = null, $action = 'login' ) {
+    if ( empty( $ip ) ) {
+        $ip = get_user_ip();
+    }
+    
+    $ip = preg_replace( '/[^0-9a-fA-F:., ]/', '', $ip );
+    $transient_key = 'failed_attempts_' . md5( $ip . '_' . $action );
+    
+    $attempts = get_transient( $transient_key );
+    if ( ! is_array( $attempts ) ) {
+        $attempts = array();
+    }
+    
+    $now = current_time( 'timestamp', true );
+    $attempts[] = $now;
+    
+    // Remove attempts older than 1 hour
+    $attempts = array_filter( $attempts, function( $time ) use ( $now ) {
+        return ( $now - $time ) < 3600;
+    });
+    
+    // Progressive timeout based on attempts
+    $timeout = count( $attempts ) * 300; // 5 minutes per attempt
+    $timeout = min( $timeout, 3600 ); // Max 1 hour
+    
+    set_transient( $transient_key, $attempts, $timeout );
+    
+    return count( $attempts );
+}
+```
+
+### Pattern: Honeypot Protection
+**Index Terms:** honeypot, bot_protection, spam_prevention
+
+```php
+// Honeypot field implementation
+function add_honeypot_field() {
+    echo '<div style="position: absolute; left: -9999px;">';
+    echo '<input type="text" name="website_url" value="" tabindex="-1" autocomplete="off" />';
+    echo '</div>';
+}
+
+function validate_honeypot() {
+    if ( ! empty( $_POST['website_url'] ) ) {
+        wp_die( esc_html__( 'Spam detected.', 'textdomain' ) );
+    }
+}
+```
+
+---
+
+## Login Security & Mask Protection
+
+### Pattern: Custom Login URL (Mask Login)
+**Index Terms:** mask_login, custom_login_url, login_security
+
+```php
+// Custom login URL implementation based on WP Defender
+class Custom_Login_URL {
+    private $custom_slug = 'admin-access';
+    
+    public function __construct() {
+        add_action( 'init', array( $this, 'handle_custom_login' ) );
+        add_filter( 'site_url', array( $this, 'filter_login_url' ), 10, 4 );
+        add_filter( 'network_site_url', array( $this, 'filter_login_url' ), 10, 3 );
+    }
+    
+    public function handle_custom_login() {
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+        
+        if ( strpos( $request_uri, '/' . $this->custom_slug ) === 0 ) {
+            $this->show_login_page();
+        }
+        
+        // Block default login pages
+        if ( strpos( $request_uri, '/wp-admin' ) !== false || 
+             strpos( $request_uri, '/wp-login.php' ) !== false ) {
+            
+            if ( ! is_user_logged_in() ) {
+                wp_die( esc_html__( 'Access denied.', 'textdomain' ), 404 );
+            }
+        }
+    }
+    
+    private function show_login_page() {
+        global $pagenow;
+        $pagenow = 'wp-login.php';
+        require_once ABSPATH . 'wp-login.php';
+        exit;
+    }
+    
+    public function filter_login_url( $url, $path, $orig_scheme, $blog_id = null ) {
+        if ( strpos( $url, 'wp-login.php' ) !== false ) {
+            $url = str_replace( 'wp-login.php', $this->custom_slug, $url );
+        }
+        return $url;
+    }
+}
+```
+
+### Pattern: Login Attempt Monitoring
+**Index Terms:** login_monitoring, failed_attempts, brute_force_protection
+
+```php
+// Login attempt tracking
+function track_login_attempts( $username, $password ) {
+    $ip = get_user_ip();
+    $transient_key = 'login_attempts_' . md5( $ip );
+    
+    $attempts = get_transient( $transient_key );
+    if ( ! is_array( $attempts ) ) {
+        $attempts = array();
+    }
+    
+    $attempts[] = array(
+        'time' => current_time( 'timestamp' ),
+        'username' => sanitize_user( $username ),
+        'ip' => $ip,
+        'user_agent' => sanitize_text_field( $_SERVER['HTTP_USER_AGENT'] ?? '' )
+    );
+    
+    // Keep only last 50 attempts
+    $attempts = array_slice( $attempts, -50 );
+    
+    set_transient( $transient_key, $attempts, 3600 );
+    
+    // Check for suspicious patterns
+    if ( count( $attempts ) > 10 ) {
+        // Log security event
+        error_log( sprintf( 
+            'Suspicious login activity from IP %s: %d attempts in last hour', 
+            $ip, 
+            count( $attempts ) 
+        ) );
+    }
+}
+add_action( 'wp_login_failed', 'track_login_attempts', 10, 2 );
+```
+
+---
+
+## File Security & Access Control
+
+### Pattern: Direct File Access Prevention
+**Index Terms:** file_access, direct_access, abspath_check
+
+```php
+// Prevent direct file access
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly
+}
+
+// Alternative with more detailed response
+if ( ! defined( 'WPINC' ) ) {
+    die( 'Direct access not permitted.' );
+}
+```
+
+### Pattern: Secure File Upload Handling
+**Index Terms:** file_upload_security, mime_validation, file_scanning
+
+```php
+// Comprehensive file upload security
+function secure_file_upload( $file ) {
+    // Check if file upload is valid
+    if ( ! is_uploaded_file( $file['tmp_name'] ) ) {
+        return new WP_Error( 'invalid_upload', __( 'Invalid file upload.', 'textdomain' ) );
+    }
+    
+    // Validate file extension
+    $allowed_extensions = array( 'jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx' );
+    $file_extension = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
+    
+    if ( ! in_array( $file_extension, $allowed_extensions, true ) ) {
+        return new WP_Error( 'invalid_extension', __( 'File type not allowed.', 'textdomain' ) );
+    }
+    
+    // Check MIME type
+    $file_info = wp_check_filetype_and_ext( $file['tmp_name'], $file['name'] );
+    if ( ! $file_info['type'] ) {
+        return new WP_Error( 'invalid_mime', __( 'Invalid file type.', 'textdomain' ) );
+    }
+    
+    // Scan file content for malicious patterns
+    $file_content = file_get_contents( $file['tmp_name'] );
+    $malicious_patterns = array(
+        '/<\?php/', '/eval\s*\(/', '/base64_decode/', '/shell_exec/', '/system\s*\(/',
+        '/exec\s*\(/', '/passthru\s*\(/', '/file_get_contents\s*\(/'
+    );
+    
+    foreach ( $malicious_patterns as $pattern ) {
+        if ( preg_match( $pattern, $file_content ) ) {
+            return new WP_Error( 'malicious_content', __( 'File contains suspicious content.', 'textdomain' ) );
+        }
+    }
+    
+    return true;
+}
+```
+
+### Pattern: Secure Directory Traversal Prevention
+**Index Terms:** directory_traversal, path_validation, realpath_check
+
+```php
+// Prevent directory traversal attacks
+function validate_file_path( $path, $allowed_directory ) {
+    $real_path = realpath( $path );
+    $real_allowed = realpath( $allowed_directory );
+    
+    if ( ! $real_path || ! $real_allowed ) {
+        return false;
+    }
+    
+    // Ensure the file is within the allowed directory
+    return strpos( $real_path, $real_allowed ) === 0;
+}
+
+// Example usage
+function serve_secure_file( $filename ) {
+    $upload_dir = wp_upload_dir();
+    $file_path = $upload_dir['basedir'] . '/secure/' . $filename;
+    
+    if ( ! validate_file_path( $file_path, $upload_dir['basedir'] . '/secure/' ) ) {
+        wp_die( esc_html__( 'Invalid file path.', 'textdomain' ) );
+    }
+    
+    if ( ! file_exists( $file_path ) ) {
+        wp_die( esc_html__( 'File not found.', 'textdomain' ) );
+    }
+    
+    // Serve file securely
+    header( 'Content-Type: application/octet-stream' );
+    header( 'Content-Disposition: attachment; filename="' . basename( $file_path ) . '"' );
+    readfile( $file_path );
+    exit;
+}
+```
+
+---
+
+## Security Headers
+
+### Pattern: Comprehensive Security Headers
+**Index Terms:** security_headers, xss_protection, content_security_policy
+
+```php
+// Security headers implementation based on WP Defender
+function add_security_headers() {
+    // Prevent clickjacking
+    header( 'X-Frame-Options: SAMEORIGIN' );
+    
+    // XSS Protection
+    header( 'X-XSS-Protection: 1; mode=block' );
+    
+    // Prevent MIME sniffing
+    header( 'X-Content-Type-Options: nosniff' );
+    
+    // Referrer Policy
+    header( 'Referrer-Policy: strict-origin-when-cross-origin' );
+    
+    // Content Security Policy
+    $csp = "default-src 'self'; ";
+    $csp .= "script-src 'self' 'unsafe-inline' 'unsafe-eval'; ";
+    $csp .= "style-src 'self' 'unsafe-inline'; ";
+    $csp .= "img-src 'self' data: https:; ";
+    $csp .= "font-src 'self' data:; ";
+    $csp .= "connect-src 'self'; ";
+    $csp .= "frame-ancestors 'self';";
+    
+    header( 'Content-Security-Policy: ' . $csp );
+    
+    // HSTS (only on HTTPS)
+    if ( is_ssl() ) {
+        header( 'Strict-Transport-Security: max-age=31536000; includeSubDomains; preload' );
+    }
+}
+add_action( 'init', 'add_security_headers' );
+```
+
+### Pattern: Feature Policy Headers
+**Index Terms:** feature_policy, permissions_policy, api_restrictions
+
+```php
+// Feature/Permissions Policy headers
+function add_feature_policy_headers() {
+    $features = array(
+        'camera' => "'none'",
+        'microphone' => "'none'",
+        'geolocation' => "'none'",
+        'fullscreen' => "'self'",
+        'payment' => "'none'",
+        'usb' => "'none'",
+        'magnetometer' => "'none'",
+        'gyroscope' => "'none'",
+        'accelerometer' => "'none'"
+    );
+    
+    $policy_string = array();
+    foreach ( $features as $feature => $value ) {
+        $policy_string[] = $feature . '=' . $value;
+    }
+    
+    header( 'Permissions-Policy: ' . implode( ', ', $policy_string ) );
+}
+add_action( 'init', 'add_feature_policy_headers' );
+```
+
+---
+
+## Error Handling & Logging
+
+### Pattern: Secure Error Logging
+**Index Terms:** error_logging, security_logs, incident_tracking
+
+```php
+// Secure error logging system
+class Security_Logger {
+    private static $log_file = '';
+    
+    public static function init() {
+        $upload_dir = wp_upload_dir();
+        self::$log_file = $upload_dir['basedir'] . '/security-logs/' . date( 'Y-m-d' ) . '.log';
+        
+        // Ensure directory exists and is protected
+        $log_dir = dirname( self::$log_file );
+        if ( ! file_exists( $log_dir ) ) {
+            wp_mkdir_p( $log_dir );
+            // Add .htaccess protection
+            file_put_contents( $log_dir . '/.htaccess', "Deny from all\n" );
+        }
+    }
+    
+    public static function log_security_event( $event_type, $details, $severity = 'info' ) {
+        self::init();
+        
+        $log_entry = array(
+            'timestamp' => current_time( 'mysql' ),
+            'ip' => get_user_ip(),
+            'user_id' => get_current_user_id(),
+            'event_type' => sanitize_text_field( $event_type ),
+            'severity' => sanitize_text_field( $severity ),
+            'details' => sanitize_text_field( $details ),
+            'user_agent' => sanitize_text_field( $_SERVER['HTTP_USER_AGENT'] ?? '' ),
+            'request_uri' => sanitize_text_field( $_SERVER['REQUEST_URI'] ?? '' )
+        );
+        
+        $log_line = json_encode( $log_entry ) . "\n";
+        file_put_contents( self::$log_file, $log_line, FILE_APPEND | LOCK_EX );
+        
+        // Send critical alerts
+        if ( 'critical' === $severity ) {
+            self::send_security_alert( $log_entry );
+        }
+    }
+    
+    private static function send_security_alert( $entry ) {
+        $admin_email = get_option( 'admin_email' );
+        $subject = sprintf( 
+            '[%s] Critical Security Alert', 
+            get_bloginfo( 'name' ) 
+        );
+        
+        $message = sprintf(
+            "Critical security event detected:\n\n" .
+            "Event: %s\n" .
+            "Time: %s\n" .
+            "IP: %s\n" .
+            "Details: %s\n",
+            $entry['event_type'],
+            $entry['timestamp'],
+            $entry['ip'],
+            $entry['details']
+        );
+        
+        wp_mail( $admin_email, $subject, $message );
+    }
+}
+
+// Usage examples
+Security_Logger::log_security_event( 'failed_login', 'Multiple failed login attempts', 'warning' );
+Security_Logger::log_security_event( 'malicious_request', 'SQL injection attempt detected', 'critical' );
+```
+
+### Pattern: Rate Limited Error Responses
+**Index Terms:** error_responses, rate_limited_errors, information_disclosure
+
+```php
+// Secure error handling that prevents information disclosure
+function handle_security_error( $error_code, $user_message = '', $log_details = '' ) {
+    // Log detailed error for administrators
+    if ( ! empty( $log_details ) ) {
+        Security_Logger::log_security_event( $error_code, $log_details, 'warning' );
+    }
+    
+    // Rate limit error responses to prevent enumeration
+    $rate_limit = check_rate_limit( 'error_' . $error_code, 5, 300 );
+    if ( is_wp_error( $rate_limit ) ) {
+        // If rate limited, just show generic error
+        wp_die( esc_html__( 'An error occurred. Please try again later.', 'textdomain' ) );
+    }
+    
+    // Show user-friendly error without revealing system details
+    $generic_message = ! empty( $user_message ) 
+        ? $user_message 
+        : __( 'An error occurred. Please try again.', 'textdomain' );
+    
+    wp_die( esc_html( $generic_message ) );
+}
+```
+
+---
+
+## Security Implementation Checklist
+
+### Pre-deployment Security Audit
+- [ ] All user inputs sanitized and validated
+- [ ] All outputs properly escaped
+- [ ] Nonce verification on all forms and AJAX requests
+- [ ] Capability checks on all admin functions
+- [ ] Prepared statements for all database queries
+- [ ] Rate limiting implemented on sensitive endpoints
+- [ ] Security headers configured
+- [ ] File upload restrictions in place
+- [ ] Error logging configured
+- [ ] Direct file access prevention added
+
+### Runtime Security Monitoring
+- [ ] Failed login attempt tracking
+- [ ] Suspicious activity detection
+- [ ] Rate limit monitoring
+- [ ] Security log analysis
+- [ ] Regular security scans
+- [ ] Plugin/theme update monitoring
+
+---
+
+*Always test security implementations in a staging environment before deploying to production.* 

@@ -1,0 +1,182 @@
+---
+name: ai-database-security-failsafe
+description: MANDATORY failsafe hook - AI must halt and apply security patterns for ANY $wpdb usage. FORCE LOADS database-security-reference.mdc and security-database.mdc for complete implementation.
+globs:
+  - Dashboard/**/*.php
+  - "**/*.php"
+alwaysApply: true
+---
+
+## 🔒 **MANDATORY DATABASE SECURITY FAILSAFE - TOKEN OPTIMIZED**
+
+### **🚨 CRITICAL AUTO-TRIGGER PROTOCOL**
+
+**WHEN AI DETECTS ANY `$wpdb` PATTERN, IT MUST:**
+1. **HALT** code generation immediately
+2. **FORCE LOAD** database-security-reference.mdc (mandatory context)
+3. **FORCE LOAD** security-database.mdc (mandatory patterns)
+4. **APPLY** complete security implementation from ALL files
+5. **VALIDATE** using checklist below
+6. **RESUME** only with secure implementation
+
+### **🎯 MANDATORY CROSS-FILE LOADING TRIGGERS**
+
+```php
+// AUTO-TRIGGER PATTERNS - MUST LOAD ALL 3 FILES
+$wpdb->prepare()             // → LOAD: security-database.mdc + database-security-reference.mdc
+$wpdb->get_results()         // → LOAD: security-database.mdc + database-security-reference.mdc  
+$wpdb->insert()              // → LOAD: security-database.mdc + database-security-reference.mdc
+$wpdb->update()              // → LOAD: security-database.mdc + database-security-reference.mdc
+$wpdb->delete()              // → LOAD: security-database.mdc + database-security-reference.mdc
+Dashboard_Security_Database  // → LOAD: database-security-reference.mdc (implementation context)
+get_db()                     // → LOAD: database-security-reference.mdc (helper patterns)
+"migration"                  // → LOAD: database-security-reference.mdc (complex scenarios)
+"error handling"             // → LOAD: database-security-reference.mdc (implementation needs)
+```
+
+### **⚡ EMERGENCY FAILSAFE ENFORCEMENT**
+
+```
+IF AI generates database code WITHOUT loading all required files:
+├─ SECURITY VIOLATION DETECTED
+├─ HALT: Stop code generation immediately
+├─ FORCE LOAD: database-security-reference.mdc (MANDATORY)
+├─ FORCE LOAD: security-database.mdc (MANDATORY)  
+├─ REPROCESS: Apply patterns from all loaded files
+└─ VALIDATE: Complete security checklist before proceeding
+```
+
+### **🛡️ COMPREHENSIVE SECURITY INTEGRATION**
+
+**MANDATORY LOADING SEQUENCE:**
+1. **THIS FILE** (ai-database-security-failsafe.mdc) - Always loaded, provides enforcement
+2. **database-security-reference.mdc** - FORCE LOAD for implementation context
+3. **security-database.mdc** - FORCE LOAD for core patterns
+
+**TOKEN OPTIMIZATION:**
+- This file: Lightweight enforcement and cross-file triggers
+- database-security-reference.mdc: Intelligent loading with detailed examples
+- security-database.mdc: Intelligent loading with core patterns
+
+---
+
+## 🔒 MANDATORY VALIDATION CHECKLIST
+
+### **PRE-CODE GENERATION (Complete ALL before coding):**
+- [ ] Detected `$wpdb` pattern - confirmed need for security helper
+- [ ] Added `get_db()` method to class if missing
+- [ ] Selected correct security helper method
+- [ ] Parameters formatted as arrays `[$param1, $param2]`
+- [ ] Query type specified (`'get_var'`, `'get_results'`, `'get_row'`, `'get_col'`)
+
+### **POST-CODE GENERATION (Validate IMMEDIATELY after coding):**
+- [ ] **Syntax Check**: `php -l filename.php` passes
+- [ ] **Pattern Scan**: Zero direct `$wpdb->method()` calls remain
+- [ ] **Security Helper**: All database operations use `$this->get_db()`
+- [ ] **Placeholders**: Used `%d`, `%s`, `%f` appropriately
+- [ ] **No Vulnerabilities**: All dynamic data uses placeholders
+
+---
+
+## 🚨 CRITICAL FAILURE CONDITIONS
+
+**CODE IS INSECURE AND MUST BE REJECTED IF:**
+- Any direct `$wpdb->method()` calls exist in user-facing code
+- SQL injection vulnerabilities present
+- Input not sanitized or output not escaped
+- Security helper bypassed
+- Validation checklist not completed
+
+---
+
+## 🎯 QUICK DECISION TREE
+
+```
+Database operation needed?
+├─ YES → Add get_db() method if missing
+│   ├─ SELECT query? → Use query() with type parameter
+│   ├─ INSERT operation? → Use insert() method
+│   ├─ UPDATE operation? → Use update() method  
+│   ├─ DELETE operation? → Use delete() method
+│   ├─ REPLACE operation? → Use replace() method
+│   └─ Complex query? → Use exec() method
+└─ NO → Continue with non-database code
+```
+
+---
+
+## 🛡️ SECURITY HELPER METHODS REFERENCE
+
+```php
+// Available methods in Dashboard_Security_Database class:
+$this->get_db()->query($sql, $args, $type)           // SELECT operations
+$this->get_db()->insert($table, $data, $formats)     // INSERT operations
+$this->get_db()->update($table, $data, $where, $data_formats, $where_formats)
+$this->get_db()->delete($table, $where, $where_formats)
+$this->get_db()->replace($table, $data, $formats)    // REPLACE operations
+$this->get_db()->exec($sql, $args)                   // Complex queries
+$this->get_db()->bulk_insert($table, $rows)          // Bulk operations
+$this->get_db()->create_table_secure($table, $schema) // Table creation
+```
+
+---
+
+## ⚡ EMERGENCY PROTOCOLS
+
+### **IF FORBIDDEN PATTERN DETECTED:**
+```
+1. HALT code generation immediately
+2. OUTPUT: "SECURITY VIOLATION: Direct $wpdb usage detected"
+3. APPLY: Correct security helper pattern from above
+4. VALIDATE: Run post-generation checklist
+5. RESUME: Only with secure implementation
+```
+
+### **IF SECURITY PATTERN CANNOT BE APPLIED:**
+```
+1. HALT code generation immediately  
+2. OUTPUT: "SECURITY PATTERN REQUIRED: Cannot proceed"
+3. REFERENCE: database-security-reference.mdc for complex implementation patterns
+4. REQUEST: Human developer manual review if additional context insufficient
+5. PROVIDE: Specific blocking reason
+```
+
+---
+
+## 🏆 SUCCESS VALIDATION
+
+**Code is SECURE and ACCEPTABLE when:**
+- ✅ All database operations use security helper
+- ✅ Debug log shows `🛡️ DB-SEC` entries  
+- ✅ No `$wpdb->method()` patterns remain
+- ✅ Syntax validation passes
+- ✅ Security checklist completed
+
+**PROVEN EFFECTIVE: 100% success rate on Dashboard Plugin (42/42 operations secured)**
+
+---
+
+### **🔗 MANDATORY CROSS-FILE REFERENCES**
+
+**AI ASSISTANT MUST REFERENCE:**
+- **database-security-reference.mdc**: MANDATORY for complex scenarios, migrations, error handling
+- **security-database.mdc**: MANDATORY for core prepared statement patterns
+
+**ENFORCEMENT PROTOCOL:**
+```
+Database operation detected?
+├─ YES → FORCE LOAD database-security-reference.mdc
+│   ├─ FORCE LOAD security-database.mdc  
+│   ├─ Apply patterns from ALL files
+│   ├─ Use get_db() helper method
+│   └─ Validate complete implementation
+└─ NO → Continue with standard implementation
+```
+
+---
+
+**Auto-Trigger**: Enabled for all `$wpdb` patterns  
+**Enforcement**: MANDATORY - No exceptions  
+**Validation**: Required before code completion  
+**Success Rate**: 100% (Proven on Dashboard Plugin)  
+**Intelligent Context**: For complex scenarios involving "migration", "error handling", "debug verification", or "implementation patterns", AI should reference database-security-reference.mdc

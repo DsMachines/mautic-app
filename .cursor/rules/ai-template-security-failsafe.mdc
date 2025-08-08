@@ -1,0 +1,376 @@
+# 🔐 **TEMPLATE SECURITY FAILSAFE - CRITICAL AI DIRECTIVE**
+
+## 🚨 **MANDATORY TEMPLATE SECURITY PROTOCOL**
+
+**AI CODING ASSISTANT MUST FOLLOW THIS PROTOCOL FOR ALL TEMPLATE DEVELOPMENT:**
+
+### **🎯 TEMPLATE SECURITY FILE USAGE - MANDATORY**
+
+When working on **ANY** template-related code, external API integration, or webhook handling:
+
+#### **✅ USE THESE TEMPLATE SECURITY FILES:**
+```php
+// Template-specific security files (ISOLATED from dashboard)
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-forms-temp.php';
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-database-temp.php';
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-performance-temp.php';
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-cache-temp.php';
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-cron-temp.php';
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-api-webhooks-temp.php';
+```
+
+#### **❌ NEVER USE DASHBOARD SECURITY FILES IN TEMPLATES:**
+```php
+// ❌ FORBIDDEN for template development
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-forms.php';
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-database.php';
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-performance.php';
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-cache.php';
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-cron.php';
+```
+
+---
+
+## 🔒 **TEMPLATE-SPECIFIC SECURITY PATTERNS**
+
+### **API/Webhook Security (security-api-webhooks-temp.php)**
+**Pattern Source**: Extracted from security.mdc lines 2063-2437 (Rate Limiting), 132-138 (Security Headers)
+
+```php
+// ✅ GOOD: Template API rate limiting
+class Dashboard_Template_API_Security {
+    
+    /**
+     * Rate limit API calls per template user
+     */
+    public function rate_limit_api_call($user_id, $api_endpoint, $limit = 60, $window = 3600) {
+        $transient_key = "template_api_rate_{$user_id}_{$api_endpoint}";
+        $current_calls = get_transient($transient_key) ?: 0;
+        
+        if ($current_calls >= $limit) {
+            return new WP_Error(
+                'rate_limit_exceeded',
+                sprintf(
+                    __('Rate limit exceeded for %s. Try again in %d minutes.', 'dashboard'),
+                    $api_endpoint,
+                    ceil($window / 60)
+                )
+            );
+        }
+        
+        set_transient($transient_key, $current_calls + 1, $window);
+        return true;
+    }
+    
+    /**
+     * Secure webhook signature verification
+     */
+    public function verify_webhook_signature($payload, $signature, $secret) {
+        $expected_signature = hash_hmac('sha256', $payload, $secret);
+        
+        if (!hash_equals($expected_signature, $signature)) {
+            error_log('Template webhook signature verification failed');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * API response security headers
+     */
+    public function set_api_security_headers() {
+        header('X-Content-Type-Options: nosniff');
+        header('X-Frame-Options: DENY');
+        header('X-XSS-Protection: 1; mode=block');
+        header('Referrer-Policy: strict-origin-when-cross-origin');
+        
+        if (is_ssl()) {
+            header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+        }
+    }
+}
+```
+
+### **Template Form Security (security-forms-temp.php)**
+**Pattern Source**: Extracted from security.mdc lines 159-351 (Nonce Security), 354-611 (Input Sanitization)
+
+```php
+// ✅ GOOD: Template-specific form security
+class Dashboard_Template_Form_Security {
+    
+    /**
+     * Template AJAX nonce verification
+     */
+    public function verify_template_nonce($action, $nonce_key = '_template_nonce') {
+        if (empty($_POST[$nonce_key]) || 
+            !wp_verify_nonce($_POST[$nonce_key], "template_{$action}")) {
+            wp_send_json_error([
+                'message' => __('Security check failed. Please refresh and try again.', 'dashboard'),
+                'code' => 'nonce_failed'
+            ]);
+        }
+        return true;
+    }
+    
+    /**
+     * Template input sanitization with API data support
+     */
+    public function sanitize_template_input($data, $context = 'general') {
+        if (is_array($data)) {
+            return array_map([$this, 'sanitize_template_input'], $data);
+        }
+        
+        switch ($context) {
+            case 'api_key':
+                return preg_replace('/[^a-zA-Z0-9_-]/', '', $data);
+            case 'webhook_url':
+                return esc_url_raw($data);
+            case 'json_data':
+                $decoded = json_decode($data, true);
+                return $decoded ? wp_json_encode($decoded) : '';
+            case 'email':
+                return sanitize_email($data);
+            case 'phone':
+                return preg_replace('/[^0-9+\-\(\)\s]/', '', $data);
+            default:
+                return sanitize_text_field($data);
+        }
+    }
+}
+```
+
+### **Template Database Security (security-database-temp.php)**
+**Pattern Source**: Extracted from security.mdc lines 1524-2058 (Database Security)
+
+```php
+// ✅ GOOD: Template database security
+class Dashboard_Template_Database_Security {
+    
+    /**
+     * Secure template data storage
+     */
+    public function save_template_data($table, $data, $where = null) {
+        global $wpdb;
+        
+        // Validate table name
+        $allowed_tables = [
+            'cpaas_template_data',
+            'cpaas_api_logs',
+            'cpaas_webhook_queue',
+            'cpaas_user_preferences'
+        ];
+        
+        if (!in_array($table, $allowed_tables, true)) {
+            return new WP_Error('invalid_table', 'Invalid table name');
+        }
+        
+        $table_name = $wpdb->prefix . $table;
+        
+        // Prepare data types
+        $data_types = [];
+        foreach ($data as $key => $value) {
+            if (is_int($value)) {
+                $data_types[] = '%d';
+            } elseif (is_float($value)) {
+                $data_types[] = '%f';
+            } else {
+                $data_types[] = '%s';
+            }
+        }
+        
+        if ($where) {
+            return $wpdb->update($table_name, $data, $where, $data_types, ['%d']);
+        } else {
+            return $wpdb->insert($table_name, $data, $data_types);
+        }
+    }
+    
+    /**
+     * Log template operations securely
+     */
+    public function log_template_operation($operation, $details, $user_id = null) {
+        global $wpdb;
+        
+        $user_id = $user_id ?: get_current_user_id();
+        
+        return $wpdb->insert(
+            $wpdb->prefix . 'cpaas_template_logs',
+            [
+                'user_id' => $user_id,
+                'operation' => sanitize_text_field($operation),
+                'details' => wp_json_encode($details),
+                'ip_address' => $this->get_user_ip(),
+                'user_agent' => sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? ''),
+                'created_at' => current_time('mysql')
+            ],
+            ['%d', '%s', '%s', '%s', '%s', '%s']
+        );
+    }
+    
+    private function get_user_ip() {
+        $ip_keys = ['HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR'];
+        foreach ($ip_keys as $key) {
+            if (!empty($_SERVER[$key])) {
+                return sanitize_text_field($_SERVER[$key]);
+            }
+        }
+        return '';
+    }
+}
+```
+
+---
+
+## 🚀 **TEMPLATE PERFORMANCE PATTERNS**
+
+### **API Performance Monitoring (security-performance-temp.php)**
+**Pattern Source**: Extracted from performance-advanced.mdc lines 77-211 (Performance Monitoring)
+
+```php
+// ✅ GOOD: Template API performance monitoring
+class Dashboard_Template_Performance {
+    
+    /**
+     * Monitor API call performance
+     */
+    public function monitor_api_call($api_name, callable $api_function) {
+        $start_time = microtime(true);
+        $start_memory = memory_get_usage(true);
+        
+        $result = call_user_func($api_function);
+        
+        $end_time = microtime(true);
+        $end_memory = memory_get_usage(true);
+        
+        $duration = $end_time - $start_time;
+        $memory_used = $end_memory - $start_memory;
+        
+        // Log slow API calls
+        if ($duration > 2.0) { // 2 second threshold for templates
+            error_log("Slow template API call {$api_name}: {$duration}s, Memory: {$memory_used} bytes");
+        }
+        
+        // Store metrics for analysis
+        $this->store_api_metrics($api_name, $duration, $memory_used);
+        
+        return $result;
+    }
+    
+    /**
+     * Template-specific cache optimization
+     */
+    public function optimize_template_cache($template_id, $user_id) {
+        $cache_keys = [
+            "template_data_{$template_id}_{$user_id}",
+            "template_permissions_{$template_id}_{$user_id}",
+            "template_api_cache_{$template_id}_{$user_id}"
+        ];
+        
+        foreach ($cache_keys as $key) {
+            if (get_transient($key)) {
+                delete_transient($key);
+            }
+        }
+        
+        // Preload essential data
+        $this->preload_template_data($template_id, $user_id);
+    }
+}
+```
+
+---
+
+## 🎯 **AI IMPLEMENTATION CHECKLIST**
+
+### **Before Writing ANY Template Code:**
+- [ ] **Verify**: Am I working on template-related functionality?
+- [ ] **Load**: Template security files (security-*-temp.php)
+- [ ] **Avoid**: Dashboard security files (security-*.php without -temp)
+- [ ] **Check**: API/webhook security requirements
+- [ ] **Implement**: Rate limiting for external API calls
+- [ ] **Add**: Proper nonce verification for template AJAX
+- [ ] **Include**: Input sanitization for API data
+- [ ] **Log**: All template operations securely
+
+### **Template Development Security Requirements:**
+1. **Nonce Verification**: Every template AJAX call
+2. **Input Sanitization**: All user input and API data
+3. **Rate Limiting**: All external API calls
+4. **Webhook Security**: Signature verification
+5. **Database Security**: Prepared statements only
+6. **Error Handling**: Secure error messages
+7. **Performance Monitoring**: API call timing
+8. **Audit Logging**: All template operations
+
+---
+
+## 🔗 **INTEGRATION PROTOCOL**
+
+### **Template Security Class Usage:**
+```php
+// ✅ CORRECT: Template development pattern
+class Email_Campaign_Template {
+    private $form_security;
+    private $db_security;
+    private $api_security;
+    
+    public function __construct() {
+        $this->form_security = new Dashboard_Template_Form_Security();
+        $this->db_security = new Dashboard_Template_Database_Security();
+        $this->api_security = new Dashboard_Template_API_Security();
+    }
+    
+    public function send_email_via_twilio($email_data) {
+        // 1. Verify nonce
+        $this->form_security->verify_template_nonce('send_email');
+        
+        // 2. Rate limit check
+        $rate_check = $this->api_security->rate_limit_api_call(
+            get_current_user_id(), 
+            'twilio_email', 
+            10, // 10 calls per hour
+            3600
+        );
+        
+        if (is_wp_error($rate_check)) {
+            wp_send_json_error($rate_check->get_error_message());
+        }
+        
+        // 3. Sanitize input
+        $clean_data = $this->form_security->sanitize_template_input($email_data, 'email');
+        
+        // 4. Monitor performance
+        return $this->performance->monitor_api_call('twilio_send_email', function() use ($clean_data) {
+            return $this->call_twilio_api($clean_data);
+        });
+    }
+}
+```
+
+---
+
+## 🚨 **CRITICAL SUCCESS CRITERIA**
+
+**AI MUST ACHIEVE 100% COMPLIANCE:**
+
+1. **File Isolation**: ✅ Template security files used exclusively
+2. **Security Integration**: ✅ All security patterns implemented
+3. **Performance Monitoring**: ✅ API calls monitored and logged
+4. **Error Handling**: ✅ Secure error responses
+5. **Rate Limiting**: ✅ API rate limits enforced
+6. **Audit Trail**: ✅ All operations logged
+
+**FAILURE TO FOLLOW = SECURITY VULNERABILITY**
+
+---
+
+**Document Version**: 1.0.0 - Template Security Failsafe  
+**Created**: January 19, 2025  
+**Scope**: Phase 2 Template Development  
+**Compliance**: MANDATORY for all template-related code  
+**Integration**: Twilio, Supabase, n8n, Alibaba Cloud, Meta APIs
+description:
+globs:
+alwaysApply: false
+---

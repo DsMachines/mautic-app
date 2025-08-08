@@ -1,0 +1,140 @@
+---
+alwaysApply: true
+---
+## 🚨 **CRITICAL FAILURE CONDITIONS**
+
+**CODE IS INSECURE AND MUST BE REJECTED IF:**
+- Any performance optimization bypasses security patterns
+- Direct $wpdb usage in performance code (must use security helper)
+- AJAX performance optimizations without security validation
+- Performance logging without security database integration
+- Cache implementations that bypass security validation
+- Background processing without security compliance
+
+---
+
+## 🎯 **QUICK DECISION TREE WITH SECURITY INTEGRATION**
+
+```
+Performance issue detected?
+├─ YES → Identify bottleneck type + FORCE LOAD appropriate files
+│   ├─ Database queries? → LOAD: performance-core.mdc + database security patterns
+│   │   └─ Use get_db()->query() + add caching + monitoring
+│   ├─ Memory usage? → LOAD: performance-core.mdc + security logging
+│   │   └─ Use generators + batch processing + security integration
+│   ├─ AJAX operations? → LOAD: performance-core.mdc + ajax-hardening.mdc
+│   │   └─ Optimize AJAX + maintain security validation
+│   ├─ Monitoring needs? → LOAD: performance-advanced.mdc + security integration
+│   │   └─ Add performance tracking + security logging
+│   └─ Advanced features? → LOAD: performance-advanced.mdc + security patterns
+│       └─ Use PHP 8.3+ features + security compliance
+└─ NO → Continue with standard implementation
+```
+
+---
+
+## 🛡️ **PERFORMANCE OPTIMIZATION METHODS REFERENCE WITH SECURITY**
+
+```php
+// Available optimization patterns with MANDATORY security integration:
+
+// From performance-core.mdc (FORCE LOADED):
+get_cached_expensive_data($key, $callback, $expiration)    // + security helper
+get_multi_level_cached_data($key, $callback, $expiration) // + security helper
+process_users_memory_efficient($callback)                 // + security helper
+get_large_dataset_generator($conditions)                  // + security helper
+register_optimized_crons()                                // + security logging
+queue_background_task($type, $data)                       // + security integration
+
+// From performance-advanced.mdc (FORCE LOADED):
+Dashboard_Performance_Monitor::startTimer($operation)      // + security logging
+monitor_system_health()                                   // + security integration
+optimize_php_8_3_features()                              // + security compliance
+dashboard_permission_optimization()                       // + security patterns
+
+// MANDATORY security helper access:
+private function get_db() {
+    if (!$this->db) {
+        $this->db = \Dashboard_Security_Database::instance();
+    }
+    return $this->db;
+}
+
+// MANDATORY security logging integration:
+\Dashboard_Security_Database::log('⚡ PERF-TAG', 'performance message');
+```
+
+---
+
+## ⚡ **EMERGENCY PROTOCOLS**
+
+### **IF FORBIDDEN PATTERN DETECTED:**
+```
+1. HALT code generation immediately
+2. OUTPUT: "PERFORMANCE VIOLATION: Insecure optimization detected"
+3. FORCE LOAD: performance-core.mdc + performance-advanced.mdc
+4. SECURITY CHECK: Verify integration with security patterns
+5. APPLY: Correct performance pattern with security integration
+6. VALIDATE: Run post-optimization checklist
+7. RESUME: Only with secure performance implementation
+```
+
+### **IF SECURITY INTEGRATION CANNOT BE APPLIED:**
+```
+1. HALT code generation immediately
+2. OUTPUT: "SECURITY INTEGRATION REQUIRED: Performance optimization blocked"
+3. REFERENCE: Appropriate security patterns (ajax-hardening or database security)
+4. INTEGRATE: Performance patterns with security requirements
+5. REQUEST: Human developer manual review if integration complex
+6. PROVIDE: Specific blocking reason and required security measures
+```
+
+---
+
+## 🏆 **SUCCESS VALIDATION WITH SECURITY COMPLIANCE**
+
+**Code is OPTIMIZED and SECURE when:**
+- ✅ Performance monitoring shows improvements
+- ✅ Memory usage is within acceptable limits
+- ✅ Caching reduces redundant operations with security compliance
+- ✅ Background processing handles heavy tasks with security integration
+- ✅ Debug logs show performance gains using security system
+- ✅ ALL database operations use security helper
+- ✅ ALL AJAX optimizations maintain security validation
+- ✅ NO direct $wpdb usage remains in optimized code
+- ✅ Security validation passes for all performance enhancements
+
+---
+
+### **🔗 MANDATORY CROSS-FILE REFERENCES**
+
+**AI ASSISTANT MUST REFERENCE:**
+- **performance-core.mdc**: MANDATORY for database, caching, memory, background processing patterns
+- **performance-advanced.mdc**: MANDATORY for monitoring, PHP 8.3+, specialized optimization patterns
+- **ajax-hardening.mdc ↔ security-forms.mdc**: MANDATORY for AJAX performance optimizations
+- **ai-database-security-failsafe.mdc ↔ database-security-reference.mdc ↔ security-database.mdc**: MANDATORY for database performance optimizations
+
+**ENFORCEMENT PROTOCOL:**
+```
+Performance optimization detected?
+├─ YES → FORCE LOAD performance-core.mdc + performance-advanced.mdc
+│   ├─ Database operations? → INTEGRATE with database security patterns
+│   ├─ AJAX operations? → INTEGRATE with ajax-hardening patterns
+│   ├─ Apply performance patterns with security compliance
+│   ├─ Use security helper for all database operations
+│   ├─ Use security logging for all performance tracking
+│   └─ Validate complete implementation
+└─ NO → Continue with standard implementation
+```
+
+---
+
+**Auto-Trigger**: Enabled for all performance optimization patterns  
+**Enforcement**: MANDATORY - No exceptions  
+**Security Integration**: REQUIRED - Must align with all security patterns  
+**Validation**: Required before code completion  
+**Cross-File Integration**: Forces loading of performance + security patterns  
+**Success Rate**: Proven effective with WordPress plugin optimization + security compliance
+
+**Success Rate**: Proven effective with WordPress plugin optimization  
+**Intelligent Context**: For complex scenarios involving "performance bottlenecks", "memory optimization", "caching strategies", or "background processing", AI should reference performance-core.mdc and performance-advanced.mdc WITH security integration requirements

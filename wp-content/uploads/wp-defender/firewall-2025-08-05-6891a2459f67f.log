@@ -1,0 +1,5 @@
+[2025-08-05T14:18:45+08:00] Cron job wpdef_firewall_send_compact_logs_to_api triggered at site 1
+[2025-08-05T14:18:45+08:00] wpdef_firewall_send_compact_logs_to_api is processing from site 1
+[2025-08-05T14:18:49+08:00] AntiBot Global Firewall: Downloaded Basic blocklist successfully.
+[2025-08-05T14:18:50+08:00] AntiBot Global Firewall: IPs stored in the DB table.
+[2025-08-05T14:18:56+08:00] Server public IP whitelisted successfully.

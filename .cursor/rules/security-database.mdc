@@ -1,0 +1,219 @@
+---
+name: security-database
+description: Core database security patterns - FORCE LOADED by ai-database-security-failsafe.mdc for complete protection. Contains prepared statement patterns and wpdb security examples.
+globs:
+  - Dashboard/**/*.php
+  - "**/*.php"
+alwaysApply: false
+---
+
+## 🗄️ **Database Security & SQL Injection Prevention** (`db_security`)
+
+### 🔄 **AUTO-TRIGGER PATTERNS (MANDATORY)**
+When the AI coding assistant detects ANY of the following patterns in the code it is generating or editing it MUST automatically jump to this rule file, apply the relevant examples, and inject the necessary security measures. If a pattern is detected but the assistant has **not** triggered this file the assistant **MUST** force a manual trigger/fallback security routine.
+
+**Trigger Symbols & Functions:**
+- `$wpdb` variable usage
+- `$wpdb->prepare(`
+- `$wpdb->get_results(` / `get_row(` / `get_var(` / `get_col(`
+- `$wpdb->insert(` / `$wpdb->update(` / `$wpdb->delete(`
+- Complex SQL strings built with string concatenation
+- Raw `SELECT`, `UPDATE`, `INSERT`, `DELETE` statements without `prepare()`
+
+> ⚠️ **FAILSAFE RULE**: If the assistant modifies or writes code that includes the patterns above **AND** does not see a preceding call to `$wpdb->prepare()` (or another validated pattern below), it MUST halt, open a security context, and wrap the query in a prepared statement using the examples provided here. If conversion is not possible it must prompt the developer for manual review.
+
+---
+
+### **PMPro Prepared Statement Pattern**
+**Pattern Source**: paid-memberships-pro/classes/class-pmpro-subscription.php
+**Index Terms**: `db_security`, `prepared_statements`, `wpdb_prepare`
+**Auto-Trigger**: `$wpdb->prepare()` usage (conversion of dynamic SQL to prepared statements)
+
+```php
+// ✅ GOOD: Using prepared statements with dynamic parameters
+$sql = $wpdb->prepare(
+    "SELECT * FROM {$wpdb->pmpro_memberships_users} WHERE user_id = %d AND status = %s",
+    $user_id,
+    $status
+);
+$results = $wpdb->get_results( $sql );
+```
+
+---
+
+### **WP Defender ORM Security Pattern**
+**Pattern Source**: wp-defender/framework/db/class-mapper.php
+**Index Terms**: `db_security`, `orm_security`, `query_builder`
+**Auto-Trigger**: Custom ORM `->where()` / `->query()` chains detected
+
+```php
+// ✅ GOOD: ORM layer still funnels through $wpdb->prepare for safety
+$items = ( new Mapper() )
+    ->where( 'user_id', '=', $user_id )
+    ->where( 'status', 'in', array( 'active', 'pending' ) )
+    ->all();
+```
+
+---
+
+### **PMPro Search Query Security Pattern**
+**Pattern Source**: paid-memberships-pro/classes/class-pmpro-members-list-table.php
+**Index Terms**: `db_security`, `search_queries`, `esc_sql`
+**Auto-Trigger**: `LIKE` clauses or dynamic column names detected
+
+```php
+// ✅ GOOD: Escape user input when building LIKE queries
+$search_term   = '%' . $wpdb->esc_like( $s ) . '%';
+$search_column = esc_sql( $search_key ); // whitelist or validate column first
+$sql           = $wpdb->prepare(
+    "SELECT ID FROM {$wpdb->users} WHERE $search_column LIKE %s",
+    $search_term
+);
+$user_ids = $wpdb->get_col( $sql );
+```
+
+---
+
+### **WP Defender Secure Table Creation**
+**Pattern Source**: wp-defender/src/traits/defender-bootstrap.php
+**Index Terms**: `db_security`, `table_creation`, `charset_collate`
+**Auto-Trigger**: `CREATE TABLE` statements or schema migrations detected
+
+```php
+// ✅ GOOD: Include $charset_collate and proper KEYs
+$charset_collate = $wpdb->get_charset_collate();
+$sql = "CREATE TABLE {$wpdb->prefix}defender_audit_log (
+  id BIGINT(20) unsigned NOT NULL AUTO_INCREMENT,
+  user_id BIGINT(20) unsigned NOT NULL,
+  event_type varchar(255) NOT NULL,
+  created_at datetime NOT NULL,
+  PRIMARY KEY  (id),
+  KEY user_id (user_id),
+  KEY event_type (event_type)
+) $charset_collate;";
+$wpdb->query( $sql );
+```
+
+---
+
+### **PMPro Bulk Insert Security Pattern**
+**Pattern Source**: paid-memberships-pro/classes/class-pmpro-subscription.php
+**Index Terms**: `db_security`, `bulk_insert`, `data_validation`
+**Auto-Trigger**: Loops building large INSERT strings or `$wpdb->query()` with value lists
+
+```php
+// ✅ GOOD: Use pmpro_insert_or_replace (wraps $wpdb functions & sanitisation)
+pmpro_insert_or_replace(
+    $wpdb->pmpro_subscriptions,
+    $data_array,   // associative array column => value
+    $format_array, // array of %d %s %f matching columns
+    'id'           // optional unique/primary key
+);
+```
+
+---
+
+### **PMPro Complex Query Security Pattern**
+**Pattern Source**: paid-memberships-pro/includes/content.php
+**Index Terms**: `db_security`, `complex_queries`, `array_map_esc_sql`
+**Auto-Trigger**: `implode` of user-provided arrays into SQL `IN()` clauses
+
+```php
+$post_types = array_map( 'esc_sql', $allowed_post_types );
+$sql        = "SELECT * FROM {$wpdb->posts} WHERE post_type IN ('" . implode( "','", $post_types ) . "')";
+$results    = $wpdb->get_results( $sql );
+```
+
+---
+
+### **WP Defender Bulk Operations Pattern**
+**Pattern Source**: wp-defender/src/model/class-antibot-global-firewall.php
+**Index Terms**: `db_security`, `bulk_operations`, `batch_processing`
+**Auto-Trigger**: Mass inserts / updates within loops
+
+```php
+// ✅ GOOD: Prepare once per batch and pass values array
+$placeholders = implode( ',', array_fill( 0, count( $ips ), '(%s)' ) );
+$sql          = $wpdb->prepare( "INSERT INTO {$table_name} (ip) VALUES $placeholders", $ips );
+$wpdb->query( $sql );
+```
+
+---
+
+### **WP Defender Model Save Pattern**
+**Pattern Source**: wp-defender/framework/db/class-mapper.php
+**Index Terms**: `db_security`, `model_save`, `data_type_validation`
+**Auto-Trigger**: `$wpdb->insert()` / `$wpdb->update()` inside a save() routine detected
+
+```php
+// ✅ GOOD: Validate data types array & always use $wpdb->insert / update with formats
+$data       = [
+    'user_id'    => (int) $user_id,
+    'event_type' => sanitize_text_field( $event ),
+    'created_at' => current_time( 'mysql' ),
+];
+$formats    = [ '%d', '%s', '%s' ];
+$table_name = $wpdb->prefix . 'defender_audit_log';
+
+$wpdb->insert( $table_name, $data, $formats );
+```
+
+### **Generic Secure Query Examples**
+The snippets below illustrate several of the rules in the reference list.
+
+```php
+// Prepared SELECT with integer + string placeholders
+$sql = $wpdb->prepare(
+    "SELECT * FROM {$wpdb->prefix}orders WHERE id = %d AND status = %s",
+    (int) $order_id,
+    $order_status
+);
+$order = $wpdb->get_row( $sql );
+
+// Safe IN() clause using array placeholders
+$ids           = array_map( 'intval', $ids );
+$placeholders  = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+$sql           = $wpdb->prepare( "SELECT * FROM {$wpdb->posts} WHERE ID IN ($placeholders)", $ids );
+$post_results  = $wpdb->get_results( $sql );
+
+// Escaping dynamic column names (allow-list)
+$allowed_cols  = [ 'display_name', 'user_login', 'user_email' ];
+$sort_column   = in_array( $sort, $allowed_cols, true ) ? $sort : 'ID';
+$sql           = $wpdb->prepare(
+    "SELECT ID, $sort_column FROM {$wpdb->users} WHERE user_status = %d LIMIT %d",
+    0,
+    (int) $limit
+);
+$users = $wpdb->get_results( $sql );
+```
+
+---
+
+### **Common Database Security Reference**
+Use these best-practice rules whenever the assistant interacts with `$wpdb`:
+
+1. **Always Prepare** – Dynamic data **MUST** flow through `$wpdb->prepare()` before execution.
+2. **Validate Operators** – Only allow `= != > < >= <= LIKE IN NOT IN` (whitelist).
+3. **Escape Identifiers** – Column/table names from user input **MUST** be whitelisted or passed through `esc_sql()` **after** validation.
+4. **Typed Placeholders** – Use `%d` for integers, `%f` for floats, `%s` for strings. Never concatenate raw variables.
+5. **LIMIT Clauses** – Cast to `(int)` before using in `LIMIT %d`.
+6. **UNION / SUBQUERY** – Discourage unless absolutely necessary; if used, every dynamic part must be prepared.
+7. **Schema Changes** – Include `$charset_collate` and add appropriate `KEY`s / indexes.
+8. **Bulk Data** – Break into batches (≤1000 rows) and prepare once per batch.
+9. **NEVER** trust `$_GET`/`$_POST` directly—sanitize first, then prepare.
+10. **FAILSAFE** – If you cannot follow the above rules, pause and request manual developer intervention.
+
+---
+
+💡 **Tip for the Assistant**: After writing a query, **double-check** that every variable is either:
+- Inside a `$wpdb->prepare()` placeholder, **or**
+- Passed through `esc_sql()` **and** validated against an allow-list.
+
+- Inside a `$wpdb->prepare()` placeholder, **or**
+- Passed through `esc_sql()` **and** validated against an allow-list.
+
+- Inside a `$wpdb->prepare()` placeholder, **or**
+- Passed through `esc_sql()` **and** validated against an allow-list.
+
+- Inside a `$wpdb->prepare()` placeholder, **or**
+- Passed through `esc_sql()` **and** validated against an allow-list.

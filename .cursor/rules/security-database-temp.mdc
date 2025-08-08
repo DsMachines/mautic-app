@@ -1,0 +1,239 @@
+## 🎯 **TEMPLATE DATABASE SECURITY - INCOMING FAILSAFE HOOK**
+
+### 🚨 **ROUTING FROM MASTER FLOW VALVE**
+```
+template-rules-SOP.mdc → security-database-temp.mdc → security-database-temp.php
+```
+
+**TRIGGERED WHEN**: Template development needs database operations
+**IMPLEMENTS IN**: `Dashboard/security/security-database-temp.php`
+**ISOLATION**: Template-specific, does NOT modify production security-database.php
+
+---
+
+## 🛡️ **TEMPLATE DATABASE SECURITY PATTERNS**
+
+### **🎯 Template Database Helper Class Pattern**
+```php
+// IMPLEMENT IN: security-database-temp.php
+class Dashboard_Security_Database_Temp {
+    private static $instance = null;
+    private $wpdb;
+    
+    public static function instance() {
+        if (null === self::$instance) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+    
+    private function __construct() {
+        global $wpdb;
+        $this->wpdb = $wpdb;
+    }
+    
+    // Template-specific secure query method
+    public function query_for_template($sql, $params = [], $type = 'get_results') {
+        if (!empty($params)) {
+            $sql = $this->wpdb->prepare($sql, $params);
+        }
+        
+        // Log template database operations
+        $this->log_template_db_operation($sql, $type);
+        
+        switch ($type) {
+            case 'get_row':
+                return $this->wpdb->get_row($sql);
+            case 'get_var':
+                return $this->wpdb->get_var($sql);
+            case 'get_col':
+                return $this->wpdb->get_col($sql);
+            case 'query':
+                return $this->wpdb->query($sql);
+            default:
+                return $this->wpdb->get_results($sql);
+        }
+    }
+    
+    // Template-specific logging
+    private function log_template_db_operation($sql, $type) {
+        // Template database operation logging
+        error_log("[TEMPLATE-DB] {$type}: " . substr($sql, 0, 100) . "...");
+    }
+}
+```
+
+### **🔒 Template Database Security Validation**
+```php
+// IMPLEMENT IN: security-database-temp.php
+public function validate_template_query($sql, $params) {
+    // Validate template queries for security
+    if (strpos($sql, ';') !== false && substr_count($sql, ';') > 1) {
+        throw new Exception('Multiple statements not allowed in template queries');
+    }
+    
+    // Check for dangerous functions
+    $dangerous = ['DROP', 'TRUNCATE', 'ALTER', 'CREATE', 'DELETE'];
+    foreach ($dangerous as $keyword) {
+        if (stripos($sql, $keyword) !== false) {
+            throw new Exception("Dangerous SQL keyword '{$keyword}' not allowed in templates");
+        }
+    }
+    
+    return true;
+}
+```
+
+### **📊 Template Data Retrieval Patterns**
+```php
+// IMPLEMENT IN: security-database-temp.php
+public function get_template_data($template_id, $user_id = null) {
+    $sql = "SELECT * FROM {$this->wpdb->prefix}cpaas_dashboard_templates WHERE id = %d";
+    $params = [$template_id];
+    
+    if ($user_id) {
+        $sql .= " AND user_id = %d";
+        $params[] = $user_id;
+    }
+    
+    return $this->query_for_template($sql, $params, 'get_row');
+}
+
+public function save_template_data($template_id, $data, $user_id) {
+    $table = $this->wpdb->prefix . 'cpaas_dashboard_templates';
+    
+    $insert_data = [
+        'template_id' => (int) $template_id,
+        'user_id' => (int) $user_id,
+        'data' => wp_json_encode($data),
+        'updated_at' => current_time('mysql')
+    ];
+    
+    $formats = ['%d', '%d', '%s', '%s'];
+    
+    return $this->wpdb->replace($table, $insert_data, $formats);
+}
+```
+
+---
+
+## 🚨 **TEMPLATE DATABASE SECURITY RULES**
+
+### **MANDATORY PATTERNS FOR TEMPLATES:**
+
+1. **Always Use Template Helper**: Never use global `$wpdb` directly in templates
+   ```php
+   // ✅ CORRECT - Template pattern
+   $db = Dashboard_Security_Database_Temp::instance();
+   $data = $db->query_for_template($sql, $params);
+   
+   // ❌ WRONG - Direct wpdb usage
+   global $wpdb;
+   $data = $wpdb->get_results($sql);
+   ```
+
+2. **Template Query Validation**: All template queries must be validated
+   ```php
+   // ✅ CORRECT - Validated template query
+   $db = Dashboard_Security_Database_Temp::instance();
+   $db->validate_template_query($sql, $params);
+   $data = $db->query_for_template($sql, $params);
+   ```
+
+3. **Template Data Sanitization**: All template data must be sanitized
+   ```php
+   // ✅ CORRECT - Sanitized template data
+   $template_data = [
+       'title' => sanitize_text_field($title),
+       'content' => wp_kses_post($content),
+       'user_id' => (int) $user_id
+   ];
+   ```
+
+4. **Template Error Handling**: Graceful error handling for templates
+   ```php
+   // ✅ CORRECT - Template error handling
+   try {
+       $data = $db->query_for_template($sql, $params);
+       if (!$data) {
+           return $this->get_template_fallback_data();
+       }
+       return $data;
+   } catch (Exception $e) {
+       error_log('Template DB Error: ' . $e->getMessage());
+       return $this->get_template_fallback_data();
+   }
+   ```
+
+---
+
+## 🔄 **INTEGRATION WITH TEMPLATE DEVELOPMENT**
+
+### **Template Integration Pattern:**
+```php
+// IN TEMPLATE FILE: templates/child-menus/example/template.php
+<?php
+// Get template database helper
+$db = Dashboard_Security_Database_Temp::instance();
+
+// Secure data retrieval for template
+$template_data = $db->get_template_data($template_id, get_current_user_id());
+
+if (!$template_data) {
+    echo '<p>No data available for this template.</p>';
+    return;
+}
+
+// Display template data (with proper escaping)
+echo '<h2>' . esc_html($template_data->title) . '</h2>';
+echo '<div>' . wp_kses_post($template_data->content) . '</div>';
+?>
+```
+
+---
+
+## ✅ **VALIDATION CHECKLIST FOR TEMPLATE DATABASE OPERATIONS**
+
+### **Before Implementation:**
+- [ ] Template development routed through template-rules-SOP.mdc
+- [ ] Database operations identified for template
+- [ ] security-database-temp.mdc loaded (this file)
+- [ ] Implementation planned for security-database-temp.php
+
+### **During Implementation:**
+- [ ] Template database helper class created in security-database-temp.php
+- [ ] All template database operations use helper methods
+- [ ] Query validation implemented for template security
+- [ ] Error handling and logging added for templates
+- [ ] Template integration code created
+
+### **After Implementation:**
+- [ ] Template database operations tested and validated
+- [ ] No direct $wpdb usage in template files
+- [ ] Template security validation passes
+- [ ] Template error handling works correctly
+- [ ] No conflicts with production security-database.php
+
+---
+
+## 🚀 **SUCCESS CRITERIA**
+
+**Template Database Security is COMPLETE when:**
+- ✅ security-database-temp.php implements all required methods
+- ✅ Template files use only template database helper
+- ✅ All template queries are validated and secure
+- ✅ Template error handling works gracefully
+- ✅ No production security files modified
+- ✅ Template database operations tested successfully
+
+---
+
+**Routing Source**: template-rules-SOP.mdc → security-database-temp.mdc  
+**Implementation Target**: Dashboard/security/security-database-temp.php  
+**Template Integration**: All template database operations  
+**Security Isolation**: Template-specific, production-safe  
+**Testing Requirement**: Template database operations must be validated
+description:
+globs:
+alwaysApply: false
+---

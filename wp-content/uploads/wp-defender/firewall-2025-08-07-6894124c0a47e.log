@@ -1,0 +1,7 @@
+[2025-08-07T10:41:16+08:00] Cron job wpdef_firewall_send_compact_logs_to_api triggered at site 1
+[2025-08-07T10:41:16+08:00] wpdef_firewall_send_compact_logs_to_api is processing from site 1
+[2025-08-07T10:41:20+08:00] AntiBot Global Firewall: Downloaded Basic blocklist successfully.
+[2025-08-07T10:41:21+08:00] AntiBot Global Firewall: IPs stored in the DB table.
+[2025-08-07T10:41:26+08:00] Server public IP whitelisted successfully.
+[2025-08-07T10:47:05+08:00] Smart IP DETECTION: cURL error 28: Operation timed out after 5002 milliseconds with 0 bytes received
+[2025-08-07T10:47:08+08:00] Smart IP DETECTION: IP header detected: REMOTE_ADDR with IP: 127.0.0.1.

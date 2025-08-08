@@ -1,0 +1,344 @@
+## 🎯 **TEMPLATE WEBHOOK/API SECURITY - INCOMING FAILSAFE HOOK**
+
+### 🚨 **ROUTING FROM MASTER FLOW VALVE**
+```
+template-rules-SOP.mdc → webhook-api-security-temp.mdc → webhook-api-security-temp.php
+```
+
+**TRIGGERED WHEN**: Template development needs external API integration
+**IMPLEMENTS IN**: `Dashboard/security/webhook-api-security-temp.php`
+**ISOLATION**: Template-specific, does NOT modify production security files
+
+---
+
+## 🛡️ **TEMPLATE WEBHOOK/API SECURITY PATTERNS**
+
+### **🎯 Template API Security Helper Class Pattern**
+```php
+// IMPLEMENT IN: webhook-api-security-temp.php
+class Dashboard_Webhook_API_Security_Temp {
+    private static $instance = null;
+    
+    public static function instance() {
+        if (null === self::$instance) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+    
+    // Template-specific API request validation
+    public function validate_api_request($api_data, $endpoint) {
+        // Validate API endpoint
+        if (!$this->is_allowed_endpoint($endpoint)) {
+            throw new Exception('API endpoint not allowed for templates: ' . $endpoint);
+        }
+        
+        // Validate API data
+        if (!$this->validate_api_data($api_data)) {
+            throw new Exception('Invalid API data for template request');
+        }
+        
+        // Check rate limiting for template API calls
+        if (!$this->check_template_rate_limit($endpoint)) {
+            throw new Exception('Rate limit exceeded for template API calls');
+        }
+        
+        return true;
+    }
+    
+    // Template-specific webhook validation
+    public function validate_webhook($webhook_data, $signature = null) {
+        // Validate webhook signature if provided
+        if ($signature && !$this->verify_webhook_signature($webhook_data, $signature)) {
+            throw new Exception('Invalid webhook signature for template');
+        }
+        
+        // Validate webhook data structure
+        if (!$this->validate_webhook_data($webhook_data)) {
+            throw new Exception('Invalid webhook data structure for template');
+        }
+        
+        return true;
+    }
+    
+    // Template-specific API response sanitization
+    public function sanitize_api_response($response_data) {
+        // Sanitize API response for template usage
+        $sanitized = [];
+        
+        if (is_array($response_data) || is_object($response_data)) {
+            foreach ($response_data as $key => $value) {
+                if (is_string($value)) {
+                    $sanitized[$key] = sanitize_text_field($value);
+                } elseif (is_array($value)) {
+                    $sanitized[$key] = $this->sanitize_api_response($value);
+                } else {
+                    $sanitized[$key] = $value;
+                }
+            }
+        }
+        
+        return $sanitized;
+    }
+}
+```
+
+### **🔒 Template API Request Security Pattern**
+```php
+// IMPLEMENT IN: webhook-api-security-temp.php
+public function make_secure_api_request($endpoint, $data, $method = 'POST') {
+    // Validate API request
+    $this->validate_api_request($data, $endpoint);
+    
+    // Prepare secure request
+    $args = [
+        'method' => $method,
+        'headers' => [
+            'Content-Type' => 'application/json',
+            'User-Agent' => 'Dashboard-Template/1.0'
+        ],
+        'body' => wp_json_encode($data),
+        'timeout' => 30,
+        'sslverify' => true
+    ];
+    
+    // Add authentication if needed
+    $args = $this->add_api_authentication($args, $endpoint);
+    
+    // Make request
+    $response = wp_remote_request($endpoint, $args);
+    
+    // Validate and sanitize response
+    if (is_wp_error($response)) {
+        throw new Exception('API request failed: ' . $response->get_error_message());
+    }
+    
+    $body = wp_remote_retrieve_body($response);
+    $data = json_decode($body, true);
+    
+    return $this->sanitize_api_response($data);
+}
+```
+
+### **📡 Template Webhook Processing Pattern**
+```php
+// IMPLEMENT IN: webhook-api-security-temp.php
+public function process_template_webhook($webhook_data, $source = 'unknown') {
+    // Validate webhook
+    $signature = $_SERVER['HTTP_X_SIGNATURE'] ?? null;
+    $this->validate_webhook($webhook_data, $signature);
+    
+    // Log webhook processing
+    $this->log_webhook_activity($webhook_data, $source);
+    
+    // Process webhook data
+    $processed_data = $this->sanitize_api_response($webhook_data);
+    
+    // Store webhook data for template usage
+    $this->store_webhook_data($processed_data, $source);
+    
+    return $processed_data;
+}
+```
+
+---
+
+## 🚨 **TEMPLATE WEBHOOK/API SECURITY RULES**
+
+### **MANDATORY PATTERNS FOR TEMPLATES:**
+
+1. **Always Validate API Endpoints**: Only allow whitelisted endpoints for templates
+   ```php
+   // ✅ CORRECT - Template API validation
+   $api = Dashboard_Webhook_API_Security_Temp::instance();
+   $api->validate_api_request($data, $endpoint);
+   
+   // ❌ WRONG - Direct API call without validation
+   wp_remote_post($endpoint, $args); // Unvalidated endpoint
+   ```
+
+2. **Template Rate Limiting**: Prevent API abuse from templates
+   ```php
+   // ✅ CORRECT - Template rate limiting
+   if (!$api->check_template_rate_limit($endpoint)) {
+       throw new Exception('Rate limit exceeded');
+   }
+   ```
+
+3. **Template Webhook Security**: Verify webhook signatures and data
+   ```php
+   // ✅ CORRECT - Template webhook validation
+   $api = Dashboard_Webhook_API_Security_Temp::instance();
+   $api->validate_webhook($webhook_data, $signature);
+   
+   // ❌ WRONG - Direct webhook processing
+   $data = $_POST; // Unvalidated webhook data
+   ```
+
+4. **Template API Response Sanitization**: Clean all external data
+   ```php
+   // ✅ CORRECT - Template API response sanitization
+   $clean_data = $api->sanitize_api_response($response_data);
+   
+   // ❌ WRONG - Direct usage of API response
+   echo $response_data['message']; // Unsanitized external data
+   ```
+
+---
+
+## 🔄 **INTEGRATION WITH TEMPLATE DEVELOPMENT**
+
+### **Template API Integration Pattern:**
+```php
+// IN TEMPLATE FILE: templates/child-menus/example/api-template.php
+<?php
+// Get template API security helper
+$api = Dashboard_Webhook_API_Security_Temp::instance();
+
+// Make secure API request
+try {
+    $api_data = [
+        'action' => 'get_data',
+        'user_id' => get_current_user_id()
+    ];
+    
+    $response = $api->make_secure_api_request(
+        'https://api.example.com/data',
+        $api_data,
+        'POST'
+    );
+    
+    // Display API response (already sanitized)
+    echo '<div class="api-response">';
+    echo '<h3>' . esc_html($response['title']) . '</h3>';
+    echo '<p>' . esc_html($response['message']) . '</p>';
+    echo '</div>';
+    
+} catch (Exception $e) {
+    echo '<div class="error">API Error: ' . esc_html($e->getMessage()) . '</div>';
+}
+?>
+```
+
+### **Template Webhook Integration Pattern:**
+```php
+// IN TEMPLATE FILE: Webhook processing endpoint
+<?php
+// Get template webhook security helper
+$webhook = Dashboard_Webhook_API_Security_Temp::instance();
+
+// Process incoming webhook
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $webhook_data = json_decode(file_get_contents('php://input'), true);
+        
+        $processed_data = $webhook->process_template_webhook($webhook_data, 'external_service');
+        
+        // Respond to webhook
+        http_response_code(200);
+        echo wp_json_encode(['status' => 'success', 'message' => 'Webhook processed']);
+        
+    } catch (Exception $e) {
+        error_log('Template Webhook Error: ' . $e->getMessage());
+        
+        http_response_code(400);
+        echo wp_json_encode(['status' => 'error', 'message' => 'Webhook processing failed']);
+    }
+    exit;
+}
+?>
+```
+
+---
+
+## 🌐 **EXTERNAL SERVICE INTEGRATION PATTERNS**
+
+### **Supabase Integration Pattern:**
+```php
+// Template-specific Supabase integration
+public function supabase_template_request($table, $data, $operation = 'select') {
+    $endpoint = 'https://your-project.supabase.co/rest/v1/' . $table;
+    
+    $request_data = [
+        'operation' => $operation,
+        'data' => $data
+    ];
+    
+    return $this->make_secure_api_request($endpoint, $request_data);
+}
+```
+
+### **Twilio Integration Pattern:**
+```php
+// Template-specific Twilio integration
+public function twilio_template_request($action, $data) {
+    $endpoint = 'https://api.twilio.com/2010-04-01/Accounts/your-account/Messages.json';
+    
+    $request_data = [
+        'action' => $action,
+        'data' => $data
+    ];
+    
+    return $this->make_secure_api_request($endpoint, $request_data);
+}
+```
+
+### **n8n Integration Pattern:**
+```php
+// Template-specific n8n webhook integration
+public function n8n_template_webhook($workflow_data) {
+    $endpoint = 'https://your-n8n.instance.com/webhook/template-workflow';
+    
+    return $this->make_secure_api_request($endpoint, $workflow_data);
+}
+```
+
+---
+
+## ✅ **VALIDATION CHECKLIST FOR TEMPLATE WEBHOOK/API SECURITY**
+
+### **Before Implementation:**
+- [ ] Template development routed through template-rules-SOP.mdc
+- [ ] API/webhook operations identified for template
+- [ ] webhook-api-security-temp.mdc loaded (this file)
+- [ ] Implementation planned for webhook-api-security-temp.php
+
+### **During Implementation:**
+- [ ] Template webhook/API security helper class created
+- [ ] API endpoint validation implemented
+- [ ] Webhook signature verification added
+- [ ] Rate limiting implemented for template API calls
+- [ ] API response sanitization added
+- [ ] Template integration code created
+
+### **After Implementation:**
+- [ ] Template API requests validated and secure
+- [ ] Webhook processing works with signature verification
+- [ ] Rate limiting prevents API abuse
+- [ ] All external data properly sanitized
+- [ ] No conflicts with production security files
+
+---
+
+## 🚀 **SUCCESS CRITERIA**
+
+**Template Webhook/API Security is COMPLETE when:**
+- ✅ webhook-api-security-temp.php implements all required methods
+- ✅ Template API requests use endpoint validation
+- ✅ Webhook processing includes signature verification
+- ✅ Rate limiting prevents template API abuse
+- ✅ All external data is properly sanitized
+- ✅ No production security files modified
+- ✅ Template webhook/API security tested successfully
+
+---
+
+**Routing Source**: template-rules-SOP.mdc → webhook-api-security-temp.mdc  
+**Implementation Target**: Dashboard/security/webhook-api-security-temp.php  
+**Template Integration**: All template API and webhook operations  
+**Security Isolation**: Template-specific, production-safe  
+**Testing Requirement**: Template webhook/API security must be validated
+description:
+globs:
+alwaysApply: false
+---

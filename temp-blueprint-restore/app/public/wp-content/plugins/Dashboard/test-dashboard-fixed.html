@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Preview - GoHighLevel Style (v1.0.4 PRODUCTION READY)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/dashboard-ghl-style.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <!-- Sidebar Navigation -->
+        <nav class="dashboard-sidebar">
+            <div class="sidebar-brand">
+                <h2>Dashboard</h2>
+                <!-- Toggle button will be inserted here by JavaScript -->
+            </div>
+            
+            <div class="sidebar-search">
+                <input type="text" class="sidebar-search-input" placeholder="Search...">
+            </div>
+            
+            <ul class="sidebar-menu">
+                <!-- Menu sections will be populated by JavaScript -->
+            </ul>
+        </nav>
+        
+        <!-- Main Content Area -->
+        <div class="dashboard-main-content">
+            <!-- Header Navigation -->
+            <header class="dashboard-header">
+                <nav class="horizontal-nav">
+                    <ul class="nav-tabs">
+                        <li class="nav-tab active">
+                            <a href="#" class="nav-tab-link" data-tab="overview">
+                                Overview
+                                <span class="nav-badge new">3</span>
+                            </a>
+                        </li>
+                        <li class="nav-tab">
+                            <a href="#" class="nav-tab-link" data-tab="contacts">
+                                Contacts
+                                <span class="nav-badge">247</span>
+                            </a>
+                        </li>
+                        <li class="nav-tab">
+                            <a href="#" class="nav-tab-link" data-tab="conversations">
+                                Conversations
+                                <span class="nav-badge warning">5</span>
+                            </a>
+                        </li>
+                        <li class="nav-tab">
+                            <a href="#" class="nav-tab-link" data-tab="automation">
+                                Automation
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    <!-- Mobile menu toggle will be inserted here -->
+                    <button class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Customize
+                    </button>
+                </div>
+            </header>
+            
+            <!-- Content Area -->
+            <div class="dashboard-content-area">
+                <!-- Statistics Cards -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Contacts</div>
+                        <div class="stat-value">1,234</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Active Campaigns</div>
+                        <div class="stat-value">8</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Revenue This Month</div>
+                        <div class="stat-value">RM12,345</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Conversion Rate</div>
+                        <div class="stat-value">3.2%</div>
+                    </div>
+                </div>
+                
+                <!-- Dashboard Widgets -->
+                <div class="dashboard-widget">
+                    <div class="widget-header">
+                        <h3>Recent Activity</h3>
+                        <a href="#" style="color: var(--ghl-primary); text-decoration: none;">View All</a>
+                    </div>
+                    <div class="widget-content">
+                        <p>✅ New contact added - 2 minutes ago</p>
+                        <p>📧 Email campaign sent - 1 hour ago</p>
+                        <p>📱 SMS workflow triggered - 3 hours ago</p>
+                    </div>
+                </div>
+                
+                <div class="dashboard-widget">
+                    <div class="widget-header">
+                        <h3>Performance Overview</h3>
+                    </div>
+                    <div class="widget-content">
+                        <p>📊 Chart will be rendered here with real data from Supabase</p>
+                        <p>🔄 Connected to n8n workflows for real-time updates</p>
+                        <p>🎯 Integration with CPaaS plugin for data processing</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay"></div>
+
+    <!-- External JavaScript -->
+    <script src="assets/js/dashboard-navigation.js"></script>
+</body>
+</html> 

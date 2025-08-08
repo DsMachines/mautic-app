@@ -1,0 +1,397 @@
+---
+alwaysApply: true
+---
+## 🔧 **Current Technical Environment**
+
+### **Existing Infrastructure** (DO NOT CHANGE)
+- **WordPress 6.8+** with Dashboard Plugin v1.1.3.4 ACTIVE
+- **Database Schema**: 5 tables created and functional
+- **PMPro Integration**: Active membership control
+- **Security Framework**: Nonce verification and input sanitization implemented
+- **Performance Optimization**: Core patterns active, advanced monitoring deferred
+
+### **Technology Stack** (FIXED)
+- **PHP 8.3.17**: Production compatibility required
+- **MariaDB 10.5+**: Database layer
+- **jQuery**: WordPress standard (NO modern frameworks)
+- **CSS Grid/Flexbox**: Modern responsive layouts
+- **WordPress AJAX**: Dynamic content loading
+
+### **Performance Integration**
+- **Core Patterns**: Database optimization, caching, memory management (performance-core.mdc)
+- **Advanced Patterns**: PHP 8.3+ features, specialized optimization (performance-advanced.mdc)
+- **Monitoring**: WP Defender handles system monitoring (DO NOT implement monitoring patterns yet)
+
+---
+
+## 🚀 **Token-Optimized Context7 Commands**
+
+### **Quick Reference Queries** (5,000 tokens)
+```bash
+# Core development patterns
+"Get WordPress plugin [SPECIFIC_FEATURE] documentation"
+"Show PHP 8.3 [SPECIFIC_SYNTAX] syntax"
+"Find [SPECIFIC_API] integration examples"
+
+# Performance patterns (reference existing files)
+"Show cache_multilevel implementation from performance-core"
+"Get db_schema optimization patterns"
+"Find memory_efficient processing examples"
+```
+
+### **Implementation Guides** (10,000-15,000 tokens)
+```bash
+# Comprehensive feature implementation
+"Get [TECHNOLOGY] documentation focusing on [SPECIFIC_IMPLEMENTATION] with [INTEGRATION_CONTEXT]"
+
+# Example: Template development
+"Get WordPress template development documentation focusing on secure form handling and AJAX integration for dashboard templates"
+```
+
+### **Architecture References** (20,000+ tokens)
+```bash
+# Full API documentation (use sparingly)
+"Get [COMPLETE_API] documentation focusing on [COMPREHENSIVE_FEATURE_SET]"
+```
+
+---
+
+## 🏗️ **Current Codebase Structure**
+
+### **Core Classes** (Phase 1 Complete)
+```
+Dashboard/
+├── dashboard-main.php (v1.1.3.4)
+├── includes/
+│   ├── class-menu-manager.php (1,732 lines)
+│   ├── class-dashboard-admin-menu.php (1,900 lines)
+│   ├── class-permission-manager.php (1,520 lines)
+│   ├── class-template-manager.php (645 lines)
+│   ├── class-dashboard-page-manager.php (672 lines)
+│   └── class-security-manager.php (209 lines)
+├── templates/
+│   ├── dashboard-template.php (488 lines)
+│   └── child-menus/ (Phase 2 development)
+└── assets/
+    ├── css/ (unified theme)
+    └── js/ (jQuery-based)
+```
+
+### **Integration Points**
+- **Menu System**: class-menu-manager.php provides structure
+- **Security**: class-security-manager.php handles validation
+- **Templates**: dashboard-template.php as base shell
+- **Permissions**: class-permission-manager.php with PMPro integration
+- **Performance**: Integrated with performance-core.mdc patterns
+
+---
+
+## 🎯 **Phase 2 Context7 Commands by Development Area**
+
+### **Core Plugin Architecture** (`core_plugin`)
+```bash
+# WordPress plugin patterns
+"Get WordPress plugin development documentation focusing on namespace usage, autoloading, and hook integration"
+
+# Class structure optimization
+"Show WordPress plugin architecture documentation focusing on dependency injection and service containers"
+```
+
+### **Database Operations** (`core_database`)
+```bash
+# Database schema and operations
+"Get WordPress wpdb documentation focusing on custom table creation, prepared statements, and JSON data handling"
+
+# Performance optimization (reference performance-core.mdc)
+"Show db_schema optimization patterns for WordPress custom tables"
+```
+
+### **Security Implementation** (`core_security`)
+```bash
+# WordPress security patterns
+"Get WordPress security documentation focusing on nonce verification, input sanitization, and capability checking"
+
+# API security
+"Show webhook security documentation focusing on signature verification and credential management"
+```
+
+### **API Integration Development** (`api_*`)
+
+#### **Twilio Integration** (`api_twilio`)
+```bash
+"Get Twilio PHP SDK documentation focusing on SMS operations, webhook handling, and credential management"
+```
+
+#### **Supabase Integration** (`api_supabase`)
+```bash
+"Get Supabase JavaScript client documentation focusing on database operations, real-time subscriptions, and authentication"
+```
+
+#### **n8n Integration** (`api_n8n`)
+```bash
+"Get n8n webhook documentation focusing on trigger nodes, authentication, and WordPress integration"
+```
+
+### **Frontend Development** (`frontend_*`)
+
+#### **Template Development** (`frontend_templates`)
+```bash
+"Get WordPress template development documentation focusing on secure output, data binding, and responsive design"
+```
+
+#### **Canvas System** (`frontend_canvas`)
+```bash
+"Get JavaScript drag-drop API documentation focusing on touch events, state management, and cross-browser compatibility"
+```
+
+#### **Mobile Optimization** (`frontend_mobile`)
+```bash
+"Get CSS responsive design documentation focusing on mobile-first development, touch optimization, and performance"
+```
+
+---
+
+## 🔄 **Performance Integration Commands**
+
+### **Core Performance Patterns** (Reference performance-core.mdc)
+```bash
+# Database optimization
+"Show me db_batch processing examples for WordPress"
+"Get cache_multilevel implementation patterns"
+
+# Memory management
+"Find memory_efficient processing examples"
+"Show cache_cleanup automation patterns"
+```
+
+### **Advanced Performance Patterns** (Reference performance-advanced.mdc)
+```bash
+# PHP 8.3+ features
+"Get php_8_3 optimization patterns for WordPress"
+"Show php_enums implementation examples"
+
+# Dashboard-specific patterns
+"Find dashboard_permissions optimization examples"
+"Show dashboard_capability checking patterns"
+```
+
+### **⚠️ Monitoring Patterns** (DO NOT IMPLEMENT YET)
+```bash
+# NOTE: WP Defender handles monitoring - reference only
+"Show monitor_performance patterns for future reference"
+"Get monitor_diagnostics examples for planning"
+```
+
+---
+
+## 🎯 **Development Workflow Commands**
+
+### **Daily Development Routine**
+```bash
+# Morning: Check current context
+"Get WordPress plugin development documentation focusing on [TODAY'S_FEATURE] implementation"
+
+# During development: Specific implementation
+"Show [SPECIFIC_TECHNOLOGY] documentation focusing on [CURRENT_TASK] with WordPress integration"
+
+# End of day: Validation
+"Get WordPress testing documentation focusing on [IMPLEMENTED_FEATURE] validation"
+```
+
+### **Weekly Architecture Review**
+```bash
+# Monday: Week planning
+"Get WordPress plugin architecture documentation focusing on [WEEK_FOCUS_AREA] best practices"
+
+# Wednesday: Integration check
+"Show [INTEGRATION_TECHNOLOGY] documentation focusing on WordPress plugin integration patterns"
+
+# Friday: Performance review
+"Get WordPress performance documentation focusing on [PERFORMANCE_AREA] optimization"
+```
+
+---
+
+## 🔧 **Context7 Query Optimization Patterns**
+
+### **Efficient Query Structure**
+```bash
+# ✅ GOOD: Specific and focused
+"Get WordPress wpdb documentation focusing on prepared statements and custom table operations"
+
+# ❌ BAD: Too broad
+"Get WordPress documentation"
+
+# ✅ GOOD: Context-specific
+"Show Supabase real-time documentation focusing on JavaScript client integration with WordPress authentication"
+
+# ❌ BAD: Multiple unrelated topics
+"Get Supabase and Twilio and n8n documentation"
+```
+
+### **Token-Efficient Patterns**
+```bash
+# Quick reference (5K tokens)
+"Get [SPECIFIC_FUNCTION] syntax for [TECHNOLOGY]"
+
+# Implementation guide (10-15K tokens)
+"Show [TECHNOLOGY] documentation focusing on [SPECIFIC_IMPLEMENTATION] with [CONTEXT]"
+
+# Full reference (20K+ tokens - use sparingly)
+"Get complete [API] documentation focusing on [COMPREHENSIVE_FEATURE_SET]"
+```
+
+---
+
+## 📊 **Current File Context Integration**
+
+### **When Working on Existing Files**
+```bash
+# Large files (1000+ lines) - get specific sections
+"Get [TECHNOLOGY] documentation focusing on [SPECIFIC_SECTION] optimization and refactoring"
+
+# Integration points
+"Show [TECHNOLOGY] documentation focusing on [INTEGRATION_PATTERN] with existing WordPress hooks"
+
+# Performance optimization
+"Get [TECHNOLOGY] performance documentation focusing on [OPTIMIZATION_AREA] for large codebases"
+```
+
+### **When Creating New Files**
+```bash
+# Architecture planning
+"Get [TECHNOLOGY] architecture documentation focusing on [NEW_FEATURE] implementation with WordPress integration"
+
+# Dependency management
+"Show [TECHNOLOGY] documentation focusing on [DEPENDENCY_PATTERN] and service integration"
+
+# Performance considerations
+"Get [TECHNOLOGY] performance documentation focusing on [PERFORMANCE_PATTERN] for WordPress plugins"
+```
+
+---
+
+## 🎯 **Specialized Context7 Commands**
+
+### **Phase 2 Template Development**
+```bash
+# Template structure
+"Get WordPress template hierarchy documentation focusing on custom template creation and hook integration"
+
+# Data binding
+"Show WordPress template development documentation focusing on secure data output and AJAX integration"
+
+# Mobile optimization
+"Get CSS responsive design documentation focusing on dashboard interface and touch optimization"
+```
+
+### **Real-time Integration**
+```bash
+# WebSocket implementation
+"Get JavaScript WebSocket documentation focusing on real-time updates and connection management"
+
+# Supabase real-time
+"Show Supabase real-time documentation focusing on subscription management and conflict resolution"
+
+# State management
+"Get JavaScript state management documentation focusing on local storage and synchronization"
+```
+
+### **Canvas System Development**
+```bash
+# Drag-drop foundation
+"Get JavaScript drag-drop API documentation focusing on touch events and cross-browser compatibility"
+
+# Copy-paste engine
+"Show JavaScript clipboard API documentation focusing on data serialization and state management"
+
+# Performance optimization
+"Get JavaScript performance documentation focusing on DOM manipulation and memory management"
+```
+
+---
+
+## 🚨 **Emergency Troubleshooting Commands**
+
+### **Database Issues**
+```bash
+"Get WordPress database troubleshooting documentation focusing on custom table errors and query optimization"
+```
+
+### **API Integration Problems**
+```bash
+"Show [API_SERVICE] troubleshooting documentation focusing on authentication errors and webhook failures"
+```
+
+### **Performance Issues**
+```bash
+"Get WordPress performance troubleshooting documentation focusing on plugin optimization and memory usage"
+```
+
+### **Security Vulnerabilities**
+```bash
+"Show WordPress security documentation focusing on input validation, nonce verification, and API security"
+```
+
+---
+
+## 🔄 **Integration with Performance Rules**
+
+### **Core Performance Patterns** (Always Active)
+- Reference `performance-core.mdc` for database, caching, memory patterns
+- Use `db_*`, `cache_*`, `memory_*`, `bg_*` index terms
+- Apply optimization patterns during development
+
+### **Advanced Performance Patterns** (Selective Use)
+- Reference `performance-advanced.mdc` for PHP 8.3+, monitoring patterns
+- Use `php_*`, `monitor_*`, `opt_*`, `dashboard_*` index terms
+- **Note**: Monitoring patterns are for reference only - WP Defender handles monitoring
+
+### **Performance Query Examples**
+```bash
+# During database work
+"Show db_schema optimization patterns for WordPress custom tables"
+
+# During caching implementation
+"Get cache_multilevel implementation with WordPress transients"
+
+# During PHP development
+"Find php_8_3 readonly class patterns for WordPress plugins"
+```
+
+---
+
+## 📚 **Context7 Usage Guidelines**
+
+### **Token Budget Management**
+- **Quick Reference**: 5,000 tokens for syntax and examples
+- **Implementation Guide**: 10,000-15,000 tokens for comprehensive how-to
+- **Architecture Reference**: 20,000+ tokens for complete documentation
+
+### **Query Chaining Strategy**
+```bash
+# Step 1: Architecture overview
+"Get [TECHNOLOGY] architecture documentation focusing on [FEATURE_AREA]"
+
+# Step 2: Specific implementation
+"Show [TECHNOLOGY] implementation documentation focusing on [SPECIFIC_TASK]"
+
+# Step 3: Integration patterns
+"Get [TECHNOLOGY] integration documentation focusing on WordPress plugin patterns"
+```
+
+### **Performance Integration**
+- Always reference performance rules before Context7 queries
+- Use performance index terms for quick pattern lookup
+- Defer monitoring implementation until WP Defender integration phase
+
+---
+
+**Document Version**: 2.0.0 - Performance Integrated  
+**Last Updated**: July 18, 2025  
+**Plugin Version**: v1.1.3.4  
+**Performance Integration**: Core patterns active, advanced monitoring deferred  
+**Token Optimization**: Enabled with indexed search terms 
+
+
+**Usage Instructions**: Use the indexed terms at the top for rapid AI tool location. Reference the Phase 2 implementation plan for current context, then use the appropriate Context7 commands for your development phase and file type. 

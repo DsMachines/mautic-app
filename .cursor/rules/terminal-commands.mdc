@@ -1,0 +1,477 @@
+---
+description: INTELLIGENT Terminal command execution patterns - Auto-triggered when AI needs to run commands via run_terminal_cmd, execute PHP scripts, open files with Cursor CLI, or perform file operations. Provides Windows PowerShell safety patterns and Cursor CLI integration.
+alwaysApply: false
+---
+# 🖥️ **TERMINAL COMMAND EXECUTION RULES - WINDOWS ENVIRONMENT**
+
+## 🚨 **CRITICAL EXECUTION PRINCIPLES**
+
+### **❌ NEVER USE THESE (GUARANTEED TO FAIL):**
+- Complex PowerShell syntax with `&&` operators
+- Long command chains in PowerShell
+- PowerShell-specific operators like `-and`, `-or`
+- Complex escaping in PowerShell one-liners
+- Multiple `cd` commands chained with `&&`
+
+### **✅ ALWAYS USE THESE (GUARANTEED TO WORK):**
+- **CMD wrapper**: `cmd /c "command here"` for complex operations
+- **Simple PHP**: `php filename.php` for direct script execution
+- **Basic commands**: `dir`, `type filename.txt`, `php -l filename.php`
+- **Single operations**: One command per `run_terminal_cmd` call
+- **Cursor CLI**: `cursor filename.php` or `code filename.php` for opening files
+
+---
+
+## 🎯 **COMMAND PATTERNS - MEMORIZED SOLUTIONS**
+
+### **✅ PHP Script Execution**
+```bash
+# ✅ CORRECT - Simple and reliable
+php filename.php
+
+# ✅ CORRECT - With path separators
+php Dashboard\includes\class-file.php
+
+# ❌ WRONG - Complex paths with PowerShell
+cd .. && cd .. && php wp-content/plugins/file.php
+```
+
+### **✅ PHP Syntax Checking**
+```bash
+# ✅ CORRECT - Direct syntax check
+php -l Dashboard\security\security-forms.php
+
+# ✅ CORRECT - Using CMD wrapper for complex paths
+cmd /c "php -l Dashboard\includes\class-menu-manager.php"
+
+# ❌ WRONG - PowerShell escaping nightmare
+php -r "require_once 'path'; echo 'result';"
+```
+
+### **✅ File Operations**
+```bash
+# ✅ CORRECT - Simple file operations
+dir Dashboard\security
+type Dashboard\test-results.txt
+
+# ✅ CORRECT - CMD wrapper for complex operations
+cmd /c "dir /s *.php"
+
+# ❌ WRONG - PowerShell Get-Content with complex paths
+Get-Content "complex\path\file.txt" | Select-Object -Last 20
+```
+
+### **✅ Directory Navigation**
+```bash
+# ✅ CORRECT - Simple directory changes
+cd Dashboard
+cd includes
+
+# ✅ CORRECT - CMD wrapper for multiple operations
+cmd /c "cd .. && dir"
+
+# ❌ WRONG - PowerShell complex navigation
+cd .. && cd .. && php command
+```
+
+### **✅ CURSOR CLI COMMANDS (NEW - GUARANTEED TO WORK)**
+```bash
+# ✅ CORRECT - Open single file in Cursor
+cursor Dashboard\dashboard-main.php
+code Dashboard\dashboard-main.php
+
+# ✅ CORRECT - Open folder in Cursor
+cursor Dashboard\
+code Dashboard\
+
+# ✅ CORRECT - Open multiple files
+cursor file1.php file2.php
+code file1.php file2.php
+
+# ✅ CORRECT - Open in new window
+cursor -n Dashboard\dashboard-main.php
+cursor --new-window Dashboard\dashboard-main.php
+
+# ✅ CORRECT - Wait for window to close
+cursor -w Dashboard\dashboard-main.php
+cursor --wait Dashboard\dashboard-main.php
+
+# ✅ CORRECT - Open at specific line and column
+cursor -g Dashboard\dashboard-main.php:25:10
+cursor --goto Dashboard\dashboard-main.php:25:10
+
+# ✅ CORRECT - Compare two files
+cursor -d file1.php file2.php
+cursor --diff file1.php file2.php
+
+# ✅ CORRECT - Add folder to existing window
+cursor -a Dashboard\includes\
+cursor --add Dashboard\includes\
+
+# ❌ WRONG - Complex PowerShell with Cursor CLI
+cursor $(Get-ChildItem *.php | Select-Object -First 3)
+```
+
+---
+
+## 🎯 **CURSOR CLI DECISION TREE**
+
+### **When to Use Cursor CLI:**
+- **Opening files for editing**: Use `cursor filename.php` or `code filename.php`
+- **Opening project folders**: Use `cursor Dashboard\` or `code Dashboard\`
+- **Comparing files**: Use `cursor -d file1.php file2.php`
+- **Opening at specific line**: Use `cursor -g file.php:line:column`
+
+### **Cursor CLI Fallback Strategy:**
+```bash
+# Step 1: Try simple cursor command
+cursor Dashboard\dashboard-main.php
+
+# Step 2: If fails, try code command (identical functionality)
+code Dashboard\dashboard-main.php
+
+# Step 3: If both fail, try with new window flag
+cursor -n Dashboard\dashboard-main.php
+
+# Step 4: If still fails, try with full path
+cursor "C:\Users\mansu\Local Sites\cpaas\app\public\wp-content\plugins\Dashboard\dashboard-main.php"
+
+# Step 5: Emergency fallback - open folder instead
+cursor Dashboard\
+```
+
+### **Common Cursor CLI Patterns:**
+```bash
+# ✅ DEVELOPMENT WORKFLOW PATTERNS
+
+# Open main plugin file for editing
+cursor Dashboard\dashboard-main.php
+
+# Open entire Dashboard folder
+cursor Dashboard\
+
+# Open specific class for debugging
+cursor Dashboard\includes\class-menu-manager.php
+
+# Compare two versions of a file
+cursor -d Dashboard\includes\class-menu-manager.php Dashboard\includes\class-menu-manager.php.backup
+
+# Open file at error line (from PHP error message)
+cursor -g Dashboard\includes\class-menu-manager.php:150:25
+
+# Open multiple related files
+cursor Dashboard\includes\class-menu-manager.php Dashboard\security\security-forms.php
+
+# Add new folder to current workspace
+cursor -a Dashboard\templates\
+
+# Open in new window for side-by-side work
+cursor -n Dashboard\includes\class-template-manager.php
+```
+
+---
+
+## 🚨 **CURSOR CLI ERROR RECOVERY**
+
+### **If Cursor CLI Command Fails:**
+
+#### **Error Pattern 1: Command not recognized**
+```bash
+# ❌ Error: 'cursor' is not recognized as an internal or external command
+# ✅ Solution: Try 'code' command instead
+code Dashboard\dashboard-main.php
+
+# ✅ Alternative: Check if CLI is installed
+cursor --version
+code --version
+```
+
+#### **Error Pattern 2: File path issues**
+```bash
+# ❌ Error: Cannot resolve file path
+# ✅ Solution: Use quotes for paths with spaces
+cursor "Dashboard\folder with spaces\file.php"
+
+# ✅ Alternative: Use relative path
+cd Dashboard
+cursor dashboard-main.php
+```
+
+#### **Error Pattern 3: Permission issues**
+```bash
+# ❌ Error: Access denied or permission issues
+# ✅ Solution: Try opening parent folder instead
+cursor Dashboard\
+
+# ✅ Alternative: Use new window flag
+cursor -n Dashboard\dashboard-main.php
+```
+
+### **Cursor CLI Troubleshooting Checklist:**
+1. **Verify installation**: `cursor --version` and `code --version`
+2. **Try alternative command**: If `cursor` fails, try `code`
+3. **Check file path**: Ensure file exists with `dir filename`
+4. **Use quotes**: For paths with spaces or special characters
+5. **Try parent folder**: If file fails, try opening containing folder
+6. **Use new window**: Add `-n` flag if current window has issues
+
+---
+
+## 🔧 **POWERSHELL ISSUE IDENTIFICATION**
+
+### **🚨 PowerShell PSReadLine Error Symptoms:**
+```
+Oops, something went wrong. Please report this bug with the details below.
+Report on GitHub: https://github.com/lzybkr/PSReadLine/issues/new
+-----------------------------------------------------------------------
+Exception:
+System.ArgumentOutOfRangeException: The value must be greater than or equal to zero and less than the console's buffer size in that dimension.
+Parameter name: top
+Actual value was -1.
+```
+
+### **🎯 Root Cause:**
+- **Issue**: PowerShell PSReadLine console buffer management bug
+- **Trigger**: Long commands, complex escaping, multiple operators
+- **Impact**: Command may execute successfully but display errors
+- **Solution**: Use CMD wrapper or simplify commands
+
+---
+
+## 🛠️ **COMMAND EXECUTION STRATEGY**
+
+### **Level 1: Simple Commands (Use Directly)**
+```bash
+php filename.php                    # ✅ Direct execution
+php -l filename.php                 # ✅ Syntax check
+dir                                 # ✅ Directory listing
+type filename.txt                   # ✅ File content
+cd directory                       # ✅ Single directory change
+```
+
+### **Level 2: Complex Commands (Use CMD Wrapper)**
+```bash
+cmd /c "php -l path\to\file.php"                    # ✅ Complex paths
+cmd /c "dir /s *.php"                               # ✅ Recursive operations
+cmd /c "cd .. && php wp-content\plugins\file.php"  # ✅ Multiple operations
+cmd /c "php script.php > output.txt 2>&1"          # ✅ Redirections
+```
+
+### **Level 3: Very Complex (Break Into Steps)**
+```bash
+# ❌ WRONG - All in one complex command
+cmd /c "cd .. && cd .. && php complex-path\script.php && type results.txt"
+
+# ✅ CORRECT - Break into simple steps
+cd ..
+cd ..
+php complex-path\script.php
+type results.txt
+```
+
+---
+
+## 📋 **COMMON SCENARIOS - SOLUTION PATTERNS**
+
+### **Scenario 1: PHP Script Testing**
+```bash
+# ✅ PATTERN: Test syntax first, then execute
+php -l Dashboard\security\security-forms.php
+php Dashboard\test-script.php
+```
+
+### **Scenario 2: File Verification**
+```bash
+# ✅ PATTERN: Simple file operations
+dir Dashboard\security
+type Dashboard\test-results.txt
+```
+
+### **Scenario 3: Database/WordPress Testing**
+```bash
+# ✅ PATTERN: Simple PHP execution (avoid WordPress path complexity)
+php test-simple.php
+# If WordPress needed, use relative paths in PHP script itself
+```
+
+### **Scenario 4: Multiple File Processing**
+```bash
+# ✅ PATTERN: One command per file
+php -l file1.php
+php -l file2.php
+php -l file3.php
+
+# ✅ ALTERNATIVE: CMD wrapper for batch
+cmd /c "for %f in (*.php) do php -l %f"
+```
+
+### **Scenario 5: File Editing Workflow (NEW)**
+```bash
+# ✅ PATTERN: Open file for editing after testing
+php -l Dashboard\includes\class-menu-manager.php
+cursor Dashboard\includes\class-menu-manager.php
+
+# ✅ PATTERN: Compare files before and after changes
+cursor -d Dashboard\includes\class-menu-manager.php Dashboard\includes\class-menu-manager.php.backup
+
+# ✅ PATTERN: Open at error line from PHP output
+php Dashboard\test-script.php
+# If error at line 45: 
+cursor -g Dashboard\test-script.php:45
+
+# ✅ PATTERN: Open multiple related files for development
+cursor Dashboard\includes\class-menu-manager.php Dashboard\security\security-forms.php Dashboard\templates\dashboard-template.php
+```
+
+### **Scenario 6: Project Navigation (NEW)**
+```bash
+# ✅ PATTERN: Open entire project folder
+cursor Dashboard\
+
+# ✅ PATTERN: Add specific folders to workspace
+cursor -a Dashboard\includes\
+cursor -a Dashboard\security\
+cursor -a Dashboard\templates\
+
+# ✅ PATTERN: Open in separate window for comparison
+cursor -n Dashboard\includes\class-menu-manager.php
+```
+
+---
+
+## 🎯 **DECISION TREE FOR COMMAND SELECTION**
+
+### **Question 1: Do you want to open/edit files?**
+- **YES**: Use Cursor CLI (`cursor filename.php` or `code filename.php`)
+- **NO**: Go to Question 2
+
+### **Question 2: Is it a single, simple command?**
+- **YES**: Use direct command (`php filename.php`)
+- **NO**: Go to Question 3
+
+### **Question 3: Does it involve paths, redirections, or operators?**
+- **YES**: Use CMD wrapper (`cmd /c "complex command"`)
+- **NO**: Use direct command
+
+### **Question 4: Is the CMD wrapper command > 100 characters?**
+- **YES**: Break into multiple simple commands
+- **NO**: Use CMD wrapper
+
+### **Question 5: Did the Cursor CLI command fail?**
+- **YES**: Try fallback strategy (code command, new window, or folder)
+- **NO**: Command successful
+
+---
+
+## 🚀 **TESTING VERIFICATION PATTERNS**
+
+### **✅ Success Indicators:**
+- Command executes without PSReadLine errors
+- Expected output appears
+- Exit code is 0 for successful operations
+- No "Exception" or "ArgumentOutOfRangeException" messages
+
+### **❌ Failure Indicators:**
+- PSReadLine error messages
+- "The token '&&' is not a valid statement separator"
+- "The term 'command' is not recognized"
+- Console buffer exceptions
+
+### **🔧 Recovery Actions:**
+1. **Immediate**: Use CMD wrapper for the same command
+2. **If CMD fails**: Break command into smaller parts
+3. **If still failing**: Create a batch file or PHP script
+
+---
+
+## 📝 **ENVIRONMENT-SPECIFIC NOTES**
+
+### **Windows 10 PowerShell Environment:**
+- **Version**: Windows PowerShell 5.x with PSReadLine
+- **Issue**: Console buffer management in long commands
+- **Workaround**: CMD wrapper bypasses PSReadLine entirely
+
+### **VS Code Terminal:**
+- **Default**: PowerShell with same issues
+- **Solution**: Same CMD wrapper approach works
+- **Alternative**: Can switch to Command Prompt in VS Code terminal
+
+### **Local by Flywheel Environment:**
+- **Path Structure**: `C:\Users\mansu\Local Sites\cpaas\app\public\wp-content\plugins`
+- **PHP Path**: Direct `php` command available
+- **File Separators**: Use `\` for Windows paths
+
+---
+
+## 🎯 **MANDATORY EXECUTION CHECKLIST**
+
+### **Before Running Any Terminal Command:**
+- [ ] Is this a simple single command? → Use directly
+- [ ] Does this involve operators or complex paths? → Use CMD wrapper
+- [ ] Is the command longer than 100 characters? → Break into steps
+- [ ] Am I using PowerShell-specific syntax? → Convert to CMD syntax
+
+### **After Command Execution:**
+- [ ] Did I get the expected output?
+- [ ] Are there any PSReadLine error messages?
+- [ ] Did the command actually complete successfully?
+- [ ] Should I use CMD wrapper next time for this pattern?
+
+---
+
+## 🏆 **SUCCESS EXAMPLES FROM RECENT WORK**
+
+### **✅ Working Examples:**
+```bash
+# Security file syntax check
+cmd /c "php -l Dashboard\security\security-forms.php"
+# Result: "No syntax errors detected"
+
+# Menu manager syntax check  
+cmd /c "php -l Dashboard\includes\class-menu-manager.php"
+# Result: "No syntax errors detected"
+
+# Simple script execution
+php Dashboard\test-files-only.php
+# Result: Successful execution with output
+```
+
+### **❌ Failed Attempts (Learned From):**
+```bash
+# Complex PowerShell escaping - FAILED
+php -r "require_once 'file'; echo 'result';"
+
+# Multiple operators - FAILED
+cd .. && cd .. && php script.php
+
+# Long command chains - FAILED
+powershell -Command "complex multi-step operation"
+```
+
+---
+
+## 🎯 **FINAL RULE SUMMARY**
+
+### **🥇 GOLDEN RULES:**
+1. **File Editing First**: Use `cursor filename.php` or `code filename.php` for opening files
+2. **Simple Commands**: Try direct command first (`php filename.php`)
+3. **CMD Wrapper**: Use `cmd /c "command"` for complexity
+4. **Break Apart**: Split very long commands into steps
+5. **Test Pattern**: Syntax check first, then execute
+6. **No PowerShell**: Avoid PowerShell-specific syntax entirely
+7. **Cursor Fallback**: If `cursor` fails, try `code`, then try with flags
+
+### **🚨 EMERGENCY FALLBACK:**
+If all else fails:
+1. **Cursor CLI**: Try `cursor -n filename.php` or `cursor foldername\`
+2. **Batch File**: Create a `.bat` file with the commands
+3. **Direct Execution**: Execute the batch file directly
+4. **PHP Script**: Use PHP script to handle complex operations
+
+---
+
+**Document Version**: 2.0.0 - Terminal Command Execution Rules with Cursor CLI  
+**Environment**: Windows 10 PowerShell with PSReadLine + Cursor CLI  
+**Last Updated**: January 19, 2025  
+**Status**: Tested and verified with Dashboard Plugin development + Cursor CLI integration  
+**Auto-Apply**: Intelligent loading before terminal operations

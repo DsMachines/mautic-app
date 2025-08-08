@@ -1,0 +1,308 @@
+## 🎯 **TEMPLATE FORMS SECURITY - INCOMING FAILSAFE HOOK**
+
+### 🚨 **ROUTING FROM MASTER FLOW VALVE**
+```
+template-rules-SOP.mdc → security-forms-temp.mdc → security-forms-temp.php
+```
+
+**TRIGGERED WHEN**: Template development needs form/AJAX operations
+**IMPLEMENTS IN**: `Dashboard/security/security-forms-temp.php`
+**ISOLATION**: Template-specific, does NOT modify production security-forms.php
+
+---
+
+## 🛡️ **TEMPLATE FORMS SECURITY PATTERNS**
+
+### **🎯 Template Forms Security Helper Class Pattern**
+```php
+// IMPLEMENT IN: security-forms-temp.php
+class Dashboard_Security_Forms_Temp {
+    private static $instance = null;
+    
+    public static function instance() {
+        if (null === self::$instance) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+    
+    // Template-specific form validation
+    public function validate_template_form($form_data, $nonce_action) {
+        // Verify nonce for template forms
+        if (!wp_verify_nonce($form_data['_wpnonce'], $nonce_action)) {
+            throw new Exception('Invalid nonce for template form');
+        }
+        
+        // Validate user capabilities for template operations
+        if (!current_user_can('read')) {
+            throw new Exception('Insufficient permissions for template form');
+        }
+        
+        return true;
+    }
+    
+    // Template-specific AJAX validation
+    public function validate_template_ajax($context = 'template_ajax') {
+        // Check nonce for template AJAX operations
+        if (!check_ajax_referer($context, '_wpnonce', false)) {
+            wp_send_json_error(['message' => 'Invalid nonce for template AJAX']);
+            wp_die();
+        }
+        
+        // Validate user capabilities
+        if (!current_user_can('read')) {
+            wp_send_json_error(['message' => 'Insufficient permissions for template AJAX']);
+            wp_die();
+        }
+        
+        return true;
+    }
+    
+    // Template-specific input sanitization
+    public function sanitize_template_input($data) {
+        $sanitized = [];
+        
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $sanitized[$key] = array_map('sanitize_text_field', $value);
+            } else {
+                switch ($key) {
+                    case 'email':
+                        $sanitized[$key] = sanitize_email($value);
+                        break;
+                    case 'url':
+                        $sanitized[$key] = esc_url_raw($value);
+                        break;
+                    case 'content':
+                        $sanitized[$key] = wp_kses_post($value);
+                        break;
+                    default:
+                        $sanitized[$key] = sanitize_text_field($value);
+                        break;
+                }
+            }
+        }
+        
+        return $sanitized;
+    }
+}
+```
+
+### **🔒 Template AJAX Security Pattern**
+```php
+// IMPLEMENT IN: security-forms-temp.php
+public function handle_template_ajax_request() {
+    // Template AJAX security validation
+    $this->validate_template_ajax('template_ajax_nonce');
+    
+    // Sanitize input data
+    $input_data = $this->sanitize_template_input($_POST);
+    
+    // Process template AJAX request
+    $result = $this->process_template_request($input_data);
+    
+    // Send secure response
+    if ($result) {
+        wp_send_json_success([
+            'message' => 'Template operation successful',
+            'data' => $result,
+            'cached' => false // Templates don't cache for real-time updates
+        ]);
+    } else {
+        wp_send_json_error([
+            'message' => 'Template operation failed',
+            'error_code' => 'template_processing_error'
+        ]);
+    }
+}
+```
+
+### **📝 Template Form Processing Pattern**
+```php
+// IMPLEMENT IN: security-forms-temp.php
+public function process_template_form_submission() {
+    // Validate template form
+    $this->validate_template_form($_POST, 'template_form_nonce');
+    
+    // Sanitize form data
+    $form_data = $this->sanitize_template_input($_POST);
+    
+    // Process form data
+    $result = $this->save_template_form_data($form_data);
+    
+    if ($result) {
+        // Redirect with success message
+        wp_redirect(add_query_arg([
+            'template_message' => 'success',
+            'template_action' => 'form_saved'
+        ], wp_get_referer()));
+        exit;
+    } else {
+        // Redirect with error message
+        wp_redirect(add_query_arg([
+            'template_message' => 'error',
+            'template_action' => 'form_failed'
+        ], wp_get_referer()));
+        exit;
+    }
+}
+```
+
+---
+
+## 🚨 **TEMPLATE FORMS SECURITY RULES**
+
+### **MANDATORY PATTERNS FOR TEMPLATES:**
+
+1. **Always Validate Nonces**: All template forms and AJAX must verify nonces
+   ```php
+   // ✅ CORRECT - Template nonce validation
+   $forms = Dashboard_Security_Forms_Temp::instance();
+   $forms->validate_template_form($_POST, 'template_form_nonce');
+   
+   // ❌ WRONG - No nonce validation
+   $data = $_POST; // Direct usage without validation
+   ```
+
+2. **Template Capability Checking**: Verify user permissions for template operations
+   ```php
+   // ✅ CORRECT - Template capability check
+   if (!current_user_can('read')) {
+       wp_die('Insufficient permissions for template operation');
+   }
+   ```
+
+3. **Template Input Sanitization**: All template input must be sanitized
+   ```php
+   // ✅ CORRECT - Template input sanitization
+   $forms = Dashboard_Security_Forms_Temp::instance();
+   $clean_data = $forms->sanitize_template_input($_POST);
+   
+   // ❌ WRONG - Direct usage without sanitization
+   $title = $_POST['title']; // Unsanitized input
+   ```
+
+4. **Template AJAX Security**: AJAX endpoints must use template security validation
+   ```php
+   // ✅ CORRECT - Template AJAX security
+   function handle_template_ajax() {
+       $forms = Dashboard_Security_Forms_Temp::instance();
+       $forms->validate_template_ajax('template_ajax_nonce');
+       
+       // Process AJAX request...
+   }
+   add_action('wp_ajax_template_action', 'handle_template_ajax');
+   ```
+
+---
+
+## 🔄 **INTEGRATION WITH TEMPLATE DEVELOPMENT**
+
+### **Template Form Integration Pattern:**
+```php
+// IN TEMPLATE FILE: templates/child-menus/example/form-template.php
+<?php
+// Get template forms security helper
+$forms = Dashboard_Security_Forms_Temp::instance();
+
+// Handle form submission
+if ($_POST && isset($_POST['template_action'])) {
+    try {
+        $forms->process_template_form_submission();
+    } catch (Exception $e) {
+        echo '<div class="error">' . esc_html($e->getMessage()) . '</div>';
+    }
+}
+?>
+
+<form method="post" action="">
+    <?php wp_nonce_field('template_form_nonce'); ?>
+    <input type="hidden" name="template_action" value="save_data">
+    
+    <label for="template_title">Title:</label>
+    <input type="text" id="template_title" name="title" required>
+    
+    <label for="template_content">Content:</label>
+    <textarea id="template_content" name="content"></textarea>
+    
+    <button type="submit">Save Template Data</button>
+</form>
+```
+
+### **Template AJAX Integration Pattern:**
+```javascript
+// IN TEMPLATE FILE: Template AJAX JavaScript
+jQuery(document).ready(function($) {
+    $('#template-ajax-button').on('click', function() {
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'template_ajax_action',
+                template_data: $('#template-input').val(),
+                _wpnonce: template_ajax_vars.nonce
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert('Template operation successful: ' + response.data.message);
+                } else {
+                    alert('Template operation failed: ' + response.data.message);
+                }
+            },
+            error: function() {
+                alert('Template AJAX request failed');
+            }
+        });
+    });
+});
+```
+
+---
+
+## ✅ **VALIDATION CHECKLIST FOR TEMPLATE FORMS SECURITY**
+
+### **Before Implementation:**
+- [ ] Template development routed through template-rules-SOP.mdc
+- [ ] Form/AJAX operations identified for template
+- [ ] security-forms-temp.mdc loaded (this file)
+- [ ] Implementation planned for security-forms-temp.php
+
+### **During Implementation:**
+- [ ] Template forms security helper class created in security-forms-temp.php
+- [ ] All template forms use nonce validation
+- [ ] All template AJAX endpoints use security validation
+- [ ] Input sanitization implemented for all template data
+- [ ] Capability checking added for template operations
+- [ ] Template integration code created
+
+### **After Implementation:**
+- [ ] Template forms security tested and validated
+- [ ] All template forms have proper nonce verification
+- [ ] Template AJAX endpoints work with security validation
+- [ ] Input sanitization prevents security issues
+- [ ] No conflicts with production security-forms.php
+
+---
+
+## 🚀 **SUCCESS CRITERIA**
+
+**Template Forms Security is COMPLETE when:**
+- ✅ security-forms-temp.php implements all required methods
+- ✅ Template forms use proper nonce validation
+- ✅ Template AJAX endpoints have security validation
+- ✅ All template input is properly sanitized
+- ✅ Template capability checking works correctly
+- ✅ No production security files modified
+- ✅ Template forms security tested successfully
+
+---
+
+**Routing Source**: template-rules-SOP.mdc → security-forms-temp.mdc  
+**Implementation Target**: Dashboard/security/security-forms-temp.php  
+**Template Integration**: All template form and AJAX operations  
+**Security Isolation**: Template-specific, production-safe  
+**Testing Requirement**: Template forms security must be validated
+description:
+globs:
+alwaysApply: false
+---

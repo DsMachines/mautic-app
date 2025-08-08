@@ -1,0 +1,369 @@
+[08-Aug-2025 02:12:37 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:12:37 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:12:37 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:12:37 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:12:37 UTC] 🔍 DEBUG: is_admin(): false
+[08-Aug-2025 02:12:37 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:12:37 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:12:37 UTC] 🔍 DEBUG: is_admin(): false
+[08-Aug-2025 02:12:37 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:12:37 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:12:37 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:12:37 UTC] 🔍 DEBUG: is_admin(): false
+[08-Aug-2025 02:12:37 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:12:47 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:12:47 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:12:47 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:12:47 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:12:47 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:12:47 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:12:47 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:12:47 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:12:47 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:12:47 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:12:47 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:12:53 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:12:53 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:12:53 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:12:53 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:12:53 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:12:53 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:12:53 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:12:53 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:12:53 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:12:53 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:12:53 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:00 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:00 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:00 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:00 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:00 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:00 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:00 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:00 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:00 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:00 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:00 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:07 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:07 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:07 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:07 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:07 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:07 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:07 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:07 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:07 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:07 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:07 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:12 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:12 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:12 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:12 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:12 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:12 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:12 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:12 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:12 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:12 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:12 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:15 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:15 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:15 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:15 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:15 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:15 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:15 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:15 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:15 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:15 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:15 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:18 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:18 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:18 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:18 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:18 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:18 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:18 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:18 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:18 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:18 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:18 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:18 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:18 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:21 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:21 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:21 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:21 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:21 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:21 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:21 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:21 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:21 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:21 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:21 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:22 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:22 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:22 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:22 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:22 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:22 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:22 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: is_admin(): false
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: is_dashboard_page called
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: $post: exists
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Post ID: 1
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Post name: hello-world
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Dashboard slug check: false
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: is_dashboard_page called
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: $post: exists
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Post ID: 1
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Post name: hello-world
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Dashboard slug check: false
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: enqueue_dashboard_assets called
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: is_dashboard_page called
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: $post: exists
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Post ID: 1
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Post name: hello-world
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Dashboard slug check: false
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: is_dashboard_page: false
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: is_dashboard_page called
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: $post: exists
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Post ID: 1
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Post name: hello-world
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Dashboard slug check: false
+[08-Aug-2025 02:13:22 UTC] 🔍 DEBUG: Not dashboard page, skipping asset enqueue
+[08-Aug-2025 02:13:24 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:24 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:24 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:24 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:24 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:24 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:24 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:24 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:24 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:24 UTC] 🔍 DEBUG: is_admin(): false
+[08-Aug-2025 02:13:24 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:27 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:27 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:27 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:27 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:27 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:27 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:27 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: is_admin(): false
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: is_dashboard_page called
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: $post: exists
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Post ID: 24
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Post name: dashboard
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Matched dashboard page ID
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: is_dashboard_page called
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: $post: exists
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Post ID: 24
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Post name: dashboard
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Matched dashboard page ID
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: enqueue_dashboard_assets called
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: is_dashboard_page called
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: $post: exists
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Post ID: 24
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Post name: dashboard
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Matched dashboard page ID
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: is_dashboard_page: true
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: is_dashboard_page called
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: $post: exists
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Post ID: 24
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Post name: dashboard
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Matched dashboard page ID
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Is dashboard page, checking user access
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: User can access dashboard, enqueuing assets
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: Enqueuing JavaScript: http://cpaas.local/wp-content/plugins/Dashboard/assets/js/dashboard-ghl-style.js
+[08-Aug-2025 02:13:27 UTC] 🔍 DEBUG: JavaScript enqueued successfully
+[08-Aug-2025 02:13:31 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:31 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:31 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:31 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:31 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:31 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:31 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:31 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:31 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:31 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:31 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:31 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:31 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:31 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:31 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:31 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:31 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:31 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:31 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:31 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:31 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:31 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:36 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:36 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:36 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:36 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:36 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:36 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:36 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:36 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:36 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:36 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:36 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:36 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:36 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:36 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:36 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:36 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:36 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:36 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:36 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:36 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:36 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:36 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:36 UTC] 🔒 [Dashboard Security] ajax_load_template() - STARTED
+[08-Aug-2025 02:13:36 UTC] 🔍 [Dashboard Debug] User ID: 1, User Can Manage: YES
+[08-Aug-2025 02:13:36 UTC] 🔒 [Security Forms] validate_template_manager_ajax_load() - STARTED
+[08-Aug-2025 02:13:36 UTC] ✅ [Security Forms] CAPABILITY CHECK PASSED
+[08-Aug-2025 02:13:36 UTC] 🔍 [Security Debug] Template load nonce validation - Action: dashboard_template_nonce, Field: nonce
+[08-Aug-2025 02:13:36 UTC] ✅ [Security Forms] NONCE VERIFICATION PASSED for template load
+[08-Aug-2025 02:13:36 UTC] 🔒 [Dashboard Security] ajax_load_template() - STARTED
+[08-Aug-2025 02:13:36 UTC] 🔒 [Security Forms] Template load validation result: VALID
+[08-Aug-2025 02:13:36 UTC] 🔍 [Dashboard Debug] User ID: 1, User Can Manage: YES
+[08-Aug-2025 02:13:36 UTC] 🔒 [Security Forms] validate_template_manager_ajax_load() - COMPLETED
+[08-Aug-2025 02:13:36 UTC] 🔒 [Security Forms] validate_template_manager_ajax_load() - STARTED
+[08-Aug-2025 02:13:36 UTC] 🔒 [Dashboard Security] Validation: {"valid":true,"errors":[],"nonce_verified":true,"capability_checked":true,"sanitized_data":{"template":"dashboard-home","page":0}}
+[08-Aug-2025 02:13:36 UTC] ✅ [Security Forms] CAPABILITY CHECK PASSED
+[08-Aug-2025 02:13:36 UTC] 🔍 DEBUG: Loading template: dashboard-home
+[08-Aug-2025 02:13:36 UTC] 🔍 DEBUG: Template_Manager::can_user_access_template called for: dashboard-home, user: 1
+[08-Aug-2025 02:13:36 UTC] 🔍 [Security Debug] Template load nonce validation - Action: dashboard_template_nonce, Field: nonce
+[08-Aug-2025 02:13:36 UTC] ✅ [Security Forms] NONCE VERIFICATION PASSED for template load
+[08-Aug-2025 02:13:36 UTC] 🔍 DEBUG: Permission manager result: true
+[08-Aug-2025 02:13:36 UTC] 🔒 [Security Forms] Template load validation result: VALID
+[08-Aug-2025 02:13:36 UTC] 🔒 [Security Forms] validate_template_manager_ajax_load() - COMPLETED
+[08-Aug-2025 02:13:36 UTC] 🔒 [Dashboard Security] Validation: {"valid":true,"errors":[],"nonce_verified":true,"capability_checked":true,"sanitized_data":{"template":"dashboard-home","page":0}}
+[08-Aug-2025 02:13:36 UTC] 🔍 DEBUG: Loading template: dashboard-home
+[08-Aug-2025 02:13:36 UTC] 🔍 DEBUG: Template content length: 38804
+[08-Aug-2025 02:13:36 UTC] 🔍 DEBUG: Template_Manager::can_user_access_template called for: dashboard-home, user: 1
+[08-Aug-2025 02:13:36 UTC] 🔍 DEBUG: Permission manager result: true
+[08-Aug-2025 02:13:36 UTC] 🔍 DEBUG: Template content length: 38806
+[08-Aug-2025 02:13:44 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:44 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:44 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:44 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:44 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:44 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:44 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:44 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:44 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:44 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:44 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:48 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:48 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:48 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:48 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:48 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:48 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:48 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:48 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:48 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:48 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:48 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:48 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:48 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:13:52 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:13:52 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:13:52 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:13:52 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:13:52 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:13:52 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:13:52 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:13:52 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:13:52 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:13:52 UTC] 🔍 DEBUG: is_admin(): true
+[08-Aug-2025 02:13:52 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized
+[08-Aug-2025 02:51:56 UTC] PHP Notice:  Function _load_textdomain_just_in_time was called <strong>incorrectly</strong>. Translation loading for the <code>paid-memberships-pro</code> domain was triggered too early. This is usually an indicator for some code in the plugin or theme running too early. Translations should be loaded at the <code>init</code> action or later. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 6.7.0.) in C:\Users\mansu\Local Sites\cpaas\app\public\wp-includes\functions.php on line 6121
+[08-Aug-2025 02:51:56 UTC] [TEMPLATE-DB] Dashboard_Security_Database_Temp class loaded successfully
+[08-Aug-2025 02:51:56 UTC] [TEMPLATE-FORMS] Dashboard_Security_Forms_Temp class loaded successfully
+[08-Aug-2025 02:51:56 UTC] [TEMPLATE-API] Dashboard_Webhook_API_Security_Temp class loaded successfully
+[08-Aug-2025 02:51:56 UTC] [TEMPLATE-PERF] Dashboard_Security_Performance_Temp class loaded successfully
+[08-Aug-2025 02:51:56 UTC] [TEMPLATE-CACHE] Dashboard_Security_Cache_Temp class loaded successfully
+[08-Aug-2025 02:51:56 UTC] [TEMPLATE-CRON] Dashboard_Security_Cron_Temp class loaded successfully
+[08-Aug-2025 02:51:56 UTC] 🔍 DEBUG: Dashboard_Page_Manager constructor called
+[08-Aug-2025 02:51:56 UTC] 🔍 DEBUG: Dashboard page ID: 24
+[08-Aug-2025 02:51:56 UTC] 🔍 DEBUG: is_admin(): false
+[08-Aug-2025 02:51:56 UTC] 🔍 DEBUG: Dashboard_Page_Manager initialized

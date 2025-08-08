@@ -1,0 +1,263 @@
+---
+name: ajax-hardening
+description: MANDATORY AJAX security failsafe - AI must halt and apply security patterns for ANY AJAX usage. FORCE LOADS security-forms.mdc for complete implementation.
+globs:
+  - Dashboard/**/*.php
+  - Dashboard/**/*.js
+alwaysApply: true
+---
+
+# 🔒 **MANDATORY AJAX SECURITY FAILSAFE - TOKEN OPTIMIZED**
+
+### **🚨 CRITICAL AUTO-TRIGGER PROTOCOL**
+
+**WHEN AI DETECTS ANY AJAX PATTERN, IT MUST:**
+1. **HALT** code generation immediately
+2. **FORCE LOAD** security-forms.mdc (mandatory patterns)
+3. **APPLY** complete security implementation from BOTH files
+4. **VALIDATE** using checklist below
+5. **RESUME** only with secure implementation
+
+### **🎯 MANDATORY CROSS-FILE LOADING TRIGGERS**
+
+```php
+// AUTO-TRIGGER PATTERNS - MUST LOAD security-forms.mdc
+wp_ajax_                     // → LOAD: security-forms.mdc (AJAX hook registration)
+wp_ajax_nopriv_              // → LOAD: security-forms.mdc (public AJAX hooks)
+admin-ajax.php               // → LOAD: security-forms.mdc (AJAX endpoint usage)
+wp_send_json_success         // → LOAD: security-forms.mdc (AJAX response patterns)
+wp_send_json_error           // → LOAD: security-forms.mdc (AJAX error handling)
+wp_verify_nonce              // → LOAD: security-forms.mdc (nonce verification)
+check_admin_referer          // → LOAD: security-forms.mdc (CSRF protection)
+$_POST                       // → LOAD: security-forms.mdc (form data processing)
+$_REQUEST                    // → LOAD: security-forms.mdc (request data handling)
+current_user_can             // → LOAD: security-forms.mdc (capability checking)
+Dashboard_Security_Forms     // → LOAD: security-forms.mdc (security class usage)
+validate_*_ajax              // → LOAD: security-forms.mdc (AJAX validation methods)
+"ajax"                       // → LOAD: security-forms.mdc (AJAX discussions)
+"form processing"            // → LOAD: security-forms.mdc (form handling)
+"nonce verification"         // → LOAD: security-forms.mdc (security validation)
+```
+
+### **⚡ EMERGENCY FAILSAFE ENFORCEMENT**
+
+```
+IF AI generates AJAX code WITHOUT loading security-forms.mdc:
+├─ SECURITY VIOLATION DETECTED
+├─ HALT: Stop code generation immediately
+├─ FORCE LOAD: security-forms.mdc (MANDATORY)
+├─ REPROCESS: Apply security patterns from both files
+└─ VALIDATE: Complete security checklist before proceeding
+```
+
+### **🛡️ COMPREHENSIVE SECURITY INTEGRATION**
+
+**MANDATORY LOADING SEQUENCE:**
+1. **THIS FILE** (ajax-hardening.mdc) - Always loaded, provides enforcement
+2. **security-forms.mdc** - FORCE LOAD for implementation patterns and validation methods
+
+**TOKEN OPTIMIZATION:**
+- This file: Lightweight enforcement and essential patterns only
+- security-forms.mdc: Detailed implementation patterns and validation examples
+
+---
+
+## 🔒 **MANDATORY VALIDATION CHECKLIST**
+
+### **PRE-CODE GENERATION (Complete ALL before coding):**
+- [ ] Detected AJAX pattern - confirmed need for security validation
+- [ ] Added security validation method to Dashboard_Security_Forms class
+- [ ] Selected correct validation pattern from security-forms.mdc
+- [ ] Nonce action and field names specified
+- [ ] Capability requirements defined
+
+### **POST-CODE GENERATION (Validate IMMEDIATELY after coding):**
+- [ ] **Syntax Check**: `php -l filename.php` passes
+- [ ] **Pattern Scan**: All AJAX endpoints use security validation
+- [ ] **Security Integration**: Uses Dashboard_Security_Forms::validate_*($context)
+- [ ] **Nonce Verification**: Proper nonce action alignment between PHP and JS
+- [ ] **Capability Check**: Appropriate user capability validation
+- [ ] **Input Sanitization**: All user input properly sanitized
+
+---
+
+## 🚨 **CRITICAL FAILURE CONDITIONS**
+
+**CODE IS INSECURE AND MUST BE REJECTED IF:**
+- Any AJAX endpoint lacks security validation
+- Direct $_POST/$_REQUEST processing without sanitization
+- Missing nonce verification in AJAX handlers
+- No capability checks for administrative functions
+- Security validation method bypassed or missing
+
+---
+
+## 🎯 **QUICK DECISION TREE**
+
+```
+AJAX operation needed?
+├─ YES → FORCE LOAD security-forms.mdc
+│   ├─ New AJAX endpoint? → Create validate_*_ajax_*($context) method
+│   ├─ Form processing? → Use validate_*_form($context) method
+│   ├─ Admin function? → Add manage_options capability check
+│   ├─ Public endpoint? → Use wp_ajax_nopriv_ + enhanced validation
+│   └─ Complex validation? → Reference proven patterns from security-forms.mdc
+└─ NO → Continue with standard implementation
+```
+
+---
+
+## 🛡️ **AJAX SECURITY METHODS REFERENCE**
+
+```php
+// Available patterns in Dashboard_Security_Forms class (from security-forms.mdc):
+Dashboard_Security_Forms::validate_menu_manager_ajax_*($context)      // Menu AJAX operations
+Dashboard_Security_Forms::validate_admin_menu_ajax_*($context)        // Admin interface AJAX
+Dashboard_Security_Forms::validate_template_manager_ajax_*($context)  // Template AJAX operations
+Dashboard_Security_Forms::validate_permission_manager_ajax_*($context) // Permission AJAX operations
+Dashboard_Security_Forms::validate_generic_form($context)             // Generic form validation
+
+// Standard security context structure:
+$security_context = [
+    'action' => 'specific_action_name',
+    'nonce_action' => 'dashboard_*_nonce',
+    'nonce_field' => 'nonce',
+    'ajax' => true,
+    'data' => $_POST,
+    'class' => 'class_identifier'
+];
+```
+
+---
+
+## 🏗️ **PROVEN INTEGRATION PATTERN**
+
+```php
+// Standard AJAX security integration pattern:
+public function ajax_new_endpoint() {
+    // 1. Load security class
+    $security_file = DASHBOARD_PLUGIN_PATH . 'security/security-forms.php';
+    if (!class_exists('\\Dashboard_Security_Forms') && file_exists($security_file)) {
+        require_once $security_file;
+    }
+    
+    // 2. Verify security class and method exist
+    if (!class_exists('\\Dashboard_Security_Forms') || !method_exists('\\Dashboard_Security_Forms', 'validate_new_ajax_endpoint')) {
+        wp_send_json_error(['message' => 'Security validation unavailable']);
+    }
+    
+    // 3. Prepare security context
+    $security_context = [
+        'action' => 'dashboard_new_action',
+        'nonce_action' => 'dashboard_new_nonce',
+        'nonce_field' => 'nonce',
+        'ajax' => true,
+        'data' => $_POST,
+        'class' => 'new_manager'
+    ];
+    
+    // 4. Validate security
+    $validation = \Dashboard_Security_Forms::validate_new_ajax_endpoint($security_context);
+    
+    if (!$validation['valid']) {
+        wp_send_json_error([
+            'message' => implode(', ', $validation['errors']),
+            'security_check' => false
+        ]);
+    }
+    
+    // 5. Continue with secure implementation
+    // Your AJAX logic here...
+    
+    wp_send_json_success($result);
+}
+```
+
+---
+
+## ⚡ **EMERGENCY PROTOCOLS**
+
+### **IF FORBIDDEN PATTERN DETECTED:**
+```
+1. HALT code generation immediately
+2. OUTPUT: "SECURITY VIOLATION: Unsecured AJAX endpoint detected"
+3. FORCE LOAD: security-forms.mdc for validation patterns
+4. APPLY: Correct security validation pattern
+5. VALIDATE: Run post-generation checklist
+6. RESUME: Only with secure implementation
+```
+
+### **IF SECURITY PATTERN CANNOT BE APPLIED:**
+```
+1. HALT code generation immediately
+2. OUTPUT: "AJAX SECURITY REQUIRED: Cannot proceed without validation"
+3. REFERENCE: security-forms.mdc for implementation examples
+4. REQUEST: Human developer manual review if patterns insufficient
+5. PROVIDE: Specific blocking reason and required security measures
+```
+
+---
+
+## 🏆 **SUCCESS VALIDATION**
+
+**Code is SECURE and ACCEPTABLE when:**
+- ✅ All AJAX endpoints use Dashboard_Security_Forms validation
+- ✅ Proper nonce alignment between PHP and JavaScript
+- ✅ Capability checks appropriate for endpoint sensitivity
+- ✅ Input sanitization applied to all user data
+- ✅ No direct $_POST/$_REQUEST processing without validation
+
+---
+
+## 🎯 **NONCE ALIGNMENT CRITICAL PATTERN**
+
+### **⚠️ COMMON ISSUE: Nonce Mismatch**
+**Problem**: JavaScript sends generic `dashboard_ajax_nonce`, PHP expects action-specific nonce.
+
+### **✅ SOLUTION: Action-Specific Nonces**
+
+#### **PHP - Expose Action-Specific Nonce:**
+```php
+wp_localize_script('dashboard-script', 'dashboardConfig', [
+    'ajaxUrl' => admin_url('admin-ajax.php'),
+    'nonce' => wp_create_nonce('dashboard_ajax_nonce'),          // Generic
+    'newFeatureNonce' => wp_create_nonce('dashboard_new_nonce'), // Specific
+]);
+```
+
+#### **JavaScript - Use Correct Nonce:**
+```javascript
+formData.append('nonce', dashboardConfig.newFeatureNonce); // Match PHP expectation
+```
+
+#### **Security Validation - Same Action String:**
+```php
+// In Dashboard_Security_Forms::validate_new_ajax_endpoint()
+$nonce_valid = wp_verify_nonce($nonce_value, 'dashboard_new_nonce'); // Must match
+```
+
+---
+
+### **🔗 MANDATORY CROSS-FILE REFERENCES**
+
+**AI ASSISTANT MUST REFERENCE:**
+- **security-forms.mdc**: MANDATORY for all AJAX validation patterns, input sanitization, and implementation examples
+
+**ENFORCEMENT PROTOCOL:**
+```
+AJAX operation detected?
+├─ YES → FORCE LOAD security-forms.mdc
+│   ├─ Apply appropriate validation pattern
+│   ├─ Ensure nonce alignment
+│   ├─ Add capability checks
+│   ├─ Implement input sanitization
+│   └─ Validate complete implementation
+└─ NO → Continue with standard implementation
+```
+
+---
+
+**Auto-Trigger**: Enabled for all AJAX patterns  
+**Enforcement**: MANDATORY - No exceptions  
+**Validation**: Required before code completion  
+**Cross-File Integration**: Forces loading of security-forms.mdc for complete patterns 

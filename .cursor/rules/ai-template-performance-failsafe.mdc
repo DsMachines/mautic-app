@@ -1,0 +1,518 @@
+# 🚀 **TEMPLATE PERFORMANCE FAILSAFE - CRITICAL AI DIRECTIVE**
+
+## 🚨 **MANDATORY TEMPLATE PERFORMANCE PROTOCOL**
+
+**AI CODING ASSISTANT MUST FOLLOW THIS PROTOCOL FOR ALL TEMPLATE PERFORMANCE OPTIMIZATION:**
+
+### **🎯 TEMPLATE PERFORMANCE FILE USAGE - MANDATORY**
+
+When working on **ANY** template performance optimization, API integration, or webhook processing:
+
+#### **✅ USE THESE TEMPLATE PERFORMANCE FILES:**
+```php
+// Template-specific performance files (ISOLATED from dashboard)
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-performance-temp.php';
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-cache-temp.php';
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-cron-temp.php';
+```
+
+#### **❌ NEVER USE DASHBOARD PERFORMANCE FILES IN TEMPLATES:**
+```php
+// ❌ FORBIDDEN for template development
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-performance.php';
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-cache.php';
+require_once DASHBOARD_PLUGIN_DIR . '/security/security-cron.php';
+```
+
+---
+
+## 🔍 **TEMPLATE PERFORMANCE PATTERNS**
+
+### **API Performance Monitoring (security-performance-temp.php)**
+**Pattern Source**: Extracted from performance-advanced.mdc lines 77-211 (Performance Monitoring)
+
+```php
+// ✅ GOOD: Template API performance monitoring
+class Dashboard_Template_Performance {
+    private array $metrics = [];
+    private array $api_thresholds = [
+        'twilio' => 3.0,        // 3 seconds for email/SMS
+        'supabase' => 1.0,      // 1 second for database
+        'n8n' => 5.0,           // 5 seconds for workflows
+        'alibaba' => 4.0,       // 4 seconds for cloud email
+        'meta' => 2.0           // 2 seconds for social APIs
+    ];
+    
+    /**
+     * Monitor API call performance with service-specific thresholds
+     */
+    public function monitor_api_call($service, $operation, callable $api_function) {
+        $operation_key = "{$service}_{$operation}";
+        
+        $start_time = microtime(true);
+        $start_memory = memory_get_usage(true);
+        
+        try {
+            $result = call_user_func($api_function);
+            $success = true;
+        } catch (Exception $e) {
+            $result = new WP_Error('api_error', $e->getMessage());
+            $success = false;
+        }
+        
+        $end_time = microtime(true);
+        $end_memory = memory_get_usage(true);
+        
+        $duration = $end_time - $start_time;
+        $memory_used = $end_memory - $start_memory;
+        
+        // Check against service-specific thresholds
+        $threshold = $this->api_thresholds[$service] ?? 2.0;
+        
+        if ($duration > $threshold) {
+            error_log("Slow template API call {$operation_key}: {$duration}s (threshold: {$threshold}s)");
+            
+            // Store slow operation for analysis
+            $this->log_slow_operation($operation_key, $duration, $memory_used, $success);
+        }
+        
+        // Store all metrics for dashboard analytics
+        $this->store_api_metrics($operation_key, $duration, $memory_used, $success);
+        
+        return $result;
+    }
+    
+    /**
+     * Background API processing for heavy operations
+     */
+    public function queue_background_api_call($service, $operation, $data, $priority = 'normal') {
+        global $wpdb;
+        
+        $task_id = wp_generate_uuid4();
+        $priority_value = $this->get_priority_value($priority);
+        
+        $wpdb->insert(
+            $wpdb->prefix . 'cpaas_api_queue',
+            [
+                'task_id' => $task_id,
+                'service' => $service,
+                'operation' => $operation,
+                'data' => wp_json_encode($data),
+                'status' => 'pending',
+                'priority' => $priority_value,
+                'user_id' => get_current_user_id(),
+                'created_at' => current_time('mysql'),
+                'scheduled_at' => current_time('mysql')
+            ],
+            ['%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s']
+        );
+        
+        // Trigger background processing
+        if (!wp_next_scheduled('process_template_api_queue')) {
+            wp_schedule_single_event(time() + 30, 'process_template_api_queue');
+        }
+        
+        return $task_id;
+    }
+    
+    /**
+     * Memory-efficient batch API processing
+     */
+    public function process_api_batch($service, $operation, array $items, $batch_size = 10) {
+        $results = [];
+        $batches = array_chunk($items, $batch_size);
+        
+        foreach ($batches as $batch_index => $batch) {
+            // Memory cleanup between batches
+            if ($batch_index > 0) {
+                gc_collect_cycles();
+                wp_cache_flush_group('template_api_temp');
+            }
+            
+            $batch_results = $this->monitor_api_call(
+                $service, 
+                "{$operation}_batch_{$batch_index}",
+                function() use ($service, $operation, $batch) {
+                    return $this->process_single_batch($service, $operation, $batch);
+                }
+            );
+            
+            if (is_wp_error($batch_results)) {
+                error_log("Batch API error in {$service}: " . $batch_results->get_error_message());
+                continue;
+            }
+            
+            $results = array_merge($results, $batch_results);
+            
+            // Prevent memory exhaustion
+            if (memory_get_usage(true) > (1024 * 1024 * 256)) { // 256MB threshold
+                error_log("Template API batch processing: High memory usage detected");
+                break;
+            }
+        }
+        
+        return $results;
+    }
+}
+```
+
+### **Template Caching System (security-cache-temp.php)**
+**Pattern Source**: Extracted from performance-core.mdc lines 58-116 (Background Processing)
+
+```php
+// ✅ GOOD: Template-specific caching system
+class Dashboard_Template_Cache {
+    private $cache_groups = [
+        'template_api' => 3600,      // 1 hour for API responses
+        'template_data' => 1800,     // 30 minutes for template data
+        'template_user' => 900,      // 15 minutes for user-specific data
+        'template_config' => 7200    // 2 hours for configuration data
+    ];
+    
+    /**
+     * Multi-level template caching
+     */
+    public function get_cached_data($key, $group = 'template_data', $user_specific = true) {
+        if ($user_specific) {
+            $key = $this->get_user_cache_key($key);
+        }
+        
+        // Level 1: Object cache (fastest)
+        $data = wp_cache_get($key, $group);
+        if ($data !== false) {
+            return $data;
+        }
+        
+        // Level 2: Transient cache
+        $transient_key = "{$group}_{$key}";
+        $data = get_transient($transient_key);
+        if ($data !== false) {
+            // Restore to object cache
+            wp_cache_set($key, $data, $group, $this->cache_groups[$group] ?? 1800);
+            return $data;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Set cached data with automatic expiration
+     */
+    public function set_cached_data($key, $data, $group = 'template_data', $user_specific = true) {
+        if ($user_specific) {
+            $key = $this->get_user_cache_key($key);
+        }
+        
+        $expiration = $this->cache_groups[$group] ?? 1800;
+        
+        // Set in both object cache and transient
+        wp_cache_set($key, $data, $group, $expiration);
+        set_transient("{$group}_{$key}", $data, $expiration);
+        
+        return true;
+    }
+    
+    /**
+     * API response caching with service-specific rules
+     */
+    public function cache_api_response($service, $endpoint, $params, $response, $ttl = null) {
+        $cache_key = $this->generate_api_cache_key($service, $endpoint, $params);
+        
+        // Service-specific TTL
+        if ($ttl === null) {
+            $ttl = match($service) {
+                'twilio' => 300,      // 5 minutes for Twilio
+                'supabase' => 60,     // 1 minute for real-time data
+                'n8n' => 1800,        // 30 minutes for workflows
+                'alibaba' => 600,     // 10 minutes for email status
+                'meta' => 900,        // 15 minutes for social data
+                default => 300
+            };
+        }
+        
+        return $this->set_cached_data($cache_key, $response, 'template_api', true);
+    }
+    
+    /**
+     * Intelligent cache cleanup for templates
+     */
+    public function cleanup_template_cache($template_id = null, $user_id = null) {
+        $patterns = [];
+        
+        if ($template_id) {
+            $patterns[] = "template_data_*_{$template_id}_*";
+            $patterns[] = "template_api_*_{$template_id}_*";
+        }
+        
+        if ($user_id) {
+            $patterns[] = "template_user_{$user_id}_*";
+        }
+        
+        if (empty($patterns)) {
+            // Clean all template cache
+            $patterns = ['template_*'];
+        }
+        
+        foreach ($patterns as $pattern) {
+            $this->delete_cache_pattern($pattern);
+        }
+    }
+    
+    /**
+     * Cache preloading for template initialization
+     */
+    public function preload_template_cache($template_id, $user_id) {
+        $preload_data = [
+            'template_config' => $this->get_template_config($template_id),
+            'user_permissions' => $this->get_user_permissions($user_id, $template_id),
+            'api_credentials' => $this->get_api_credentials($user_id),
+            'template_settings' => $this->get_template_settings($template_id, $user_id)
+        ];
+        
+        foreach ($preload_data as $key => $data) {
+            if ($data !== null) {
+                $cache_key = "{$key}_{$template_id}_{$user_id}";
+                $this->set_cached_data($cache_key, $data, 'template_data', false);
+            }
+        }
+    }
+}
+```
+
+### **Template Background Processing (security-cron-temp.php)**
+**Pattern Source**: Extracted from performance-core.mdc lines 58-116 (Background Processing)
+
+```php
+// ✅ GOOD: Template background processing system
+class Dashboard_Template_Background {
+    
+    /**
+     * Register template-specific cron jobs
+     */
+    public function register_template_crons() {
+        $crons = [
+            'process_template_api_queue' => [
+                'interval' => 'every_minute',
+                'callback' => [$this, 'process_api_queue']
+            ],
+            'cleanup_template_cache' => [
+                'interval' => 'hourly',
+                'callback' => [$this, 'cleanup_expired_cache']
+            ],
+            'template_analytics_sync' => [
+                'interval' => 'daily',
+                'timestamp' => strtotime('02:00:00'), // Low-traffic time
+                'callback' => [$this, 'sync_analytics_data']
+            ],
+            'webhook_retry_failed' => [
+                'interval' => 'every_five_minutes',
+                'callback' => [$this, 'retry_failed_webhooks']
+            ]
+        ];
+        
+        foreach ($crons as $hook => $config) {
+            if (!wp_next_scheduled($hook)) {
+                $timestamp = $config['timestamp'] ?? time();
+                wp_schedule_event($timestamp, $config['interval'], $hook);
+            }
+        }
+    }
+    
+    /**
+     * Process API queue with batch processing
+     */
+    public function process_api_queue($batch_size = 5) {
+        global $wpdb;
+        
+        // Prevent concurrent processing
+        if (get_transient('template_api_queue_processing')) {
+            return;
+        }
+        
+        set_transient('template_api_queue_processing', true, 300); // 5 minute lock
+        
+        try {
+            $tasks = $wpdb->get_results($wpdb->prepare(
+                "SELECT * FROM {$wpdb->prefix}cpaas_api_queue 
+                 WHERE status = 'pending' 
+                 AND scheduled_at <= %s 
+                 ORDER BY priority DESC, created_at ASC 
+                 LIMIT %d",
+                current_time('mysql'),
+                $batch_size
+            ));
+            
+            foreach ($tasks as $task) {
+                $this->process_single_api_task($task);
+            }
+            
+        } finally {
+            delete_transient('template_api_queue_processing');
+        }
+    }
+    
+    /**
+     * Webhook retry mechanism with exponential backoff
+     */
+    public function retry_failed_webhooks() {
+        global $wpdb;
+        
+        $failed_webhooks = $wpdb->get_results(
+            "SELECT * FROM {$wpdb->prefix}cpaas_webhook_logs 
+             WHERE status = 'failed' 
+             AND retry_count < 3 
+             AND next_retry_at <= NOW()"
+        );
+        
+        foreach ($failed_webhooks as $webhook) {
+            $retry_count = intval($webhook->retry_count) + 1;
+            $delay = pow(2, $retry_count) * 60; // Exponential backoff: 2, 4, 8 minutes
+            
+            // Update retry information
+            $wpdb->update(
+                $wpdb->prefix . 'cpaas_webhook_logs',
+                [
+                    'retry_count' => $retry_count,
+                    'next_retry_at' => date('Y-m-d H:i:s', time() + $delay),
+                    'status' => 'retrying'
+                ],
+                ['id' => $webhook->id],
+                ['%d', '%s', '%s'],
+                ['%d']
+            );
+            
+            // Queue for immediate processing
+            $this->queue_webhook_retry($webhook);
+        }
+    }
+    
+    /**
+     * Memory-efficient analytics sync
+     */
+    public function sync_analytics_data() {
+        $services = ['twilio', 'supabase', 'n8n', 'alibaba', 'meta'];
+        
+        foreach ($services as $service) {
+            // Process in chunks to prevent memory issues
+            $this->sync_service_analytics($service);
+            
+            // Memory cleanup between services
+            gc_collect_cycles();
+            wp_cache_flush_group('template_analytics_temp');
+        }
+    }
+}
+```
+
+---
+
+## 🎯 **AI PERFORMANCE IMPLEMENTATION CHECKLIST**
+
+### **Before Implementing ANY Template Performance Code:**
+- [ ] **Verify**: Is this template-related performance optimization?
+- [ ] **Load**: Template performance files (security-*-temp.php)
+- [ ] **Avoid**: Dashboard performance files (without -temp suffix)
+- [ ] **Check**: API-specific performance thresholds
+- [ ] **Implement**: Service-specific monitoring
+- [ ] **Add**: Multi-level caching for API responses
+- [ ] **Include**: Background processing for heavy operations
+- [ ] **Monitor**: Memory usage and cleanup
+
+### **Template Performance Requirements:**
+1. **API Monitoring**: Service-specific thresholds (Twilio: 3s, Supabase: 1s, etc.)
+2. **Caching Strategy**: Multi-level with automatic expiration
+3. **Background Processing**: Queue system for heavy operations
+4. **Memory Management**: Batch processing with cleanup
+5. **Error Recovery**: Exponential backoff for failed operations
+6. **Analytics**: Performance metrics collection
+7. **Cleanup**: Automated cache and log cleanup
+
+---
+
+## 🔗 **INTEGRATION PROTOCOL**
+
+### **Template Performance Class Usage:**
+```php
+// ✅ CORRECT: Template performance pattern
+class Twilio_Email_Template {
+    private $performance;
+    private $cache;
+    private $background;
+    
+    public function __construct() {
+        $this->performance = new Dashboard_Template_Performance();
+        $this->cache = new Dashboard_Template_Cache();
+        $this->background = new Dashboard_Template_Background();
+    }
+    
+    public function send_bulk_emails($recipients) {
+        // Check cache first
+        $cached_results = $this->cache->get_cached_data(
+            'bulk_email_' . md5(serialize($recipients)),
+            'template_api'
+        );
+        
+        if ($cached_results !== false) {
+            return $cached_results;
+        }
+        
+        // For large batches, use background processing
+        if (count($recipients) > 50) {
+            return $this->background->queue_background_api_call(
+                'twilio',
+                'bulk_email',
+                $recipients,
+                'high'
+            );
+        }
+        
+        // Process with performance monitoring
+        $results = $this->performance->process_api_batch(
+            'twilio',
+            'send_email',
+            $recipients,
+            10 // batch size
+        );
+        
+        // Cache successful results
+        if (!is_wp_error($results)) {
+            $this->cache->cache_api_response(
+                'twilio',
+                'bulk_email',
+                $recipients,
+                $results,
+                300 // 5 minutes
+            );
+        }
+        
+        return $results;
+    }
+}
+```
+
+---
+
+## 🚨 **CRITICAL PERFORMANCE CRITERIA**
+
+**AI MUST ACHIEVE 100% COMPLIANCE:**
+
+1. **Service Thresholds**: ✅ API calls monitored with service-specific limits
+2. **Multi-level Caching**: ✅ Object cache + transient cache implemented
+3. **Background Processing**: ✅ Heavy operations queued automatically
+4. **Memory Management**: ✅ Batch processing with cleanup
+5. **Error Recovery**: ✅ Exponential backoff for failures
+6. **Performance Monitoring**: ✅ All operations logged and analyzed
+
+**FAILURE TO FOLLOW = PERFORMANCE DEGRADATION**
+
+---
+
+**Document Version**: 1.0.0 - Template Performance Failsafe  
+**Created**: January 19, 2025  
+**Scope**: Phase 2 Template Performance Optimization  
+**Compliance**: MANDATORY for all template performance code  
+**Integration**: Twilio, Supabase, n8n, Alibaba Cloud, Meta APIs
+description:
+globs:
+alwaysApply: false
+---

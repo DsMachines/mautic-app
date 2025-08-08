@@ -1,0 +1,244 @@
+## 🎯 **TEMPLATE PERFORMANCE OPTIMIZATION - INCOMING FAILSAFE HOOK**
+
+### 🚨 **ROUTING FROM MASTER FLOW VALVE**
+```
+template-rules-SOP.mdc → ai-performance-temp.mdc → security-performance-temp.php, security-cache-temp.php, security-cron-temp.php
+```
+
+**TRIGGERED WHEN**: Template development needs performance optimization
+**IMPLEMENTS IN**: Template-specific performance files
+**ISOLATION**: Template-specific, does NOT modify production performance files
+
+---
+
+## 🚨 **CRITICAL FAILURE CONDITIONS FOR TEMPLATES**
+
+**TEMPLATE CODE IS INSECURE AND MUST BE REJECTED IF:**
+- Any template performance optimization bypasses security patterns
+- Direct $wpdb usage in template performance code (must use template security helper)
+- Template AJAX performance optimizations without security validation
+- Template performance logging without security database integration
+- Template cache implementations that bypass security validation
+- Template background processing without security compliance
+
+---
+
+## 🎯 **TEMPLATE PERFORMANCE DECISION TREE**
+
+```
+Template Performance issue detected?
+├─ YES → Identify bottleneck type + FORCE LOAD appropriate temp files
+│   ├─ Template Database queries? → LOAD: security-database-temp.mdc + security-performance-temp.php
+│   │   └─ Use template DB helper + add template caching + monitoring
+│   ├─ Template Memory usage? → LOAD: security-performance-temp.php + security logging
+│   │   └─ Use generators + batch processing + template security integration
+│   ├─ Template AJAX operations? → LOAD: security-forms-temp.mdc + security-cache-temp.php
+│   │   └─ Optimize template AJAX + maintain security validation
+│   ├─ Template Monitoring needs? → LOAD: security-performance-temp.php + security integration
+│   │   └─ Add template performance tracking + security logging
+│   └─ Template Background processing? → LOAD: security-cron-temp.php + security patterns
+│       └─ Use template cron + security compliance
+└─ NO → Continue with standard template implementation
+```
+
+---
+
+## 🛡️ **TEMPLATE PERFORMANCE METHODS REFERENCE**
+
+```php
+// Available template optimization patterns with MANDATORY security integration:
+
+// From security-performance-temp.php (TEMPLATE SPECIFIC):
+Dashboard_Security_Performance_Temp::instance()->startTemplateTimer($operation)
+Dashboard_Security_Performance_Temp::instance()->endTemplateTimer($operation)
+Dashboard_Security_Performance_Temp::instance()->logTemplatePerformance($message)
+Dashboard_Security_Performance_Temp::instance()->monitorTemplateMemory($operation)
+
+// From security-cache-temp.php (TEMPLATE SPECIFIC):
+Dashboard_Security_Cache_Temp::instance()->getTemplateCachedData($key, $callback, $expiration)
+Dashboard_Security_Cache_Temp::instance()->clearTemplateCache($key)
+Dashboard_Security_Cache_Temp::instance()->getTemplateCacheStats($group)
+
+// From security-cron-temp.php (TEMPLATE SPECIFIC):
+Dashboard_Security_Cron_Temp::instance()->registerTemplateCron($hook, $interval, $callback)
+Dashboard_Security_Cron_Temp::instance()->scheduleTemplateTask($task, $data)
+
+// MANDATORY template security helper access:
+private function get_template_db() {
+    if (!$this->template_db) {
+        $this->template_db = Dashboard_Security_Database_Temp::instance();
+    }
+    return $this->template_db;
+}
+
+// MANDATORY template security logging integration:
+Dashboard_Security_Database_Temp::instance()->log_template_db_operation('⚡ TEMPLATE-PERF', 'performance message');
+```
+
+---
+
+## ⚡ **TEMPLATE PERFORMANCE EMERGENCY PROTOCOLS**
+
+### **IF FORBIDDEN TEMPLATE PATTERN DETECTED:**
+```
+1. HALT template code generation immediately
+2. OUTPUT: "TEMPLATE PERFORMANCE VIOLATION: Insecure optimization detected"
+3. FORCE LOAD: template-rules-SOP.mdc + appropriate temp security files
+4. SECURITY CHECK: Verify integration with template security patterns
+5. APPLY: Correct template performance pattern with security integration
+6. VALIDATE: Run post-optimization checklist for templates
+7. RESUME: Only with secure template performance implementation
+```
+
+### **IF TEMPLATE SECURITY INTEGRATION CANNOT BE APPLIED:**
+```
+1. HALT template code generation immediately
+2. OUTPUT: "TEMPLATE SECURITY INTEGRATION REQUIRED: Performance optimization blocked"
+3. REFERENCE: Appropriate template security patterns (security-*-temp.mdc files)
+4. INTEGRATE: Template performance patterns with security requirements
+5. REQUEST: Human developer manual review if integration complex
+6. PROVIDE: Specific blocking reason and required template security measures
+```
+
+---
+
+## 🔧 **TEMPLATE PERFORMANCE PATTERNS**
+
+### **Template Database Performance Pattern:**
+```php
+// IMPLEMENT IN: Templates using database operations
+<?php
+// Get template performance and database helpers
+$perf = Dashboard_Security_Performance_Temp::instance();
+$cache = Dashboard_Security_Cache_Temp::instance();
+$db = Dashboard_Security_Database_Temp::instance();
+
+// Start performance monitoring
+$perf->startTemplateTimer('template_data_load');
+
+// Use template caching for expensive database operations
+$template_data = $cache->getTemplateCachedData(
+    'template_data_' . $template_id,
+    function() use ($db, $template_id) {
+        return $db->get_template_data($template_id, get_current_user_id());
+    },
+    3600 // 1 hour cache
+);
+
+// End performance monitoring
+$perf->endTemplateTimer('template_data_load');
+
+// Log template performance
+$perf->logTemplatePerformance('Template data loaded for ID: ' . $template_id);
+?>
+```
+
+### **Template AJAX Performance Pattern:**
+```php
+// IMPLEMENT IN: Template AJAX endpoints
+function handle_template_ajax_performance() {
+    // Get template helpers
+    $perf = Dashboard_Security_Performance_Temp::instance();
+    $forms = Dashboard_Security_Forms_Temp::instance();
+    $cache = Dashboard_Security_Cache_Temp::instance();
+    
+    // Start performance monitoring
+    $perf->startTemplateTimer('template_ajax_request');
+    
+    // Validate template AJAX with security
+    $forms->validate_template_ajax('template_ajax_nonce');
+    
+    // Use template caching for AJAX responses (if appropriate)
+    $cache_key = 'template_ajax_' . md5(serialize($_POST));
+    $response = $cache->getTemplateCachedData(
+        $cache_key,
+        function() {
+            // Process AJAX request
+            return ['status' => 'success', 'data' => 'processed'];
+        },
+        300 // 5 minute cache for AJAX
+    );
+    
+    // End performance monitoring
+    $perf->endTemplateTimer('template_ajax_request');
+    
+    // Send response
+    wp_send_json_success($response);
+}
+add_action('wp_ajax_template_performance_action', 'handle_template_ajax_performance');
+```
+
+### **Template Background Processing Pattern:**
+```php
+// IMPLEMENT IN: Template background tasks
+<?php
+// Get template cron helper
+$cron = Dashboard_Security_Cron_Temp::instance();
+$perf = Dashboard_Security_Performance_Temp::instance();
+
+// Register template background task
+$cron->registerTemplateCron(
+    'template_background_task',
+    'hourly',
+    function() use ($perf) {
+        $perf->startTemplateTimer('background_task');
+        
+        // Process template background work
+        $processed = process_template_background_data();
+        
+        $perf->endTemplateTimer('background_task');
+        $perf->logTemplatePerformance('Background task processed: ' . $processed . ' items');
+    }
+);
+?>
+```
+
+---
+
+## ✅ **TEMPLATE PERFORMANCE VALIDATION CHECKLIST**
+
+### **Before Implementation:**
+- [ ] Template development routed through template-rules-SOP.mdc
+- [ ] Performance optimization identified for template
+- [ ] ai-performance-temp.mdc loaded (this file)
+- [ ] Implementation planned for temp performance files
+
+### **During Implementation:**
+- [ ] Template performance helper classes created in temp files
+- [ ] All template performance operations use security integration
+- [ ] Template performance monitoring implemented
+- [ ] Template caching uses security validation
+- [ ] Template background processing secured
+- [ ] Template integration code created
+
+### **After Implementation:**
+- [ ] Template performance optimization tested and validated
+- [ ] All template performance operations secured
+- [ ] Template performance monitoring shows improvements
+- [ ] Template caching works without security issues
+- [ ] No conflicts with production performance files
+
+---
+
+## 🚀 **TEMPLATE PERFORMANCE SUCCESS CRITERIA**
+
+**Template Performance Optimization is COMPLETE when:**
+- ✅ All temp performance files implement required methods
+- ✅ Template performance operations use security integration
+- ✅ Template performance monitoring shows measurable improvements
+- ✅ Template caching works with security validation
+- ✅ Template background processing is secured
+- ✅ No production performance files modified
+- ✅ Template performance optimization tested successfully
+
+---
+
+**Routing Source**: template-rules-SOP.mdc → ai-performance-temp.mdc  
+**Implementation Targets**: security-performance-temp.php, security-cache-temp.php, security-cron-temp.php  
+**Template Integration**: All template performance operations  
+**Security Isolation**: Template-specific, production-safe  
+**Testing Requirement**: Template performance optimization must be validated
+description:
+globs:
+alwaysApply: false
+---

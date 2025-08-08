@@ -1,0 +1,1057 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Dependency Validation Agent - WordPress Cron Implementation
+
+## 🎯 **Overview**
+
+A WordPress cron-based background agent that automatically validates AI_CONTEXT comments and tracks file dependencies across the Dashboard Plugin development.
+
+**Inspired by**: WP Defender background processing patterns  
+**Purpose**: Automate dependency tracking without requiring Cursor-specific implementations  
+**Frequency**: Configurable (hourly/daily/weekly validation cycles)
+
+---
+
+## 🔧 **Implementation Strategy**
+
+### **Core Agent Class**
+```php
+<?php
+/**
+ * Dependency Validation Agent
+ * 
+ * Automatically validates AI_CONTEXT comments and file relationships
+ * Based on WP Defender background processing patterns
+ */
+class Dashboard_Dependency_Agent {
+    
+    private const CRON_HOOK = 'dashboard_dependency_validation';
+    private const TRANSIENT_KEY = 'dependency_validation_running';
+    
+    public function __construct() {
+        add_action('init', [$this, 'schedule_validation']);
+        add_action(self::CRON_HOOK, [$this, 'run_validation_cycle']);
+    }
+    
+    /**
+     * Schedule dependency validation cron job
+     */
+    public function schedule_validation() {
+        if (!wp_next_scheduled(self::CRON_HOOK)) {
+            // Run every 6 hours during development
+            wp_schedule_event(time(), 'sixhourly', self::CRON_HOOK);
+        }
+    }
+    
+    /**
+     * Main validation cycle
+     */
+    public function run_validation_cycle() {
+        // Prevent concurrent runs
+        if (get_transient(self::TRANSIENT_KEY)) {
+            return;
+        }
+        
+        set_transient(self::TRANSIENT_KEY, true, 600); // 10 minutes
+        
+        try {
+            $this->validate_dependencies();
+            $this->validate_integrations();
+            $this->check_file_changes();
+            $this->generate_validation_report();
+            
+        } catch (Exception $e) {
+            error_log('Dependency validation failed: ' . $e->getMessage());
+        } finally {
+            delete_transient(self::TRANSIENT_KEY);
+        }
+    }
+    
+    /**
+     * Validate AI_CONTEXT dependencies
+     */
+    private function validate_dependencies() {
+        $plugin_files = $this->get_plugin_files();
+        $validation_results = [];
+        
+        foreach ($plugin_files as $file) {
+            $ai_context = $this->parse_ai_context($file);
+            if ($ai_context) {
+                $validation_results[$file] = $this->validate_file_dependencies($file, $ai_context);
+            }
+        }
+        
+        $this->store_validation_results('dependencies', $validation_results);
+    }
+    
+    /**
+     * Parse AI_CONTEXT comments from file
+     */
+    private function parse_ai_context($file_path) {
+        $content = file_get_contents($file_path);
+        
+        // Extract AI_CONTEXT block
+        if (preg_match('/\/\*\*\s*\*\s*AI_CONTEXT:.*?\*\//', $content, $matches)) {
+            return $this->parse_context_block($matches[0]);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Validate file dependencies exist and are accessible
+     */
+    private function validate_file_dependencies($file, $context) {
+        $results = [
+            'file' => $file,
+            'timestamp' => current_time('mysql'),
+            'dependencies' => [],
+            'integrations' => [],
+            'errors' => []
+        ];
+        
+        // Check dependencies
+        if (isset($context['dependencies'])) {
+            foreach ($context['dependencies'] as $dependency) {
+                $dep_file = $this->resolve_dependency_path($dependency);
+                if (!file_exists($dep_file)) {
+                    $results['errors'][] = "Missing dependency: $dependency";
+                } else {
+                    $results['dependencies'][] = [
+                        'file' => $dependency,
+                        'exists' => true,
+                        'last_modified' => filemtime($dep_file)
+                    ];
+                }
+            }
+        }
+        
+        // Check integration points
+        if (isset($context['integration_points'])) {
+            foreach ($context['integration_points'] as $integration) {
+                $results['integrations'][] = $this->validate_integration($integration);
+            }
+        }
+        
+        return $results;
+    }
+    
+    /**
+     * Check for file changes since last validation
+     */
+    private function check_file_changes() {
+        $last_validation = get_option('dashboard_last_validation', 0);
+        $current_time = time();
+        
+        $changed_files = [];
+        $plugin_files = $this->get_plugin_files();
+        
+        foreach ($plugin_files as $file) {
+            $file_time = filemtime($file);
+            if ($file_time > $last_validation) {
+                $changed_files[] = [
+                    'file' => $file,
+                    'changed_at' => $file_time,
+                    'requires_validation' => $this->has_ai_context($file)
+                ];
+            }
+        }
+        
+        if (!empty($changed_files)) {
+            $this->trigger_changed_file_validation($changed_files);
+        }
+        
+        update_option('dashboard_last_validation', $current_time);
+    }
+    
+    /**
+     * Generate validation report for AI assistant
+     */
+    private function generate_validation_report() {
+        $dependencies = get_option('dependency_validation_dependencies', []);
+        $integrations = get_option('dependency_validation_integrations', []);
+        $file_changes = get_option('dependency_validation_changes', []);
+        
+        $report = [
+            'timestamp' => current_time('mysql'),
+            'summary' => [
+                'total_files' => count($dependencies),
+                'total_dependencies' => $this->count_total_dependencies($dependencies),
+                'total_integrations' => $this->count_total_integrations($integrations),
+                'errors_found' => $this->count_total_errors($dependencies),
+                'changed_files' => count($file_changes)
+            ],
+            'recommendations' => $this->generate_recommendations($dependencies, $integrations),
+            'ai_context_updates' => $this->suggest_context_updates($dependencies)
+        ];
+        
+        update_option('dependency_validation_report', $report);
+        
+        // Log for AI assistant reference
+        error_log('Dependency Validation Report: ' . wp_json_encode($report));
+    }
+}
+```
+
+### **Integration with Development Workflow**
+```php
+/**
+ * AI Assistant Integration Hooks
+ */
+class AI_Assistant_Integration {
+    
+    /**
+     * Get current dependency status for AI assistant
+     */
+    public static function get_dependency_status($file_path) {
+        $report = get_option('dependency_validation_report', []);
+        
+        if (isset($report['dependencies'][$file_path])) {
+            return $report['dependencies'][$file_path];
+        }
+        
+        return [
+            'status' => 'unknown',
+            'message' => 'File not yet validated'
+        ];
+    }
+    
+    /**
+     * Get AI context validation for current file
+     */
+    public static function get_ai_context_validation($file_path) {
+        $validation = get_option('dependency_validation_dependencies', []);
+        
+        return isset($validation[$file_path]) ? $validation[$file_path] : null;
+    }
+    
+    /**
+     * Get recommendations for AI assistant
+     */
+    public static function get_ai_recommendations() {
+        $report = get_option('dependency_validation_report', []);
+        
+        return isset($report['recommendations']) ? $report['recommendations'] : [];
+    }
+}
+```
+
+---
+
+## 🔄 **Automation Levels**
+
+### **Level 1: Basic Validation (Hourly)**
+- Check if dependency files exist
+- Validate integration points
+- Report missing files
+
+### **Level 2: Relationship Tracking (Daily)**
+- Analyze cross-file method calls
+- Track API integration changes
+- Validate Context7 references
+
+### **Level 3: Performance Monitoring (Weekly)**
+- Check file size limits (600 lines)
+- Monitor method complexity (60 lines)
+- Suggest splitting opportunities
+
+### **Level 4: AI Assistant Integration (Real-time)**
+- Provide dependency status to AI
+- Suggest Context7 queries based on current file
+- Auto-update AI_CONTEXT comments
+
+---
+
+## 🎯 **AI Assistant Commands**
+
+### **Query Dependency Status**
+```bash
+# Check current file dependencies
+"Show me the dependency validation status for the current file"
+
+# Get validation recommendations
+"What are the current dependency validation recommendations?"
+
+# Check for broken integrations
+"Are there any broken file integrations I should fix?"
+```
+
+### **Update AI Context**
+```bash
+# Refresh AI context based on validation
+"Update AI_CONTEXT comments based on latest dependency validation"
+
+# Check Context7 relevance
+"Do I need to update Context7 queries based on file changes?"
+```
+
+---
+
+## 📊 **Validation Report Example**
+
+```json
+{
+  "timestamp": "2025-01-15 14:30:00",
+  "summary": {
+    "total_files": 15,
+    "total_dependencies": 42,
+    "total_integrations": 28,
+    "errors_found": 3,
+    "changed_files": 2
+  },
+  "errors": [
+    {
+      "file": "includes/class-canvas-manager.php",
+      "error": "Missing dependency: assets/js/canvas-foundation.js",
+      "severity": "high"
+    }
+  ],
+  "recommendations": [
+    "Update AI_CONTEXT in class-canvas-manager.php",
+    "Add Context7 query for canvas persistence patterns",
+    "Consider splitting class-api-supabase.php (650 lines)"
+  ],
+  "ai_context_updates": [
+    {
+      "file": "includes/class-canvas-manager.php",
+      "suggested_addition": "@requires assets/js/canvas-persistence.js -> auto_save()"
+    }
+  ]
+}
+```
+
+---
+
+## 🚀 **Implementation Steps**
+
+### **Step 1: Add to Phase 2 Week 1**
+```php
+// File: includes/class-dependency-agent.php (Week 1)
+// Implement core validation agent alongside secure vault
+```
+
+### **Step 2: Configure Cron Schedule**
+```php
+// Add to plugin activation
+function dashboard_plugin_activation() {
+    // ... existing code ...
+    
+    // Schedule dependency validation
+    $agent = new Dashboard_Dependency_Agent();
+    $agent->schedule_validation();
+}
+```
+
+### **Step 3: AI Assistant Integration**
+```php
+// Add AI helper methods
+function get_current_file_context() {
+    $current_file = get_current_editing_file(); // Custom implementation
+    return AI_Assistant_Integration::get_dependency_status($current_file);
+}
+```
+
+### **Step 4: Enhanced AI_CONTEXT Comments**
+```php
+/**
+ * AI_CONTEXT: Canvas state persistence manager
+ * AI_VALIDATION_STATUS: validated_2025_01_15_14_30
+ * AI_DEPENDENCIES: 
+ *   - VALIDATED: class-secure-vault.php -> credential_access()
+ *   - VALIDATED: canvas-foundation.js -> element_selection()
+ *   - MISSING: canvas-persistence.js -> auto_save() [ERROR]
+ * AI_INTEGRATION_POINTS:
+ *   - WORKING: copy_element() -> copy-paste-engine.js
+ *   - BROKEN: save_canvas() -> class-api-supabase.php [FIX NEEDED]
+ * AI_RECOMMENDATIONS:
+ *   - Add Context7 query for canvas persistence patterns
+ *   - Update Supabase integration after Week 3 implementation
+ */
+```
+
+---
+
+## 🔧 **Configuration Options**
+
+### **Validation Frequency**
+```php
+// Development mode: Every 2 hours
+wp_schedule_event(time(), 'twicehourly', 'dependency_validation');
+
+// Testing mode: Every 30 minutes
+wp_schedule_event(time(), 'halfhourly', 'dependency_validation');
+
+// Production mode: Daily
+wp_schedule_event(time(), 'daily', 'dependency_validation');
+```
+
+### **Validation Scope**
+```php
+// Full validation (all files)
+$agent->set_scope('full');
+
+// Changed files only
+$agent->set_scope('changed');
+
+// Specific file types
+$agent->set_scope('php', 'js', 'css');
+```
+
+---
+
+**Implementation Status**: Ready for Phase 2 Week 1  
+**Dependencies**: WordPress cron system, file system access  
+**Performance Impact**: Minimal (background processing)  
+**AI Integration**: Seamless with existing Context7 workflow 
+
+---
+
+## 🔧 **Development Environment Solution**
+
+### **Manual Dependency Validation System**
+
+Since WordPress cron is unreliable in development, here's a manual trigger system:
+
+#### **File: `admin/pages/dependency-dashboard.php`**
+```php
+<?php
+/**
+ * Development Dependency Dashboard
+ * 
+ * Manual validation trigger + visual dependency map
+ * Access: /wp-admin/admin.php?page=dependency-dashboard
+ */
+
+class Dependency_Dashboard {
+    
+    public function __construct() {
+        add_action('admin_menu', [$this, 'add_admin_page']);
+        add_action('wp_ajax_trigger_dependency_validation', [$this, 'ajax_trigger_validation']);
+        add_action('wp_ajax_get_dependency_map', [$this, 'ajax_get_dependency_map']);
+    }
+    
+    /**
+     * Add admin page for dependency dashboard
+     */
+    public function add_admin_page() {
+        add_management_page(
+            'Dependency Dashboard',
+            'Dependencies',
+            'manage_options',
+            'dependency-dashboard',
+            [$this, 'render_dashboard']
+        );
+    }
+    
+    /**
+     * Render dependency dashboard page
+     */
+    public function render_dashboard() {
+        ?>
+        <div class="wrap">
+            <h1>Dashboard Plugin - Dependency Map</h1>
+            
+            <!-- Quick Actions -->
+            <div class="dependency-actions">
+                <button id="trigger-validation" class="button button-primary">
+                    🔄 Run Dependency Validation
+                </button>
+                <button id="refresh-map" class="button">
+                    🗺️ Refresh Dependency Map
+                </button>
+                <span id="last-validation">
+                    Last run: <?php echo get_option('dependency_last_run', 'Never'); ?>
+                </span>
+            </div>
+            
+            <!-- Validation Results -->
+            <div id="validation-results" class="dependency-results">
+                <!-- AJAX results will load here -->
+            </div>
+            
+            <!-- Visual Dependency Map -->
+            <div class="dependency-map-container">
+                <h2>Current File Dependencies</h2>
+                <div id="dependency-map" class="dependency-map">
+                    <!-- Dynamic dependency map -->
+                </div>
+            </div>
+            
+            <!-- AI Assistant Context -->
+            <div class="ai-context-summary">
+                <h2>AI Assistant Context Summary</h2>
+                <div id="ai-context-data">
+                    <!-- AI-readable dependency data -->
+                </div>
+            </div>
+            
+            <!-- File Status Table -->
+            <div class="file-status-table">
+                <h2>File Status Overview</h2>
+                <table class="wp-list-table widefat fixed striped">
+                    <thead>
+                        <tr>
+                            <th>File</th>
+                            <th>Lines</th>
+                            <th>Dependencies</th>
+                            <th>Status</th>
+                            <th>Last Modified</th>
+                            <th>AI Context</th>
+                        </tr>
+                    </thead>
+                    <tbody id="file-status-tbody">
+                        <!-- Dynamic file status rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <style>
+        .dependency-actions {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f1f1f1;
+            border-radius: 5px;
+        }
+        
+        .dependency-map {
+            border: 1px solid #ddd;
+            padding: 20px;
+            background: white;
+            min-height: 400px;
+            overflow: auto;
+        }
+        
+        .file-node {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            border: 2px solid #0073aa;
+            border-radius: 5px;
+            background: #e5f5ff;
+            position: relative;
+        }
+        
+        .file-node.error {
+            border-color: #dc3232;
+            background: #ffe5e5;
+        }
+        
+        .file-node.warning {
+            border-color: #ffb900;
+            background: #fff8e5;
+        }
+        
+        .dependency-line {
+            position: absolute;
+            border-top: 2px solid #666;
+            z-index: 1;
+        }
+        
+        .ai-context-summary {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-left: 4px solid #00a32a;
+        }
+        
+        .validation-results {
+            margin: 20px 0;
+        }
+        
+        .result-success {
+            padding: 10px;
+            background: #d1edff;
+            border-left: 4px solid #00a32a;
+            margin: 10px 0;
+        }
+        
+        .result-error {
+            padding: 10px;
+            background: #ffebe8;
+            border-left: 4px solid #dc3232;
+            margin: 10px 0;
+        }
+        </style>
+        
+        <script>
+        jQuery(document).ready(function($) {
+            // Trigger validation
+            $('#trigger-validation').click(function() {
+                $(this).prop('disabled', true).text('🔄 Running...');
+                
+                $.post(ajaxurl, {
+                    action: 'trigger_dependency_validation',
+                    nonce: '<?php echo wp_create_nonce('dependency_validation'); ?>'
+                }, function(response) {
+                    if (response.success) {
+                        $('#validation-results').html(response.data.html);
+                        $('#last-validation').text('Last run: ' + response.data.timestamp);
+                        loadDependencyMap();
+                        loadFileStatus();
+                    }
+                    $('#trigger-validation').prop('disabled', false).text('🔄 Run Dependency Validation');
+                });
+            });
+            
+            // Refresh map
+            $('#refresh-map').click(function() {
+                loadDependencyMap();
+                loadFileStatus();
+            });
+            
+            // Load dependency map
+            function loadDependencyMap() {
+                $.post(ajaxurl, {
+                    action: 'get_dependency_map',
+                    nonce: '<?php echo wp_create_nonce('dependency_map'); ?>'
+                }, function(response) {
+                    if (response.success) {
+                        $('#dependency-map').html(response.data.map_html);
+                        $('#ai-context-data').html(response.data.ai_context);
+                    }
+                });
+            }
+            
+            // Load file status
+            function loadFileStatus() {
+                // Implementation for file status table
+            }
+            
+            // Auto-load on page load
+            loadDependencyMap();
+        });
+        </script>
+        <?php
+    }
+    
+    /**
+     * AJAX: Trigger manual dependency validation
+     */
+    public function ajax_trigger_validation() {
+        check_ajax_referer('dependency_validation', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_die('Permission denied');
+        }
+        
+        // Run validation
+        $validator = new Dependency_Validator();
+        $results = $validator->run_full_validation();
+        
+        // Store results
+        update_option('dependency_validation_results', $results);
+        update_option('dependency_last_run', current_time('mysql'));
+        
+        // Format results for display
+        $html = $this->format_validation_results($results);
+        
+        wp_send_json_success([
+            'html' => $html,
+            'timestamp' => current_time('mysql'),
+            'results' => $results
+        ]);
+    }
+    
+    /**
+     * AJAX: Get dependency map data
+     */
+    public function ajax_get_dependency_map() {
+        check_ajax_referer('dependency_map', 'nonce');
+        
+        $map_generator = new Dependency_Map_Generator();
+        $map_data = $map_generator->generate_visual_map();
+        
+        wp_send_json_success([
+            'map_html' => $map_data['html'],
+            'ai_context' => $map_data['ai_context']
+        ]);
+    }
+    
+    /**
+     * Format validation results for display
+     */
+    private function format_validation_results($results) {
+        $html = '<div class="validation-summary">';
+        
+        if (!empty($results['errors'])) {
+            foreach ($results['errors'] as $error) {
+                $html .= '<div class="result-error">';
+                $html .= '<strong>❌ Error:</strong> ' . esc_html($error['message']);
+                $html .= '<br><em>File: ' . esc_html($error['file']) . '</em>';
+                $html .= '</div>';
+            }
+        }
+        
+        if (!empty($results['warnings'])) {
+            foreach ($results['warnings'] as $warning) {
+                $html .= '<div class="result-warning">';
+                $html .= '<strong>⚠️ Warning:</strong> ' . esc_html($warning['message']);
+                $html .= '<br><em>File: ' . esc_html($warning['file']) . '</em>';
+                $html .= '</div>';
+            }
+        }
+        
+        if (!empty($results['success'])) {
+            foreach ($results['success'] as $success) {
+                $html .= '<div class="result-success">';
+                $html .= '<strong>✅ Success:</strong> ' . esc_html($success['message']);
+                $html .= '</div>';
+            }
+        }
+        
+        $html .= '</div>';
+        return $html;
+    }
+}
+
+new Dependency_Dashboard();
+```
+
+#### **File: `includes/class-dependency-map-generator.php`**
+```php
+<?php
+/**
+ * Dependency Map Generator
+ * 
+ * Creates visual dependency maps for both human and AI consumption
+ */
+
+class Dependency_Map_Generator {
+    
+    /**
+     * Generate visual dependency map
+     */
+    public function generate_visual_map() {
+        $files = $this->get_project_files();
+        $dependencies = $this->analyze_dependencies($files);
+        
+        return [
+            'html' => $this->generate_html_map($dependencies),
+            'ai_context' => $this->generate_ai_context($dependencies),
+            'raw_data' => $dependencies
+        ];
+    }
+    
+    /**
+     * Generate HTML visual map
+     */
+    private function generate_html_map($dependencies) {
+        $html = '<div class="dependency-graph">';
+        
+        // Group by week for Phase 2
+        $weeks = $this->group_by_week($dependencies);
+        
+        foreach ($weeks as $week => $files) {
+            $html .= "<h3>Week {$week}</h3>";
+            $html .= '<div class="week-group">';
+            
+            foreach ($files as $file => $data) {
+                $status_class = $this->get_status_class($data);
+                $html .= "<div class='file-node {$status_class}' data-file='{$file}'>";
+                $html .= "<strong>" . basename($file) . "</strong><br>";
+                $html .= "<small>{$data['lines']} lines</small><br>";
+                $html .= "<small>{$data['dependency_count']} deps</small>";
+                
+                if (!empty($data['errors'])) {
+                    $html .= "<div class='file-errors'>";
+                    foreach ($data['errors'] as $error) {
+                        $html .= "<div class='error-item'>❌ {$error}</div>";
+                    }
+                    $html .= "</div>";
+                }
+                
+                $html .= "</div>";
+            }
+            
+            $html .= '</div>';
+        }
+        
+        $html .= '</div>';
+        return $html;
+    }
+    
+    /**
+     * Generate AI-readable context
+     */
+    private function generate_ai_context($dependencies) {
+        $ai_context = "<!-- AI ASSISTANT DEPENDENCY CONTEXT -->\n";
+        $ai_context .= "# Dashboard Plugin Phase 2 - Current Dependencies\n\n";
+        
+        $ai_context .= "## 📋 Quick Reference\n";
+        $ai_context .= "**Last Updated**: " . current_time('mysql') . "\n";
+        $ai_context .= "**Total Files**: " . count($dependencies) . "\n";
+        $ai_context .= "**Active Dependencies**: " . $this->count_active_dependencies($dependencies) . "\n\n";
+        
+        $ai_context .= "## 🔗 Current File Relationships\n\n";
+        
+        foreach ($dependencies as $file => $data) {
+            $ai_context .= "### `" . basename($file) . "`\n";
+            $ai_context .= "- **Status**: " . $data['status'] . "\n";
+            $ai_context .= "- **Lines**: " . $data['lines'] . "/600\n";
+            
+            if (!empty($data['depends_on'])) {
+                $ai_context .= "- **Depends On**: " . implode(', ', $data['depends_on']) . "\n";
+            }
+            
+            if (!empty($data['used_by'])) {
+                $ai_context .= "- **Used By**: " . implode(', ', $data['used_by']) . "\n";
+            }
+            
+            if (!empty($data['ai_context_status'])) {
+                $ai_context .= "- **AI Context**: " . $data['ai_context_status'] . "\n";
+            }
+            
+            if (!empty($data['errors'])) {
+                $ai_context .= "- **❌ Issues**: " . implode('; ', $data['errors']) . "\n";
+            }
+            
+            $ai_context .= "\n";
+        }
+        
+        $ai_context .= "## 🎯 Today's Coding Context\n\n";
+        $ai_context .= "**Current Week**: " . $this->get_current_week() . "\n";
+        $ai_context .= "**Files to Create Today**: " . implode(', ', $this->get_todays_files()) . "\n";
+        $ai_context .= "**Dependencies to Check**: " . implode(', ', $this->get_required_dependencies()) . "\n\n";
+        
+        $ai_context .= "## 💡 AI Assistant Instructions\n\n";
+        $ai_context .= "1. **Before creating new files**: Check dependencies listed above\n";
+        $ai_context .= "2. **When implementing methods**: Reference existing integration points\n";
+        $ai_context .= "3. **For Context7 queries**: Use specific file relationships above\n";
+        $ai_context .= "4. **Error resolution**: Focus on files with ❌ Issues first\n\n";
+        
+        return $ai_context;
+    }
+    
+    /**
+     * Analyze file dependencies
+     */
+    private function analyze_dependencies($files) {
+        $dependencies = [];
+        
+        foreach ($files as $file) {
+            $analysis = $this->analyze_single_file($file);
+            $dependencies[$file] = $analysis;
+        }
+        
+        return $dependencies;
+    }
+    
+    /**
+     * Analyze single file for dependencies
+     */
+    private function analyze_single_file($file) {
+        if (!file_exists($file)) {
+            return [
+                'status' => 'missing',
+                'lines' => 0,
+                'depends_on' => [],
+                'used_by' => [],
+                'errors' => ['File does not exist'],
+                'ai_context_status' => 'missing'
+            ];
+        }
+        
+        $content = file_get_contents($file);
+        $lines = substr_count($content, "\n") + 1;
+        
+        // Parse AI_CONTEXT comments
+        $ai_context = $this->parse_ai_context_from_content($content);
+        
+        // Analyze actual dependencies in code
+        $code_dependencies = $this->find_code_dependencies($content);
+        
+        // Check for issues
+        $errors = [];
+        if ($lines > 600) {
+            $errors[] = "File exceeds 600 lines ({$lines})";
+        }
+        
+        foreach ($ai_context['dependencies'] ?? [] as $dep) {
+            if (!file_exists($this->resolve_dependency_path($dep))) {
+                $errors[] = "Missing dependency: {$dep}";
+            }
+        }
+        
+        return [
+            'status' => empty($errors) ? 'ok' : 'error',
+            'lines' => $lines,
+            'depends_on' => $ai_context['dependencies'] ?? [],
+            'used_by' => $this->find_reverse_dependencies($file),
+            'integration_points' => $ai_context['integration_points'] ?? [],
+            'errors' => $errors,
+            'ai_context_status' => !empty($ai_context) ? 'present' : 'missing',
+            'last_modified' => filemtime($file)
+        ];
+    }
+}
+```
+
+#### **Access URL Pattern**
+```
+Development URL: http://your-site.local/wp-admin/admin.php?page=dependency-dashboard
+
+Quick Validation URL: http://your-site.local/wp-admin/admin-ajax.php?action=trigger_dependency_validation&nonce=YOUR_NONCE
+```
+
+---
+
+## 📊 **Simple Dependency Map Storage**
+
+### **File: `includes/class-dependency-storage.php`**
+```php
+<?php
+/**
+ * Simple Dependency Map Storage
+ * 
+ * Stores dependency relationships in simple JSON format
+ * Both human and AI can easily read and update
+ */
+
+class Dependency_Storage {
+    
+    private const STORAGE_FILE = 'dependency-map.json';
+    
+    /**
+     * Save dependency map
+     */
+    public function save_dependency_map($dependencies) {
+        $map_data = [
+            'timestamp' => current_time('mysql'),
+            'phase' => 'Phase 2',
+            'current_week' => $this->get_current_week(),
+            'dependencies' => $dependencies,
+            'ai_context' => $this->generate_ai_summary($dependencies)
+        ];
+        
+        $upload_dir = wp_upload_dir();
+        $storage_path = $upload_dir['basedir'] . '/dashboard-plugin/' . self::STORAGE_FILE;
+        
+        // Ensure directory exists
+        wp_mkdir_p(dirname($storage_path));
+        
+        // Save with pretty printing for human readability
+        file_put_contents($storage_path, wp_json_encode($map_data, JSON_PRETTY_PRINT));
+        
+        // Also save to WordPress options for quick access
+        update_option('dashboard_dependency_map', $map_data);
+        
+        return $storage_path;
+    }
+    
+    /**
+     * Load dependency map
+     */
+    public function load_dependency_map() {
+        $upload_dir = wp_upload_dir();
+        $storage_path = $upload_dir['basedir'] . '/dashboard-plugin/' . self::STORAGE_FILE;
+        
+        if (file_exists($storage_path)) {
+            $data = json_decode(file_get_contents($storage_path), true);
+            return $data ?: [];
+        }
+        
+        // Fallback to WordPress options
+        return get_option('dashboard_dependency_map', []);
+    }
+    
+    /**
+     * Get AI-readable summary
+     */
+    public function get_ai_summary() {
+        $map = $this->load_dependency_map();
+        
+        if (empty($map)) {
+            return "No dependency map available. Run validation first.";
+        }
+        
+        $summary = "# Dashboard Plugin Dependencies - " . $map['timestamp'] . "\n\n";
+        
+        $summary .= "## Current Context\n";
+        $summary .= "- **Phase**: " . $map['phase'] . "\n";
+        $summary .= "- **Week**: " . $map['current_week'] . "\n";
+        $summary .= "- **Files Analyzed**: " . count($map['dependencies']) . "\n\n";
+        
+        $summary .= "## File Status Quick Reference\n";
+        foreach ($map['dependencies'] as $file => $data) {
+            $status_icon = $data['status'] === 'ok' ? '✅' : '❌';
+            $summary .= "- {$status_icon} `" . basename($file) . "` ({$data['lines']} lines)\n";
+        }
+        
+        return $summary;
+    }
+}
+```
+
+---
+
+## 🎯 **Daily Development Workflow**
+
+### **Step 1: Start Coding Session**
+1. **Open Browser**: `http://your-site.local/wp-admin/admin.php?page=dependency-dashboard`
+2. **Click "Run Dependency Validation"**
+3. **Review Visual Map**: See current file relationships
+4. **Check AI Context Summary**: Read what the AI needs to know
+
+### **Step 2: AI Assistant Integration**
+```bash
+# AI can now reference the dependency dashboard
+"Based on the current dependency map, what files do I need to integrate with for today's Canvas Foundation implementation?"
+
+# Or get specific file context
+"Show me the dependency status for class-api-supabase.php and suggest the relevant Context7 queries"
+```
+
+### **Step 3: During Development**
+- **AI Comments**: Updated automatically as you code
+- **Live Status**: Refresh dependency dashboard to see changes
+- **Quick Validation**: Re-run validation before major commits
+
+### **Step 4: End of Day**
+- **Final Validation**: Ensure all dependencies are clean
+- **Review Tomorrow's Context**: Check next week's planned files
+- **Update AI Context**: Save current state for tomorrow
+
+---
+
+## 📱 **Quick Access URLs for Development**
+
+### **Bookmark These URLs**
+```bash
+# Main Dependency Dashboard
+http://your-site.local/wp-admin/admin.php?page=dependency-dashboard
+
+# Quick Validation (AJAX)
+http://your-site.local/wp-admin/admin-ajax.php?action=trigger_dependency_validation
+
+# Raw JSON Map (for AI reference)
+http://your-site.local/wp-content/uploads/dashboard-plugin/dependency-map.json
+```
+
+### **Browser Bookmarklet**
+```javascript
+javascript:(function(){
+    if(confirm('Run dependency validation?')) {
+        fetch('/wp-admin/admin-ajax.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'action=trigger_dependency_validation&nonce=' + window.dashboardNonce
+        }).then(r => r.json()).then(d => alert(d.success ? 'Validation complete!' : 'Error: ' + d.data));
+    }
+})();
+```
+
+---
+
+This gives you:
+1. **Manual trigger URL** - click and run validation instantly
+2. **Visual dependency map** - see all file relationships at a glance  
+3. **AI-readable context** - the AI gets yesterday's connections automatically
+4. **Simple JSON storage** - reliable, version-controllable dependency tracking
+5. **Development workflow integration** - fits perfectly into daily coding routine
+
+
+Want me to add this to your Phase 2 Week 1 file list as `admin/pages/dependency-dashboard.php`? 

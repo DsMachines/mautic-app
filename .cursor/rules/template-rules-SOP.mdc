@@ -1,0 +1,141 @@
+---
+alwaysApply: true
+---
+## 🛡️ **MANDATORY ROUTING RULES**
+
+### **🔒 Database Security Route**
+```
+Template needs database operations?
+├─ YES → FORCE LOAD: security-database-temp.mdc
+│   ├─ READ: Database security patterns for templates
+│   ├─ IMPLEMENT: Methods in security-database-temp.php
+│   ├─ TEST: Database operations via template
+│   └─ VALIDATE: Security compliance before proceeding
+└─ NO → Skip database security integration
+```
+
+### **📝 Form/AJAX Security Route**
+```
+Template needs forms or AJAX?
+├─ YES → FORCE LOAD: security-forms-temp.mdc
+│   ├─ READ: Form security patterns for templates  
+│   ├─ IMPLEMENT: Methods in security-forms-temp.php
+│   ├─ TEST: Form/AJAX operations via template
+│   └─ VALIDATE: Security compliance before proceeding
+└─ NO → Skip form security integration
+```
+
+### **🌐 API/Webhook Security Route**
+```
+Template needs external API integration?
+├─ YES → FORCE LOAD: webhook-api-security-temp.mdc
+│   ├─ READ: API security patterns for templates
+│   ├─ IMPLEMENT: Methods in webhook-api-security-temp.php  
+│   ├─ TEST: API operations via template
+│   └─ VALIDATE: Security compliance before proceeding
+└─ NO → Skip API security integration
+```
+
+### **⚡ Performance Optimization Route**
+```
+Template needs performance optimization?
+├─ YES → FORCE LOAD: ai-performance-temp.mdc
+│   ├─ READ: Performance patterns for templates
+│   ├─ IMPLEMENT: Methods in security-performance-temp.php, security-cache-temp.php, security-cron-temp.php
+│   ├─ TEST: Performance improvements via template
+│   └─ VALIDATE: Performance gains before proceeding
+└─ NO → Skip performance optimization
+```
+
+---
+
+## 🔧 **SYNCHRONIZED DEVELOPMENT PROTOCOL**
+
+### **🎯 FEATURE-BY-FEATURE APPROACH**
+```
+1. SELECT: One specific template feature to implement
+2. ANALYZE: Which temp file categories are needed (database/forms/API/performance)
+3. ROUTE: Load appropriate temp .mdc files based on analysis
+4. IMPLEMENT: Create methods in ALL relevant temp .php files simultaneously  
+5. INTEGRATE: Connect temp file methods into template
+6. TEST: Validate feature works completely
+7. COMPLETE: Mark feature done before starting next feature
+```
+
+### **🚨 CRITICAL SUCCESS PATTERN**
+```
+NEVER implement partial features across temp files.
+ALWAYS complete one feature fully before starting another.
+ALWAYS test integration before proceeding.
+ALWAYS use temp files, never modify production security files.
+```
+
+---
+
+## 📁 **TEMP FILE ARCHITECTURE**
+
+### **Template-Specific Security Files (DO NOT MODIFY PRODUCTION FILES)**
+```
+Dashboard/security/
+├── security-database-temp.php     # Template database operations
+├── security-forms-temp.php        # Template form/AJAX operations  
+├── webhook-api-security-temp.php  # Template API/webhook operations
+├── security-performance-temp.php  # Template performance monitoring
+├── security-cache-temp.php        # Template caching operations
+└── security-cron-temp.php         # Template background processing
+```
+
+### **Routing File Map**
+```
+template-rules-SOP.mdc (THIS FILE) → Routes to:
+├── security-database-temp.mdc → security-database-temp.php
+├── security-forms-temp.mdc → security-forms-temp.php
+├── webhook-api-security-temp.mdc → webhook-api-security-temp.php
+└── ai-performance-temp.mdc → security-performance-temp.php, security-cache-temp.php, security-cron-temp.php
+```
+
+---
+
+## ✅ **VALIDATION CHECKLIST FOR EACH FEATURE**
+
+### **Before Implementation:**
+- [ ] Read template-rules-SOP.mdc (this file) first
+- [ ] Identify which temp file categories needed
+- [ ] Load appropriate temp .mdc files
+- [ ] Plan synchronized implementation across temp files
+
+### **During Implementation:**
+- [ ] Implement methods in ALL relevant temp .php files
+- [ ] Maintain security patterns from temp .mdc files
+- [ ] Create template integration code
+- [ ] Add testing/validation hooks
+
+### **After Implementation:**
+- [ ] Test feature completely via template
+- [ ] Validate security compliance
+- [ ] Confirm performance if applicable
+- [ ] Mark feature complete before next feature
+
+---
+
+## 🚀 **SUCCESS CRITERIA**
+
+**Feature is COMPLETE when:**
+- ✅ All relevant temp .php files have required methods
+- ✅ Template successfully integrates temp file methods
+- ✅ Security validation passes completely
+- ✅ Feature works as expected in template
+- ✅ No conflicts with existing production files
+- ✅ Testing validates functionality
+
+---
+
+**Auto-Trigger**: MANDATORY for all template development  
+**Enforcement**: ABSOLUTE - No exceptions allowed  
+**File Isolation**: STRICT - Only use temp files, never modify production security files  
+**Testing Requirement**: COMPREHENSIVE - Each feature must be validated before proceeding  
+**Success Pattern**: Proven synchronized multi-file development approach
+description:
+globs:
+alwaysApply: false
+---
